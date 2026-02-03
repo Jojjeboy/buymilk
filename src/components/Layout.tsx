@@ -32,7 +32,7 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
                     <div className="flex justify-between items-center">
                         <div className="flex items-center gap-6">
                             <Link to="/" className="flex items-center gap-3 hover:opacity-80 transition-opacity">
-                                <img src="/buymilk/favicon.png" alt="Logo" className="w-8 h-8 rounded-lg shadow-sm" />
+                                <img src="/buymilk/favicon.png" alt="Logo" className="w-16 h-16 rounded-xl shadow-sm" />
                                 <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
                                     BuyMilk
                                 </h1>

@@ -4,7 +4,7 @@ import type { Item, List } from '../types';
 import { DndContext, closestCenter, KeyboardSensor, PointerSensor, useSensor, useSensors, type DragEndEvent } from '@dnd-kit/core';
 import { arrayMove, SortableContext, sortableKeyboardCoordinates, verticalListSortingStrategy } from '@dnd-kit/sortable';
 import { SortableItem } from './SortableItem';
-import { Plus, RotateCcw, ChevronDown, ShoppingCart } from 'lucide-react';
+import { Plus, RotateCcw, ChevronDown } from 'lucide-react';
 import { v4 as uuidv4 } from 'uuid';
 import { Modal } from './Modal';
 import { useTranslation } from 'react-i18next';
@@ -162,9 +162,6 @@ export const GroceryListView: React.FC = React.memo(function GroceryListView() {
         <div className="flex flex-col min-h-[calc(100vh-8rem)] relative pb-40 md:pb-32">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
                 <div className="flex items-center gap-2 flex-1 min-w-0">
-                    <div className="p-2.5 rounded-2xl bg-blue-100 dark:bg-blue-900/40 text-blue-600 dark:text-blue-400 shadow-sm">
-                        <ShoppingCart size={22} strokeWidth={2.5} />
-                    </div>
                     <div className="flex items-center gap-2 group min-w-0 flex-1">
                         <h2 className="text-xl font-semibold truncate">{t('lists.groceryTitle')}</h2>
                     </div>
