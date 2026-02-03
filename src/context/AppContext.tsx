@@ -155,7 +155,15 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     };
 
     const updateListAccess = async (id: string) => {
-        await listsSync.updateItem(id, { lastAccessedAt: new Date().toISOString() });
+        const list = listsSync.data.find((l: List) => l.id === id);
+        if (list) {
+            const lastAccessed = list.lastAccessedAt ? new Date(list.lastAccessedAt).getTime() : 0;
+            const now = Date.now();
+            // Only update if it's been more than 5 minutes since the last access update
+            if (now - lastAccessed > 300000) {
+                 await listsSync.updateItem(id, { lastAccessedAt: new Date().toISOString() });
+            }
+        }
     };
 
     const updateListItems = async (listId: string, items: Item[]) => {

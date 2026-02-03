@@ -1,5 +1,20 @@
 [
   {
+    "hash": "b8788936d3319775cdf2e7c8c925ee2637d74d28",
+    "date": "2026-02-03 21:27:02 +0100",
+    "message": "feat: enhance grocery list, stats and icons"
+  },
+  {
+    "hash": "9ab472aebec0c31ece178c74998914e8a6a80b3e",
+    "date": "2026-02-03 20:33:33 +0100",
+    "message": "Error fix"
+  },
+  {
+    "hash": "85658178bc5971e993809c549253b6ccda1ff995",
+    "date": "2026-02-03 19:51:19 +0100",
+    "message": "feat: toggleable search bar and simplified list settings"
+  },
+  {
     "hash": "0a669326b47a8cf8179bc9c35a337625f4b8bec9",
     "date": "2026-02-03 19:33:20 +0100",
     "message": "chore: remove SonarQube from CI/CD pipeline"

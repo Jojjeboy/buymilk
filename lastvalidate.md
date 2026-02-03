@@ -1,4 +1,4 @@
-# Validation Output (2026-02-03T20:25:54.165Z)
+# Validation Output (2026-02-03T20:38:21.187Z)
 
 ```bash
 
@@ -15,7 +15,7 @@ computing gzip size...
 [2mdist/[22m[35massets/index-wqQNMwIE.css                   [39m[1m[2m   43.88 kB[22m[1m[22m[2m │ gzip:   7.53 kB[22m
 [2mdist/[22m[36massets/workbox-window.prod.es5-BIl4cyR9.js  [39m[1m[2m    5.76 kB[22m[1m[22m[2m │ gzip:   2.37 kB[22m
 [2mdist/[22m[36massets/index-sxE50T7L.js                    [39m[1m[2m1,264.99 kB[22m[1m[22m[2m │ gzip: 387.89 kB[22m
-[32m✓ built in 17.09s[39m
+[32m✓ built in 8.45s[39m
 
 PWA v1.2.0
 mode      generateSW
@@ -76,6 +76,7 @@ This ensures that you're testing the behavior the user would see in the browser.
     at trace [90m(file:///C:/kod/buymilk/[39mnode_modules/[4mvitest[24m/dist/chunks/test.B8ej_ZHS.js:239:21[90m)[39m
     at runTest [90m(file:///C:/kod/buymilk/[39mnode_modules/[4m@vitest/runner[24m/dist/index.js:1653:12[90m)[39m
 
+ [32m✓[39m src/context/ToastContext.test.tsx [2m([22m[2m3 tests[22m[2m)[22m[32m 39[2mms[22m[39m
 [90mstderr[2m | src/hooks/useFirestoreSync.test.ts[2m > [22m[2museFirestoreSync[2m > [22m[2mshould add item successfully
 [22m[39mFirestore sync error for users/test-user-id/test-collection: Error: Firestore error
     at C:/kod/buymilk/src/hooks/useFirestoreSync.test.ts:89:27
@@ -88,7 +89,6 @@ This ensures that you're testing the behavior the user would see in the browser.
     at Traces.$ [90m(file:///C:/kod/buymilk/[39mnode_modules/[4mvitest[24m/dist/chunks/traces.CCmnQaNT.js:142:27[90m)[39m
     at trace [90m(file:///C:/kod/buymilk/[39mnode_modules/[4mvitest[24m/dist/chunks/test.B8ej_ZHS.js:239:21[90m)[39m
     at runTest [90m(file:///C:/kod/buymilk/[39mnode_modules/[4m@vitest/runner[24m/dist/index.js:1653:12[90m)[39m
- [32m✓[39m src/context/ToastContext.test.tsx [2m([22m[2m3 tests[22m[2m)[22m[32m 105[2mms[22m[39m
 
 [90mstderr[2m | src/hooks/useFirestoreSync.test.ts[2m > [22m[2museFirestoreSync[2m > [22m[2mshould update item successfully
 [22m[39mFirestore sync error for users/test-user-id/test-collection: Error: Firestore error
@@ -116,11 +116,10 @@ This ensures that you're testing the behavior the user would see in the browser.
     at trace [90m(file:///C:/kod/buymilk/[39mnode_modules/[4mvitest[24m/dist/chunks/test.B8ej_ZHS.js:239:21[90m)[39m
     at runTest [90m(file:///C:/kod/buymilk/[39mnode_modules/[4m@vitest/runner[24m/dist/index.js:1653:12[90m)[39m
 
- [32m✓[39m src/context/AuthContext.test.tsx [2m([22m[2m4 tests[22m[2m)[22m[32m 123[2mms[22m[39m
- [32m✓[39m src/hooks/useFirestoreSync.test.ts [2m([22m[2m10 tests[22m[2m)[22m[32m 201[2mms[22m[39m
- [32m✓[39m src/components/SearchResults.test.tsx [2m([22m[2m5 tests[22m[2m)[22m[32m 207[2mms[22m[39m
- [32m✓[39m src/components/Modal.test.tsx [2m([22m[2m6 tests[22m[2m)[22m[33m 390[2mms[22m[39m
- [32m✓[39m src/context/AppContext.test.tsx [2m([22m[2m5 tests[22m[2m)[22m[32m 138[2mms[22m[39m
+ [32m✓[39m src/context/AuthContext.test.tsx [2m([22m[2m4 tests[22m[2m)[22m[32m 61[2mms[22m[39m
+ [32m✓[39m src/hooks/useFirestoreSync.test.ts [2m([22m[2m10 tests[22m[2m)[22m[32m 79[2mms[22m[39m
+ [32m✓[39m src/components/SearchResults.test.tsx [2m([22m[2m5 tests[22m[2m)[22m[32m 79[2mms[22m[39m
+ [32m✓[39m src/components/Modal.test.tsx [2m([22m[2m6 tests[22m[2m)[22m[32m 130[2mms[22m[39m
 [90mstderr[2m | src/components/ListDetail.test.tsx[2m > [22m[2mListDetail[2m > [22m[2madds a new item
 [22m[39mAn update to ListDetail2 inside a test was not wrapped in act(...).
 
@@ -153,12 +152,13 @@ act(() => {
 
 This ensures that you're testing the behavior the user would see in the browser. Learn more at https://react.dev/link/wrap-tests-with-act
 
- [32m✓[39m src/components/ListDetail.test.tsx [2m([22m[2m4 tests[22m[2m)[22m[33m 330[2mms[22m[39m
+ [32m✓[39m src/context/AppContext.test.tsx [2m([22m[2m5 tests[22m[2m)[22m[32m 66[2mms[22m[39m
+ [32m✓[39m src/components/ListDetail.test.tsx [2m([22m[2m4 tests[22m[2m)[22m[32m 148[2mms[22m[39m
 
 [2m Test Files [22m [1m[32m7 passed[39m[22m[90m (7)[39m
 [2m      Tests [22m [1m[32m37 passed[39m[22m[90m (37)[39m
-[2m   Start at [22m 21:26:36
-[2m   Duration [22m 5.63s[2m (transform 1.81s, setup 3.68s, import 5.28s, tests 1.49s, environment 18.75s)[22m
+[2m   Start at [22m 21:38:42
+[2m   Duration [22m 2.24s[2m (transform 866ms, setup 1.51s, import 2.29s, tests 602ms, environment 7.24s)[22m
 
 JUNIT report written to C:/kod/buymilk/dist/test-results.xml
 [34m % [39m[2mCoverage report from [22m[33mv8[39m

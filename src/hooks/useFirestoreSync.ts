@@ -58,7 +58,11 @@ export function useFirestoreSync<T extends { id: string }>(
             },
             (err) => {
                 console.error(`Firestore sync error for ${path}:`, err);
-                setError(err.message);
+                if (err.code === 'resource-exhausted') {
+                    setError('Firebase Quota Exceeded. Please try again tomorrow or upgrade your plan.');
+                } else {
+                    setError(err.message);
+                }
                 setLoading(false);
             }
         );
@@ -70,21 +74,42 @@ export function useFirestoreSync<T extends { id: string }>(
         if (!userId) throw new Error('User not authenticated');
         const path = collectionPath.replace('{uid}', userId);
         const docRef = doc(db, path, item.id);
-        await setDoc(docRef, item);
+        try {
+            await setDoc(docRef, item);
+        } catch (err: unknown) {
+            if (err && typeof err === 'object' && 'code' in err && err.code === 'resource-exhausted') {
+                console.error('Firebase Quota Exceeded during addItem');
+            }
+            throw err;
+        }
     }, [collectionPath, userId]);
 
     const updateItem = useCallback(async (id: string, updates: Partial<T>) => {
         if (!userId) throw new Error('User not authenticated');
         const path = collectionPath.replace('{uid}', userId);
         const docRef = doc(db, path, id);
-        await setDoc(docRef, updates, { merge: true });
+        try {
+            await setDoc(docRef, updates, { merge: true });
+        } catch (err: unknown) {
+            if (err && typeof err === 'object' && 'code' in err && err.code === 'resource-exhausted') {
+                console.error('Firebase Quota Exceeded during updateItem');
+            }
+            throw err;
+        }
     }, [collectionPath, userId]);
 
     const deleteItem = useCallback(async (id: string) => {
         if (!userId) throw new Error('User not authenticated');
         const path = collectionPath.replace('{uid}', userId);
         const docRef = doc(db, path, id);
-        await deleteDoc(docRef);
+        try {
+            await deleteDoc(docRef);
+        } catch (err: unknown) {
+            if (err && typeof err === 'object' && 'code' in err && err.code === 'resource-exhausted') {
+                console.error('Firebase Quota Exceeded during deleteItem');
+            }
+            throw err;
+        }
     }, [collectionPath, userId]);
 
     return {

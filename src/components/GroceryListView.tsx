@@ -60,12 +60,6 @@ export const GroceryListView: React.FC = React.memo(function GroceryListView() {
         return items;
     }, [list, sortBy]);
 
-    if (loading && !list) {
-        return <div className="flex justify-center items-center h-64"><div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></div></div>;
-    }
-
-    if (!list) return <div className="text-center py-10">{t('lists.notFound')}</div>;
-
     // Autocomplete Logic
     useEffect(() => {
         if (!newItemText.trim()) {
@@ -88,6 +82,12 @@ export const GroceryListView: React.FC = React.memo(function GroceryListView() {
         setSuggestions(historyMatches.slice(0, 5));
         setShowSuggestions(true);
     }, [newItemText, itemHistory, list?.items]);
+
+    if (loading && !list) {
+        return <div className="flex justify-center items-center h-64"><div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></div></div>;
+    }
+
+    if (!list) return <div className="text-center py-10">{t('lists.notFound')}</div>;
 
     const handleAddItem = async (e?: React.FormEvent, textOverride?: string) => {
         if (e) e.preventDefault();
