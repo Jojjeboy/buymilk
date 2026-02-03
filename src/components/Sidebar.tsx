@@ -32,9 +32,9 @@ export const Sidebar: React.FC = () => {
             {/* Logo Area */}
             <div className="p-6">
                 <Link to="/" className="flex items-center gap-3 hover:opacity-80 transition-opacity">
-                    <img src="/anti/favicon.png" alt="Logo" className="w-10 h-10 rounded-xl shadow-sm" />
+                    <img src="/buymilk/favicon.png" alt="Logo" className="w-10 h-10 rounded-xl shadow-sm" />
                     <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-                        Anti
+                        BuyMilk
                     </h1>
                 </Link>
             </div>

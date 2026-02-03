@@ -60,7 +60,7 @@ export const CategoryView: React.FC = React.memo(() => {
     }, [lists]);
 
     useEffect(() => {
-        document.title = 'Anti';
+        document.title = 'BuyMilk';
     }, []);
 
     /**

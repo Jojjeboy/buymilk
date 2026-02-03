@@ -21,7 +21,7 @@ export const SessionDetail: React.FC = () => {
 
     React.useEffect(() => {
         if (session) {
-            document.title = `Anti - ${session.name}`;
+            document.title = `BuyMilk - ${session.name}`;
         }
     }, [session]);
 

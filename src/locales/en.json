@@ -5,7 +5,7 @@
         "settings": "Settings"
     },
     "app": {
-        "title": "Anti",
+        "title": "BuyMilk",
         "searchPlaceholder": "Search lists, items, categories...",
         "settings": "Settings",
         "toggleTheme": "Toggle theme",
@@ -254,8 +254,8 @@
         "justNow": "Just now"
     },
     "landing": {
-        "welcome": "Welcome to Anti",
-        "subtitle": "Reusable lists app",
+        "welcome": "Welcome to BuyMilk",
+        "subtitle": "Food shopping list",
         "signIn": "Sign in with Google"
     },
     "import": {

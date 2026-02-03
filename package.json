@@ -1,7 +1,7 @@
 {
-  "name": "anti",
+  "name": "buymilk",
   "private": true,
-  "version": "10.0.0",
+  "version": "1.0.0",
   "type": "module",
   "scripts": {
     "dev": "node scripts/generate-commits.js && vite",

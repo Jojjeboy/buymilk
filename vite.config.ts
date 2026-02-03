@@ -5,15 +5,15 @@ import { VitePWA } from 'vite-plugin-pwa'
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  base: '/anti/',
+  base: '/buymilk/',
   plugins: [
     react(),
     VitePWA({
       registerType: 'autoUpdate',
       includeAssets: ['favicon.ico', 'apple-touch-icon.png', 'masked-icon.svg', 'favicon.png'],
       manifest: {
-        name: 'Anti List',
-        short_name: 'Anti List',
+        name: 'Buy milk',
+        short_name: 'Buy milk',
         description: 'A progressive list management app',
         theme_color: '#ffffff',
         icons: [

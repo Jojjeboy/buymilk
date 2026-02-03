@@ -5,7 +5,7 @@
         "settings": "Inställningar"
     },
     "app": {
-        "title": "Anti",
+        "title": "BuyMilk",
         "searchPlaceholder": "Sök listor, objekt, kategorier...",
         "settings": "Inställningar",
         "toggleTheme": "Växla tema",
@@ -253,8 +253,8 @@
         "justNow": "Just nu"
     },
     "landing": {
-        "welcome": "Välkommen till Anti",
-        "subtitle": "App för återanvändbara listor",
+        "welcome": "Välkommen till BuyMilk",
+        "subtitle": "Inhandlingslista för mat",
         "signIn": "Logga in med Google"
     },
     "import": {
