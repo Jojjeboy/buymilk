@@ -24,7 +24,7 @@ const DroppableSection = ({ sectionId, children }: { sectionId: string, children
 export const ListDetail: React.FC = React.memo(function ListDetail() {
     const { t } = useTranslation();
     const { listId } = useParams<{ listId: string }>();
-    const { lists, updateListItems, deleteItem, updateListName, updateListSettings, updateListAccess, archiveList, addSection, updateSection, deleteSection } = useApp();
+    const { lists, updateListItems, deleteItem, updateListName, updateListSettings, updateListAccess, archiveList, addSection, updateSection, deleteSection, itemHistory, addToHistory } = useApp();
     const [newItemText, setNewItemText] = useState('');
     const [uncheckModalOpen, setUncheckModalOpen] = useState(false);
     const [isEditingTitle, setIsEditingTitle] = useState(false);
@@ -37,6 +37,9 @@ export const ListDetail: React.FC = React.memo(function ListDetail() {
     const [editedSectionName, setEditedSectionName] = useState('');
     const [deletingSectionId, setDeleteSectionId] = useState<string | null>(null);
     const [unpinConfirmOpen, setUnpinConfirmOpen] = useState(false);
+    const [suggestions, setSuggestions] = useState<(typeof itemHistory)>([]);
+    const [showSuggestions, setShowSuggestions] = useState(false);
+    const [completedAccordionOpen, setCompletedAccordionOpen] = useState(false);
     const navigate = useNavigate();
 
     const list: List | undefined = lists.find((l) => l.id === listId);
@@ -178,18 +181,61 @@ export const ListDetail: React.FC = React.memo(function ListDetail() {
         }
     }, [list?.name]);
 
+    // Autocomplete Logic
+    useEffect(() => {
+        if (!newItemText.trim()) {
+            setSuggestions([]);
+            setShowSuggestions(false);
+            return;
+        }
+
+        const searchText = newItemText.toLowerCase();
+        
+        // Filter history
+        const historyMatches = itemHistory.filter(h => 
+            h.text.toLowerCase().includes(searchText) &&
+            !list?.items.some(i => i.text.toLowerCase() === h.text.toLowerCase() && !i.completed) // Don't suggest if already active
+        );
+
+        // Sort by usage count
+        historyMatches.sort((a, b) => b.usageCount - a.usageCount);
+
+        setSuggestions(historyMatches.slice(0, 5));
+        setShowSuggestions(true);
+    }, [newItemText, itemHistory, list?.items]);
+
     if (!list) return <div className="text-center py-10">{t('lists.notFound')}</div>;
 
     /**
      * Adds a new item to the current list.
      */
-    const handleAddItem = async (e: React.FormEvent) => {
-        e.preventDefault();
-        if (newItemText.trim()) {
-            const newItem = { id: uuidv4(), text: newItemText.trim(), completed: false };
-            await updateListItems(list.id, [...list.items, newItem]);
+    const handleAddItem = async (e?: React.FormEvent, textOverride?: string) => {
+        if (e) e.preventDefault();
+        const textToAdd = textOverride || newItemText.trim();
+        
+        if (textToAdd) {
+            // Check if item exists (completed) -> Restore it
+            const existingItem = list.items.find(i => i.text.toLowerCase() === textToAdd.toLowerCase());
+            
+            if (existingItem) {
+                if (existingItem.completed) {
+                    await handleToggle(existingItem.id);
+                }
+                // If it's already active, maybe just clear input or highlight? 
+                // Currently just adds duplicates if normalized text is different, strictly checking normalized here.
+            } else {
+                const newItem = { id: uuidv4(), text: textToAdd, completed: false };
+                await updateListItems(list.id, [...list.items, newItem]);
+                await addToHistory(textToAdd);
+            }
             setNewItemText('');
+            setSuggestions([]);
+            setShowSuggestions(false);
         }
+    };
+
+    const handleSuggestionClick = (text: string) => {
+        handleAddItem(undefined, text);
     };
 
     /**
@@ -507,29 +553,58 @@ export const ListDetail: React.FC = React.memo(function ListDetail() {
             )}
 
             {!list?.archived && (
-                <form onSubmit={handleAddItem} className="flex gap-2">
-                    <div className="relative flex-1">
-                        <input
-                            type="text"
-                            value={newItemText}
-                            onChange={(e) => setNewItemText(e.target.value)}
-                            placeholder={t('lists.addItemPlaceholder')}
-                            className="w-full p-3 pr-4 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 shadow-sm focus:ring-2 focus:ring-blue-500 outline-none transition-all"
-                        />
-                    </div>
-                    <button
-                        type="submit"
-                        className="p-3 bg-blue-600 text-white rounded-xl hover:bg-blue-700 shadow-md transition-colors"
-                    >
-                        <Plus />
-                    </button>
-                    <button
-                        onClick={() => setSettingsOpen(true)}
-                        className="p-3 rounded-xl bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors text-gray-600 dark:text-gray-300"
-                    >
-                        <Settings size={20} />
-                    </button>
-                </form>
+                <div className="relative">
+                     <form onSubmit={handleAddItem} className="flex gap-2">
+                        <div className="relative flex-1">
+                            <input
+                                type="text"
+                                value={newItemText}
+                                onChange={(e) => setNewItemText(e.target.value)}
+                                placeholder={t('lists.addItemPlaceholder')}
+                                className="w-full p-3 pr-4 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 shadow-sm focus:ring-2 focus:ring-blue-500 outline-none transition-all"
+                                onBlur={() => setTimeout(() => setShowSuggestions(false), 200)}
+                                onFocus={() => newItemText && setShowSuggestions(true)}
+                            />
+                            {showSuggestions && suggestions.length > 0 && (
+                                <div className="absolute top-full left-0 right-0 mt-1 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl shadow-lg z-50 overflow-hidden max-h-60 overflow-y-auto">
+                                    {suggestions.map((suggestion) => {
+                                         const existingCompleted = list?.items.find(i => i.text.toLowerCase() === suggestion.text.toLowerCase() && i.completed);
+                                         
+                                         return (
+                                            <button
+                                                key={suggestion.id}
+                                                onClick={() => handleSuggestionClick(suggestion.text)}
+                                                className="w-full text-left px-4 py-3 hover:bg-gray-50 dark:hover:bg-gray-700/50 flex items-center justify-between group transition-colors"
+                                            >
+                                                <div className="flex items-center gap-2">
+                                                    <RotateCcw size={14} className="text-gray-400 group-hover:text-blue-500" />
+                                                    <span className="text-gray-700 dark:text-gray-200">{suggestion.text}</span>
+                                                </div>
+                                                {existingCompleted && (
+                                                    <span className="text-xs text-blue-500 font-medium bg-blue-50 dark:bg-blue-900/30 px-2 py-0.5 rounded-full">
+                                                        {t('lists.restore', 'Restore')}
+                                                    </span>
+                                                )}
+                                            </button>
+                                         );
+                                    })}
+                                </div>
+                            )}
+                        </div>
+                        <button
+                            type="submit"
+                            className="p-3 bg-blue-600 text-white rounded-xl hover:bg-blue-700 shadow-md transition-colors"
+                        >
+                            <Plus />
+                        </button>
+                        <button
+                            onClick={() => setSettingsOpen(true)}
+                            className="p-3 rounded-xl bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors text-gray-600 dark:text-gray-300"
+                        >
+                            <Settings size={20} />
+                        </button>
+                    </form>
+                </div>
             )}
 
             {list?.archived && (
@@ -553,11 +628,15 @@ export const ListDetail: React.FC = React.memo(function ListDetail() {
                                     const groupedItems = groupItemsBySection(sortedItems);
                                     const sections = list?.sections || [];
                                     const hasAnySections = sections.length > 0;
+                                    
+                                    // Helper to split active/completed
+                                    const filterActive = (items: Item[]) => items.filter(i => !i.completed);
+                                    const completedItems = sortedItems.filter(i => i.completed);
 
                                     return (
                                         <>
-                                            {/* Unsectioned items */}
-                                            {groupedItems.get(undefined) && groupedItems.get(undefined)!.length > 0 && (
+                                            {/* Unsectioned items (Active only) */}
+                                            {groupedItems.get(undefined) && filterActive(groupedItems.get(undefined)!).length > 0 && (
                                                 <div>
                                                     {hasAnySections && (
                                                         <h3 className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-2">
@@ -565,7 +644,7 @@ export const ListDetail: React.FC = React.memo(function ListDetail() {
                                                         </h3>
                                                     )}
                                                     <div className="space-y-2">
-                                                        {groupedItems.get(undefined)!.map((item) => (
+                                                        {filterActive(groupedItems.get(undefined)!).map((item) => (
                                                             <SortableItem
                                                                 key={item.id}
                                                                 item={item}
@@ -578,9 +657,9 @@ export const ListDetail: React.FC = React.memo(function ListDetail() {
                                                 </div>
                                             )}
 
-                                            {/* Sectioned items */}
+                                            {/* Sectioned items (Active only) */}
                                             {sections.map((section) => {
-                                                const sectionItems = groupedItems.get(section.id) || [];
+                                                const sectionItems = filterActive(groupedItems.get(section.id) || []);
                                                 return (
                                                     <DroppableSection sectionId={section.id} key={section.id}>
                                                         <div className="flex items-center gap-2 mb-2">
@@ -602,7 +681,7 @@ export const ListDetail: React.FC = React.memo(function ListDetail() {
                                                             ))}
                                                             {sectionItems.length === 0 && (
                                                                 <p className="text-center text-gray-400 dark:text-gray-600 text-sm py-4 italic">
-                                                                    {t('lists.emptyList')}
+                                                                    {t('lists.emptySection', 'Empty section')}
                                                                 </p>
                                                             )}
                                                         </div>
@@ -610,8 +689,38 @@ export const ListDetail: React.FC = React.memo(function ListDetail() {
                                                 );
                                             })}
 
-                                            {sortedItems.length === 0 && (
+                                            {sortedItems.filter(i => !i.completed).length === 0 && sections.length === 0 && (
                                                 <p className="text-center text-gray-500 mt-8">{t('lists.emptyList')}</p>
+                                            )}
+
+                                            {/* Completed Items Accordion */}
+                                            {completedItems.length > 0 && (
+                                                <div className="mt-8 pt-4 border-t border-gray-100 dark:border-gray-800">
+                                                    <button 
+                                                        onClick={() => setCompletedAccordionOpen(!completedAccordionOpen)}
+                                                        className="flex items-center gap-2 text-sm font-medium text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 transition-colors mb-4"
+                                                    >
+                                                        <ChevronDown size={16} className={`transition-transform ${completedAccordionOpen ? 'rotate-180' : ''}`} />
+                                                        {t('lists.completedItems', 'Completed Items')} ({completedItems.length})
+                                                    </button>
+                                                    
+                                                    {completedAccordionOpen && (
+                                                        <div className="space-y-2 animate-in slide-in-from-top-2 duration-200">
+                                                            {completedItems.map(item => (
+                                                                <div key={item.id} className="opacity-60 hover:opacity-100 transition-opacity">
+                                                                     <SortableItem
+                                                                        item={item}
+                                                                        onToggle={list?.archived ? undefined : handleToggle}
+                                                                        onDelete={list?.archived ? undefined : handleDelete}
+                                                                        // Edit disabled for completed items typically, but user might want it. Keeping active.
+                                                                        onEdit={list?.archived ? undefined : handleEdit}
+                                                                        disabled={true} // Disable drag for completed items in accordion
+                                                                    />
+                                                                </div>
+                                                            ))}
+                                                        </div>
+                                                    )}
+                                                </div>
                                             )}
                                         </>
                                     );

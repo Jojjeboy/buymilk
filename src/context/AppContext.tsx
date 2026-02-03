@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 
-import { List, Item, Todo, ListSettings, Section, Category } from '../types';
+import { List, Item, Todo, ListSettings, Section, Category, HistoryItem } from '../types';
 
 type Priority = 'low' | 'medium' | 'high';
 import { useToast } from './ToastContext';
@@ -59,6 +59,10 @@ interface AppContextType {
     // Categories
     addCategory: (name: string) => Promise<void>;
     deleteCategory: (id: string) => Promise<void>;
+
+    // History
+    itemHistory: HistoryItem[];
+    addToHistory: (text: string) => Promise<void>;
 }
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
@@ -74,6 +78,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     const listsSync = useFirestoreSync<List>('users/{uid}/lists', user?.uid);
     const todosSync = useFirestoreSync<Todo>('users/{uid}/notes', user?.uid);
     const categoriesSync = useFirestoreSync<Category>('users/{uid}/categories', user?.uid);
+    const historySync = useFirestoreSync<HistoryItem>('users/{uid}/history', user?.uid);
 
     const [theme, setTheme] = useState<'light' | 'dark'>('light');
     const [searchQuery, setSearchQuery] = useState('');
@@ -288,6 +293,29 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         await categoriesSync.deleteItem(id);
     };
 
+    const addToHistory = async (text: string) => {
+        const normalizedText = text.trim();
+        if (!normalizedText) return;
+
+        const existingItem = historySync.data.find(
+            item => item.text.toLowerCase() === normalizedText.toLowerCase()
+        );
+
+        if (existingItem) {
+            await historySync.updateItem(existingItem.id, {
+                lastUsed: new Date().toISOString(),
+                usageCount: (existingItem.usageCount || 1) + 1
+            });
+        } else {
+            await historySync.addItem({
+                id: uuidv4(),
+                text: normalizedText,
+                lastUsed: new Date().toISOString(),
+                usageCount: 1
+            });
+        }
+    };
+
     const defaultListId = listsSync.data.length > 0 ? listsSync.data[0].id : undefined;
 
     return (
@@ -319,6 +347,8 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
                 deleteList,
                 addCategory,
                 deleteCategory,
+                itemHistory: historySync.data,
+                addToHistory,
             }}
         >
             <ErrorBoundary>

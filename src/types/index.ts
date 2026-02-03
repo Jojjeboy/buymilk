@@ -56,3 +56,10 @@ export interface Category {
   name: string;
   order: number;
 }
+
+export interface HistoryItem {
+  id: string;
+  text: string;
+  lastUsed: string;
+  usageCount: number;
+}

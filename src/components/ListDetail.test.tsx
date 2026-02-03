@@ -60,7 +60,7 @@ describe('ListDetail', () => {
                     categoryId: 'cat1',
                     items: [
                         { id: 'i1', text: 'Apple', completed: false },
-                        { id: 'i2', text: 'Banana', completed: true }
+                        { id: 'i2', text: 'Banana', completed: false }
                     ]
                 }
             ],
@@ -73,6 +73,9 @@ describe('ListDetail', () => {
             categories: [],
             addCategory: vi.fn(),
             deleteCategory: vi.fn(),
+            // History
+            itemHistory: [],
+            addToHistory: vi.fn(),
             reorderCategories: vi.fn(),
             addList: vi.fn(),
             deleteList: vi.fn(),
@@ -135,7 +138,7 @@ describe('ListDetail', () => {
 
         expect(mockUpdateListItems).toHaveBeenCalledWith('list1', expect.arrayContaining([
             expect.objectContaining({ id: 'i1', completed: true }), // Toggled to true
-            expect.objectContaining({ id: 'i2', completed: true })
+            expect.objectContaining({ id: 'i2', completed: false })
         ]));
     });
 
@@ -176,6 +179,8 @@ describe('ListDetail', () => {
             sessions: [],
             completeSession: vi.fn(),
             deleteSession: vi.fn(),
+            itemHistory: [],
+            addToHistory: vi.fn(),
             // Add other required mock properties if missing from previous context
         } as Partial<ReturnType<typeof AppContext.useApp>> as ReturnType<typeof AppContext.useApp>);
 

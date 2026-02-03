@@ -2,16 +2,16 @@ import React, { useMemo } from 'react';
 import { useApp } from '../context/AppContext';
 import { useTranslation } from 'react-i18next';
 import {
-    PieChart, Pie, Cell, Legend, Tooltip, ResponsiveContainer
+    PieChart, Pie, Cell, Legend, Tooltip, ResponsiveContainer, BarChart, Bar, XAxis, YAxis, CartesianGrid
 } from 'recharts';
 import {
      List, CheckCircle2,
-    ListTodo
+    ListTodo, ShoppingCart
 } from 'lucide-react';
 
 export const StatisticsView: React.FC = () => {
     const { t } = useTranslation();
-    const { lists, todos } = useApp();
+    const { lists, todos, itemHistory } = useApp();
 
     // Color constants for charts
     const PRIORITY_COLORS = {
@@ -43,6 +43,17 @@ export const StatisticsView: React.FC = () => {
             { name: t('todos.priority.low'), value: todos.filter(t => t.priority === 'low').length, fill: PRIORITY_COLORS.low },
         ].filter(d => d.value > 0);
     }, [todos, t, PRIORITY_COLORS]);
+
+    // Data for Most Used Items
+    const topItemsData = useMemo(() => {
+        return [...itemHistory]
+            .sort((a, b) => b.usageCount - a.usageCount)
+            .slice(0, 5)
+            .map(item => ({
+                name: item.text,
+                count: item.usageCount
+            }));
+    }, [itemHistory]);
 
     return (
         <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
@@ -97,6 +108,37 @@ export const StatisticsView: React.FC = () => {
                                     />
                                     <Legend verticalAlign="bottom" height={36} iconType="circle" />
                                 </PieChart>
+                            </ResponsiveContainer>
+                        </div>
+                    </div>
+                )}
+               
+               {/* Most Used Items Chart */}
+               {topItemsData.length > 0 && (
+                    <div className="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700">
+                        <div className="flex items-center gap-2 mb-6">
+                            <ShoppingCart className="text-blue-500" size={20} />
+                            <h3 className="font-bold text-gray-900 dark:text-white uppercase tracking-wider text-sm">{t('stats.topItems', 'Most Added Items')}</h3>
+                        </div>
+                        <div className="h-[280px] w-full">
+                            <ResponsiveContainer width="100%" height="100%">
+                                <BarChart data={topItemsData} layout="vertical" margin={{ top: 5, right: 30, left: 40, bottom: 5 }}>
+                                    <CartesianGrid strokeDasharray="3 3" horizontal={true} vertical={false} stroke="#E5E7EB" />
+                                    <XAxis type="number" hide />
+                                    <YAxis 
+                                        dataKey="name" 
+                                        type="category" 
+                                        width={100} 
+                                        tick={{ fill: '#6B7280', fontSize: 12 }} 
+                                        axisLine={false}
+                                        tickLine={false}
+                                    />
+                                    <Tooltip 
+                                        cursor={{ fill: 'transparent' }}
+                                        contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }}
+                                    />
+                                    <Bar dataKey="count" fill="#3B82F6" radius={[0, 4, 4, 0]} barSize={20} />
+                                </BarChart>
                             </ResponsiveContainer>
                         </div>
                     </div>
