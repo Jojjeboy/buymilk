@@ -1,10 +1,7 @@
 import { createHashRouter, RouterProvider, Outlet } from 'react-router-dom'
 import { AppProvider } from './context/AppContext'
 import { Layout } from './components/Layout'
-import { CategoryView } from './components/CategoryView'
-
-import { ListDetail } from './components/ListDetail'
-import { SessionDetail } from './components/SessionDetail'
+import { GroceryListView } from './components/GroceryListView'
 
 import { TodoView } from './components/TodoView'
 import { ActivityLog } from './components/ActivityLog'
@@ -31,15 +28,7 @@ const router = createHashRouter([
         children: [
             {
                 path: "/",
-                element: <CategoryView />,
-            },
-            {
-                path: "/list/:listId",
-                element: <ListDetail />,
-            },
-            {
-                path: "/session/:sessionId",
-                element: <SessionDetail />,
+                element: <GroceryListView />,
             },
             {
                 path: "/todos",

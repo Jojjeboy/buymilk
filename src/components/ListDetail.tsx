@@ -21,7 +21,7 @@ const DroppableSection = ({ sectionId, children }: { sectionId: string, children
     return <div ref={setNodeRef}>{children}</div>;
 };
 
-export const ListDetail: React.FC = React.memo(() => {
+export const ListDetail: React.FC = React.memo(function ListDetail() {
     const { t } = useTranslation();
     const { listId } = useParams<{ listId: string }>();
     const { lists, updateListItems, deleteItem, updateListName, updateListSettings, updateListAccess, archiveList, addSection, updateSection, deleteSection } = useApp();

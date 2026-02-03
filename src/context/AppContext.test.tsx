@@ -1,7 +1,7 @@
 import { renderHook, act } from '@testing-library/react';
 import { AppProvider, useApp } from './AppContext';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { List, Category, ListCombination } from '../types';
+import { Category, List } from '../types';
 
 // Mocks
 const mockAddItem = vi.fn();
@@ -12,20 +12,13 @@ const mockShowToast = vi.fn();
 vi.mock('../hooks/useFirestoreSync', () => ({
     useFirestoreSync: (path: string) => {
         // Return different data based on path for basic structure
-        let data: Array<Category | List | ListCombination> = [];
-        if (path.includes('combinations')) {
-            data = [
-                { id: 'combo1', name: 'Combo 1', listIds: ['list1', 'list2'], createdAt: '2023-01-01' },
-                { id: 'combo2', name: 'Combo 2', listIds: ['list1', 'list2', 'list3'], createdAt: '2023-01-01' }
-            ];
-        } else if (path.includes('lists')) {
+        let data: Array<Category | List> = [];
+        if (path.includes('lists')) {
             data = [
                 { id: 'list1', name: 'List 1', categoryId: 'cat1', items: [] },
                 { id: 'list2', name: 'List 2', categoryId: 'cat1', items: [] },
                 { id: 'list3', name: 'List 3', categoryId: 'cat1', items: [] }
             ];
-        } else if (path.includes('sessions')) {
-            data = [];
         } else if (path.includes('categories')) {
             data = [
                 { id: 'cat1', name: 'Category 1', order: 0 }
@@ -60,68 +53,19 @@ vi.mock('react-i18next', () => ({
     useTranslation: () => ({ t: (key: string) => key }),
 }));
 
-describe('AppContext - Combinations', () => {
+describe('AppContext', () => {
     beforeEach(() => {
         vi.clearAllMocks();
     });
 
-    it('addCombination calls firestore addItem', async () => {
+    it('deleteList calls firestore deleteItem', async () => {
         const { result } = renderHook(() => useApp(), { wrapper: AppProvider });
-
-        await act(async () => {
-            await result.current.addCombination('New Combo', ['list1', 'list2']);
-        });
-
-        expect(mockAddItem).toHaveBeenCalledWith(expect.objectContaining({
-            name: 'New Combo',
-            listIds: ['list1', 'list2']
-        }));
-    });
-
-    it('updateCombination calls firestore updateItem', async () => {
-        const { result } = renderHook(() => useApp(), { wrapper: AppProvider });
-
-        await act(async () => {
-            await result.current.updateCombination('combo1', { name: 'Updated Name' });
-        });
-
-        expect(mockUpdateItem).toHaveBeenCalledWith('combo1', expect.objectContaining({
-            name: 'Updated Name'
-        }));
-    });
-
-    it('deleteCombination calls firestore deleteItem', async () => {
-        const { result } = renderHook(() => useApp(), { wrapper: AppProvider });
-
-        await act(async () => {
-            await result.current.deleteCombination('combo1');
-        });
-
-        expect(mockDeleteItem).toHaveBeenCalledWith('combo1');
-    });
-
-    it('deleteList cascades correctly (Update 3+ lists, Delete 2 lists)', async () => {
-        const { result } = renderHook(() => useApp(), { wrapper: AppProvider });
-
-        // Deleting 'list1' should:
-        // 1. Delete 'list1'
-        // 2. Delete 'combo1' (because it has only list1, list2 -> becomes 1 list -> invalid)
-        // 3. Update 'combo2' (because it has list1, list2, list3 -> becomes 2 lists -> valid)
 
         await act(async () => {
             await result.current.deleteList('list1');
         });
 
-        // 1. Delete list
         expect(mockDeleteItem).toHaveBeenCalledWith('list1');
-
-        // 2. Delete combo1 (2 lists)
-        expect(mockDeleteItem).toHaveBeenCalledWith('combo1');
-
-        // 3. Update combo2 (3 lists -> 2 lists)
-        expect(mockUpdateItem).toHaveBeenCalledWith('combo2', expect.objectContaining({
-            listIds: ['list2', 'list3']
-        }));
     });
 
     it('addList calls firestore addItem', async () => {
@@ -138,18 +82,6 @@ describe('AppContext - Combinations', () => {
         }));
     });
 
-    it('addSession calls firestore addItem', async () => {
-        const { result } = renderHook(() => useApp(), { wrapper: AppProvider });
-
-        await act(async () => {
-            await result.current.addSession('New Session', ['list1', 'list2']);
-        });
-
-        expect(mockAddItem).toHaveBeenCalledWith(expect.objectContaining({
-            name: 'New Session',
-            listIds: ['list1', 'list2']
-        }));
-    });
 
     it('addCategory calls firestore addItem', async () => {
         const { result } = renderHook(() => useApp(), { wrapper: AppProvider });

@@ -2,6 +2,7 @@ import React from 'react';
 import { useApp } from '../context/AppContext';
 import { Link } from 'react-router-dom';
 import { Folder, FileText } from 'lucide-react';
+import { Category } from '../types';
 
 export const SearchResults: React.FC = () => {
     const { lists, categories, searchQuery, setSearchQuery } = useApp();
@@ -11,7 +12,7 @@ export const SearchResults: React.FC = () => {
         list.items.some(item => item.text.toLowerCase().includes(searchQuery.toLowerCase()))
     );
 
-    const filteredCategories = categories.filter(category =>
+    const filteredCategories = categories.filter((category: Category) =>
         category.name.toLowerCase().includes(searchQuery.toLowerCase())
     );
 
@@ -25,7 +26,7 @@ export const SearchResults: React.FC = () => {
                 <div className="space-y-3">
                     <h3 className="text-sm font-medium text-gray-500 uppercase tracking-wider">Categories</h3>
                     <div className="grid gap-3">
-                        {filteredCategories.map(category => (
+                        {filteredCategories.map((category: Category) => (
                             <Link
                                 key={category.id}
                                 to={`/category/${category.id}`}
@@ -57,7 +58,7 @@ export const SearchResults: React.FC = () => {
                                         <span className="font-medium text-gray-700 dark:text-gray-200 block">{list.name}</span>
                                     </div>
                                     <span className="text-xs text-gray-400">
-                                        In {categories.find(c => c.id === list.categoryId)?.name || 'Unknown'} • {list.items.length} items
+                                        In {categories.find((c: Category) => c.id === list.categoryId)?.name || 'Unknown'} • {list.items.length} items
                                     </span>
                                     {list.items.length > 0 && (
                                         <div className="mt-2 flex items-center gap-2">

@@ -26,7 +26,7 @@ export interface ListSettings {
   defaultSort: "manual" | "alphabetical" | "completed";
   calendarStartTime?: string;
   calendarEndTime?: string;
-  pinned?: boolean;
+  pinned?: boolean; // Kept for interface compatibility but logic disabled
 }
 
 export interface List {
@@ -34,17 +34,11 @@ export interface List {
   name: string;
   items: Item[];
   sections?: Section[];
-  categoryId: string;
+  categoryId: string; // Kept for legacy/default support
   order?: number;
   settings?: ListSettings;
   lastAccessedAt?: string;
-  archived?: boolean;
-}
-
-export interface Category {
-  id: string;
-  name: string;
-  order?: number;
+  archived?: boolean; // Kept for interface compatibility
 }
 
 export interface Commit {
@@ -57,20 +51,8 @@ export interface Commit {
     path: string;
   }[];
 }
-
-export interface ExecutionSession {
+export interface Category {
   id: string;
   name: string;
-  listIds: string[];
-  createdAt: string;
-  completedAt?: string;
-  categoryId?: string;
-}
-
-export interface ListCombination {
-  id: string;
-  name: string;
-  listIds: string[];
-  createdAt: string;
-  updatedAt?: string;
+  order: number;
 }

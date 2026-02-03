@@ -1,6 +1,6 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState } from 'react';
 import { useApp } from '../context/AppContext';
-import { Link, NavLink, useNavigate, useLocation } from 'react-router-dom';
+import { Link, NavLink } from 'react-router-dom';
 import { Moon, Sun, Search, Settings, LayoutGrid, SquareCheck } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { SearchResults } from './SearchResults';
@@ -10,26 +10,9 @@ import { OfflineIndicator } from './OfflineIndicator';
 
 export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     const { t } = useTranslation();
-    const { theme, toggleTheme, searchQuery, setSearchQuery, lists, loading } = useApp();
+    const { theme, toggleTheme, searchQuery, setSearchQuery } = useApp();
     const [isSettingsOpen, setIsSettingsOpen] = useState(false);
-    const navigate = useNavigate();
-    const location = useLocation();
-    const hasCheckedPinned = useRef(false);
 
-    useEffect(() => {
-        if (!loading && !hasCheckedPinned.current && lists.length > 0) {
-            hasCheckedPinned.current = true;
-            // Only redirect if we are at the root path, implying a fresh open (or explicit navigation to root)
-            // But since this runs on mount, if the user reloads on a subpage, location will be that subpage.
-            // We usually only want to intercept the "Landing".
-            if (location.pathname === '/') {
-                const pinnedList = lists.find(l => l.settings?.pinned);
-                if (pinnedList) {
-                    navigate(`/list/${pinnedList.id}`);
-                }
-            }
-        }
-    }, [lists, loading, location.pathname, navigate]);
 
 
     return (
