@@ -1,5 +1,20 @@
 [
   {
+    "hash": "0a669326b47a8cf8179bc9c35a337625f4b8bec9",
+    "date": "2026-02-03 19:33:20 +0100",
+    "message": "chore: remove SonarQube from CI/CD pipeline"
+  },
+  {
+    "hash": "40a44f208fe565eebcc3940cab94b46ef15b0871",
+    "date": "2026-02-03 19:30:58 +0100",
+    "message": "ci/cd"
+  },
+  {
+    "hash": "0dfb1a90010b7c08283efba6ffb08f889bd08632",
+    "date": "2026-02-03 19:28:50 +0100",
+    "message": "Fix errors"
+  },
+  {
     "hash": "c213e8600a741d84dad314737d5ac11c4dd76982",
     "date": "2026-02-03 18:57:58 +0100",
     "message": "Rename of Anto > Buy Milk"

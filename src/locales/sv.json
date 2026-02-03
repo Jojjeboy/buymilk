@@ -57,7 +57,7 @@
             "completed": "Omarkerade först"
         },
         "reset": "Återställ",
-        "addItemPlaceholder": "Lägg till objekt...",
+        "addItemPlaceholder": "Lägg till matvara",
         "emptyList": "Listan är tom.",
         "resetTitle": "Återställ lista",
         "resetMessage": "Är du säker på att du vill avmarkera alla objekt?",

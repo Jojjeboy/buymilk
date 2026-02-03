@@ -1,22 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import { useApp } from '../context/AppContext';
 import type { Item, ListSettings, List } from '../types';
-import { DndContext, closestCenter, KeyboardSensor, PointerSensor, useSensor, useSensors, type DragEndEvent, useDroppable } from '@dnd-kit/core';
+import { DndContext, closestCenter, KeyboardSensor, PointerSensor, useSensor, useSensors, type DragEndEvent } from '@dnd-kit/core';
 import { arrayMove, SortableContext, sortableKeyboardCoordinates, verticalListSortingStrategy } from '@dnd-kit/sortable';
 import { SortableItem } from './SortableItem';
-import { Plus, Settings, ChevronDown, Trash2, Edit2 } from 'lucide-react';
+import { Plus, Settings, ChevronDown, Edit2 } from 'lucide-react';
 import { v4 as uuidv4 } from 'uuid';
 import { Modal } from './Modal';
 import { useTranslation } from 'react-i18next';
 
-const DroppableSection = ({ sectionId, children }: { sectionId: string, children: React.ReactNode }) => {
-    const { setNodeRef } = useDroppable({ id: sectionId });
-    return <div ref={setNodeRef}>{children}</div>;
-};
 
 export const GroceryListView: React.FC = React.memo(function GroceryListView() {
     const { t } = useTranslation();
-    const { lists, defaultListId, updateListItems, deleteItem, updateListName, updateListSettings, updateListAccess, addSection, updateSection, deleteSection, loading } = useApp();
+    const { lists, defaultListId, updateListItems, deleteItem, updateListName, updateListSettings, updateListAccess, loading } = useApp();
     const [newItemText, setNewItemText] = useState('');
     const [uncheckModalOpen, setUncheckModalOpen] = useState(false);
     const [isEditingTitle, setIsEditingTitle] = useState(false);
@@ -24,10 +20,6 @@ export const GroceryListView: React.FC = React.memo(function GroceryListView() {
     const [settingsOpen, setSettingsOpen] = useState(false);
     const [calendarAccordionOpen, setCalendarAccordionOpen] = useState(false);
     const [calendarEventTitle, setCalendarEventTitle] = useState('');
-    const [newSectionName, setNewSectionName] = useState('');
-    const [editingSectionId, setEditingSectionId] = useState<string | null>(null);
-    const [editedSectionName, setEditedSectionName] = useState('');
-    const [deletingSectionId, setDeleteSectionId] = useState<string | null>(null);
 
     const list: List | undefined = lists.find((l) => l.id === defaultListId);
 
@@ -152,33 +144,9 @@ export const GroceryListView: React.FC = React.memo(function GroceryListView() {
         const { active, over } = event;
         if (!over || active.id === over.id) return;
 
-        const overSectionId = list.sections?.find(s => s.id === over.id)?.id;
-        const activeItem = list.items.find((item) => item.id === active.id);
-        if (!activeItem) return;
-
-        if (overSectionId) {
-            const currentSectionId = activeItem.sectionId;
-            if (currentSectionId !== overSectionId) {
-                const updatedItems = list.items.map(item =>
-                    item.id === active.id ? { ...item, sectionId: overSectionId } : item
-                );
-                await updateListItems(list.id, updatedItems);
-            }
-            return;
-        }
-
-        const overItem = list.items.find((item) => item.id === over.id);
-        const activeItemSectionId = activeItem.sectionId;
-        const overItemSectionId = overItem?.sectionId;
-
-        if (overItemSectionId !== undefined && activeItemSectionId !== overItemSectionId) {
-            const updatedItems = list.items.map(item =>
-                item.id === active.id ? { ...item, sectionId: overItemSectionId } : item
-            );
-            await updateListItems(list.id, updatedItems);
-        } else if (overItem) {
-            const oldIndex = list.items.findIndex((item) => item.id === active.id);
-            const newIndex = list.items.findIndex((item) => item.id === over.id);
+        const oldIndex = list.items.findIndex((item) => item.id === active.id);
+        const newIndex = list.items.findIndex((item) => item.id === over.id);
+        if (oldIndex !== -1 && newIndex !== -1) {
             await updateListItems(list.id, arrayMove(list.items, oldIndex, newIndex));
         }
     };
@@ -247,38 +215,7 @@ export const GroceryListView: React.FC = React.memo(function GroceryListView() {
         await updateListSettings(list.id, updated);
     };
 
-    const handleAddSection = async (e: React.FormEvent) => {
-        e.preventDefault();
-        if (newSectionName.trim() && list) {
-            await addSection(list.id, newSectionName.trim());
-            setNewSectionName('');
-        }
-    };
 
-    const handleUpdateSection = async (sectionId: string) => {
-        if (editedSectionName.trim() && list) {
-            await updateSection(list.id, sectionId, editedSectionName.trim());
-            setEditingSectionId(null);
-            setEditedSectionName('');
-        }
-    };
-
-    const handleDeleteSection = async (sectionId: string) => {
-        if (list) {
-            await deleteSection(list.id, sectionId);
-            setDeleteSectionId(null);
-        }
-    };
-
-    const groupItemsBySection = (items: Item[]): Map<string | undefined, Item[]> => {
-        const grouped = new Map<string | undefined, Item[]>();
-        grouped.set(undefined, items.filter(item => !item.sectionId));
-        const sections = list?.sections || [];
-        sections.forEach(section => {
-            grouped.set(section.id, items.filter(item => item.sectionId === section.id));
-        });
-        return grouped;
-    };
 
     const validateAndGetTimes = () => {
         if (!list) return;
@@ -404,182 +341,38 @@ export const GroceryListView: React.FC = React.memo(function GroceryListView() {
             {sortBy === 'manual' ? (
                 <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
                     <SortableContext items={sortedItems.map(i => i.id)} strategy={verticalListSortingStrategy}>
-                        <div className="space-y-6">
-                            {(() => {
-                                const groupedItems = groupItemsBySection(sortedItems);
-                                const sections = list?.sections || [];
-                                const hasAnySections = sections.length > 0;
-
-                                return (
-                                    <>
-                                        {/* Unsectioned items */}
-                                        {groupedItems.get(undefined) && groupedItems.get(undefined)!.length > 0 && (
-                                            <div>
-                                                {hasAnySections && (
-                                                    <h3 className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-2">
-                                                        {t('lists.sections.unsectioned')}
-                                                    </h3>
-                                                )}
-                                                <div className="space-y-2">
-                                                    {groupedItems.get(undefined)!.map((item) => (
-                                                        <SortableItem
-                                                            key={item.id}
-                                                            item={item}
-                                                            onToggle={handleToggle}
-                                                            onDelete={handleDelete}
-                                                            onEdit={handleEdit}
-                                                            threeStageMode={threeStageMode}
-                                                        />
-                                                    ))}
-                                                </div>
-                                            </div>
-                                        )}
-
-                                        {/* Sectioned items */}
-                                        {sections.map((section) => {
-                                            const sectionItems = groupedItems.get(section.id) || [];
-                                            return (
-                                                <DroppableSection sectionId={section.id} key={section.id}>
-                                                    <div className="flex items-center gap-2 mb-2">
-                                                        <div className="flex-1 h-px bg-gray-200 dark:bg-gray-700"></div>
-                                                        <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300 px-2">
-                                                            {section.name}
-                                                        </h3>
-                                                        <div className="flex-1 h-px bg-gray-200 dark:bg-gray-700"></div>
-                                                        <div className="flex items-center gap-1">
-                                                            <button 
-                                                                onClick={() => {
-                                                                    setEditingSectionId(section.id);
-                                                                    setEditedSectionName(section.name);
-                                                                }}
-                                                                className="p-1 text-gray-400 hover:text-blue-500"
-                                                            >
-                                                                <Edit2 size={12} />
-                                                            </button>
-                                                            <button 
-                                                                onClick={() => setDeleteSectionId(section.id)}
-                                                                className="p-1 text-gray-400 hover:text-red-500"
-                                                            >
-                                                                <Trash2 size={12} />
-                                                            </button>
-                                                        </div>
-                                                    </div>
-                                                    {editingSectionId === section.id ? (
-                                                        <div className="flex gap-2 mb-2">
-                                                            <input 
-                                                                autoFocus
-                                                                type="text" 
-                                                                value={editedSectionName}
-                                                                onChange={(e) => setEditedSectionName(e.target.value)}
-                                                                onBlur={() => handleUpdateSection(section.id)}
-                                                                onKeyDown={(e) => e.key === 'Enter' && handleUpdateSection(section.id)}
-                                                                className="flex-1 text-sm p-1 border rounded"
-                                                            />
-                                                        </div>
-                                                    ) : null}
-                                                    <div className="space-y-2 min-h-[2rem]">
-                                                        {sectionItems.map((item) => (
-                                                            <SortableItem
-                                                                key={item.id}
-                                                                item={item}
-                                                                onToggle={handleToggle}
-                                                                onDelete={handleDelete}
-                                                                onEdit={handleEdit}
-                                                                threeStageMode={threeStageMode}
-                                                            />
-                                                        ))}
-                                                        {sectionItems.length === 0 && (
-                                                            <p className="text-center text-gray-400 dark:text-gray-600 text-sm py-4 italic">
-                                                                {t('lists.emptyList')}
-                                                            </p>
-                                                        )}
-                                                    </div>
-                                                </DroppableSection>
-                                            );
-                                        })}
-
-                                        {sortedItems.length === 0 && (
-                                            <p className="text-center text-gray-500 mt-8">{t('lists.emptyList')}</p>
-                                        )}
-                                    </>
-                                );
-                            })()}
+                        <div className="space-y-2">
+                            {sortedItems.map((item) => (
+                                <SortableItem
+                                    key={item.id}
+                                    item={item}
+                                    onToggle={handleToggle}
+                                    onDelete={handleDelete}
+                                    onEdit={handleEdit}
+                                    threeStageMode={threeStageMode}
+                                />
+                            ))}
                         </div>
                     </SortableContext>
                 </DndContext>
             ) : (
-                <div className="space-y-6">
-                    {/* Non-sortable view mostly same as sortable but disabled dnd */}
-                    {(() => {
-                        const groupedItems = groupItemsBySection(sortedItems);
-                        const sections = list?.sections || [];
-                        const hasAnySections = sections.length > 0;
-
-                        return (
-                            <>
-                                {groupedItems.get(undefined) && groupedItems.get(undefined)!.length > 0 && (
-                                    <div>
-                                        {hasAnySections && (
-                                            <h3 className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-2">
-                                                {t('lists.sections.unsectioned')}
-                                            </h3>
-                                        )}
-                                        <div className="space-y-2">
-                                            {groupedItems.get(undefined)!.map((item) => (
-                                                <SortableItem
-                                                    key={item.id}
-                                                    item={item}
-                                                    onToggle={handleToggle}
-                                                    onDelete={handleDelete}
-                                                    onEdit={handleEdit}
-                                                    disabled={true}
-                                                    threeStageMode={threeStageMode}
-                                                />
-                                            ))}
-                                        </div>
-                                    </div>
-                                )}
-
-                                {sections.map((section) => {
-                                    const sectionItems = groupedItems.get(section.id) || [];
-                                    return (
-                                        <div key={section.id}>
-                                            <div className="flex items-center gap-2 mb-2">
-                                                <div className="flex-1 h-px bg-gray-200 dark:bg-gray-700"></div>
-                                                <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300 px-2">
-                                                    {section.name}
-                                                </h3>
-                                                <div className="flex-1 h-px bg-gray-200 dark:bg-gray-700"></div>
-                                            </div>
-                                            <div className="space-y-2">
-                                                {sectionItems.map((item) => (
-                                                    <SortableItem
-                                                        key={item.id}
-                                                        item={item}
-                                                        onToggle={handleToggle}
-                                                        onDelete={handleDelete}
-                                                        onEdit={handleEdit}
-                                                        disabled={true}
-                                                        threeStageMode={threeStageMode}
-                                                    />
-                                                ))}
-                                                {sectionItems.length === 0 && (
-                                                    <p className="text-center text-gray-400 dark:text-gray-600 text-sm py-4 italic">
-                                                        {t('lists.emptyList')}
-                                                    </p>
-                                                )}
-                                            </div>
-                                        </div>
-                                    );
-                                })}
-
-                                {sortedItems.length === 0 && (
-                                    <p className="text-center text-gray-500 mt-8">{t('lists.emptyList')}</p>
-                                )}
-                            </>
-                        );
-                    })()}
+                <div className="space-y-2">
+                    {sortedItems.map((item) => (
+                        <SortableItem
+                            key={item.id}
+                            item={item}
+                            onToggle={handleToggle}
+                            onDelete={handleDelete}
+                            onEdit={handleEdit}
+                            disabled={true}
+                            threeStageMode={threeStageMode}
+                        />
+                    ))}
                 </div>
+            )}
+
+            {sortedItems.length === 0 && (
+                <p className="text-center text-gray-500 mt-8">{t('lists.emptyList')}</p>
             )}
 
             <Modal
@@ -590,15 +383,6 @@ export const GroceryListView: React.FC = React.memo(function GroceryListView() {
                 message={t('lists.resetMessage')}
                 confirmText={t('lists.reset')}
             />
-             <Modal
-                isOpen={!!deletingSectionId}
-                onClose={() => setDeleteSectionId(null)}
-                onConfirm={() => deletingSectionId && handleDeleteSection(deletingSectionId)}
-                title={t('lists.sections.deleteTitle')}
-                message={t('lists.sections.deleteMessage')}
-                confirmText={t('common.delete')}
-                isDestructive
-            />
             <Modal
                 isOpen={settingsOpen}
                 onClose={() => setSettingsOpen(false)}
@@ -608,18 +392,6 @@ export const GroceryListView: React.FC = React.memo(function GroceryListView() {
                 onConfirm={() => setSettingsOpen(false)}
             >
                 <div className="space-y-6 pt-2">
-                    <div className="flex items-center justify-between">
-                        <div className="flex flex-col">
-                            <span className="font-medium text-gray-900 dark:text-gray-100">{t('lists.settings.threeStage.title')}</span>
-                            <span className="text-sm text-gray-500">{t('lists.settings.threeStage.description')}</span>
-                        </div>
-                        <button
-                            onClick={() => updateSettings({ threeStageMode: !threeStageMode })}
-                            className={`w-12 h-6 rounded-full transition-colors relative ${threeStageMode ? 'bg-blue-600' : 'bg-gray-200 dark:bg-gray-700'}`}
-                        >
-                            <div className={`absolute top-1 left-1 w-4 h-4 bg-white rounded-full transition-transform ${threeStageMode ? 'translate-x-6' : ''}`} />
-                        </button>
-                    </div>
 
                     <div className="space-y-2">
                         <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
@@ -646,27 +418,6 @@ export const GroceryListView: React.FC = React.memo(function GroceryListView() {
                     </div>
 
                      {/* Section Management */}
-                    <div className="space-y-3 pt-4 border-t border-gray-100 dark:border-gray-800">
-                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                            {t('lists.sections.title')}
-                        </label>
-
-                        <form onSubmit={handleAddSection} className="flex gap-2">
-                            <input
-                                type="text"
-                                value={newSectionName}
-                                onChange={(e) => setNewSectionName(e.target.value)}
-                                placeholder={t('lists.sections.addPlaceholder')}
-                                className="flex-1 p-2 rounded-lg border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-blue-500 outline-none text-sm"
-                            />
-                            <button
-                                type="submit"
-                                className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm font-medium"
-                            >
-                                {t('lists.sections.add')}
-                            </button>
-                        </form>
-                    </div>
 
 
                     {/* Calendar Export */}
