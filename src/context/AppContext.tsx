@@ -79,23 +79,29 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     const [searchQuery, setSearchQuery] = useState('');
     const { showToast } = useToast();
     const { t } = useTranslation();
+    const [isCreatingDefault, setIsCreatingDefault] = React.useState(false);
 
     // Ensure we have at least one list
     useEffect(() => {
-        if (!listsSync.loading && listsSync.data.length === 0 && user?.uid) {
+        if (!listsSync.loading && listsSync.data.length === 0 && user?.uid && !isCreatingDefault) {
             const createDefaultList = async () => {
-                const id = uuidv4();
-                await listsSync.addItem({
-                    id,
-                    name: t('lists.groceryList', 'Inköpslista'),
-                    categoryId: 'default', // Legacy requirement
-                    items: [],
-                    lastAccessedAt: new Date().toISOString()
-                });
+                setIsCreatingDefault(true);
+                try {
+                    const id = uuidv4();
+                    await listsSync.addItem({
+                        id,
+                        name: t('lists.groceryList', 'Inköpslista'),
+                        categoryId: 'default', // Legacy requirement
+                        items: [],
+                        lastAccessedAt: new Date().toISOString()
+                    });
+                } finally {
+                    setIsCreatingDefault(false);
+                }
             };
             createDefaultList();
         }
-    }, [listsSync.loading, listsSync.data.length, user?.uid, listsSync.addItem, t]);
+    }, [listsSync.loading, listsSync.data.length, user?.uid, listsSync.addItem, t, isCreatingDefault]);
 
     useEffect(() => {
         if (theme === 'dark') {
@@ -302,7 +308,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
                 deleteTodo,
                 searchQuery,
                 setSearchQuery,
-                loading: listsSync.loading || todosSync.loading,
+                loading: listsSync.loading || todosSync.loading || isCreatingDefault,
                 updateListAccess,
                 addSection,
                 updateSection,

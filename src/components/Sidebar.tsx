@@ -24,12 +24,12 @@ export const Sidebar: React.FC = () => {
     const latestCommit = commits[0];
 
     const navItems = [
-        { path: '/', icon: LayoutGrid, label: t('nav.home', 'Hem') },
-        { path: '/todos', icon: SquareCheck, label: t('nav.todos', 'Att göra') },
+        { path: '/', icon: LayoutGrid, label: t('nav.home') },
+        { path: '/todos', icon: SquareCheck, label: t('nav.todos') },
     ];
 
     return (
-        <div className="flex h-full flex-col border-r border-gray-200 dark:border-gray-800 bg-white/50 dark:bg-gray-900/50 backdrop-blur-xl">
+        <div className="flex h-full flex-col glass border-r-0">
             {/* Logo Area */}
             <div className="p-6">
                 <Link to="/" className="flex items-center gap-3 hover:opacity-80 transition-opacity">
@@ -81,7 +81,7 @@ export const Sidebar: React.FC = () => {
                     className="flex items-center gap-3 px-4 py-3 rounded-xl transition-all w-full text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-gray-900 dark:hover:text-gray-100 group"
                 >
                     <Settings size={20} className="group-hover:scale-110 transition-transform duration-200" />
-                    <span className="font-medium">{t('nav.settings', 'Inställningar')}</span>
+                    <span className="font-medium">{t('nav.settings')}</span>
                 </button>
             </nav>
 

@@ -572,7 +572,6 @@ export const ListDetail: React.FC = React.memo(function ListDetail() {
                                                                 onToggle={list?.archived ? undefined : handleToggle}
                                                                 onDelete={list?.archived ? undefined : handleDelete}
                                                                 onEdit={list?.archived ? undefined : handleEdit}
-                                                                threeStageMode={threeStageMode}
                                                             />
                                                         ))}
                                                     </div>
@@ -599,7 +598,6 @@ export const ListDetail: React.FC = React.memo(function ListDetail() {
                                                                     onToggle={list?.archived ? undefined : handleToggle}
                                                                     onDelete={list?.archived ? undefined : handleDelete}
                                                                     onEdit={list?.archived ? undefined : handleEdit}
-                                                                    threeStageMode={threeStageMode}
                                                                 />
                                                             ))}
                                                             {sectionItems.length === 0 && (
@@ -647,7 +645,6 @@ export const ListDetail: React.FC = React.memo(function ListDetail() {
                                                         onDelete={list?.archived ? undefined : handleDelete}
                                                         onEdit={list?.archived ? undefined : handleEdit}
                                                         disabled={true}
-                                                        threeStageMode={threeStageMode}
                                                     />
                                                 ))}
                                             </div>
@@ -675,7 +672,6 @@ export const ListDetail: React.FC = React.memo(function ListDetail() {
                                                             onDelete={list?.archived ? undefined : handleDelete}
                                                             onEdit={list?.archived ? undefined : handleEdit}
                                                             disabled={true}
-                                                            threeStageMode={threeStageMode}
                                                         />
                                                     ))}
                                                     {sectionItems.length === 0 && (

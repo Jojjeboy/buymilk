@@ -2,7 +2,7 @@ import React from 'react';
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import type { Item } from '../types';
-import { Trash2, GripVertical, Circle, CheckCircle2, PlayCircle } from 'lucide-react';
+import { Trash2, GripVertical, Circle, CheckCircle2 } from 'lucide-react';
 import {
     SwipeableList,
     SwipeableListItem,
@@ -18,10 +18,9 @@ interface SortableItemProps {
     onDelete?: (id: string) => void;
     onEdit?: (id: string, text: string) => void;
     disabled?: boolean;
-    threeStageMode?: boolean;
 }
 
-export const SortableItem: React.FC<SortableItemProps> = ({ item, onToggle, onDelete, onEdit, disabled, threeStageMode }) => {
+export const SortableItem: React.FC<SortableItemProps> = ({ item, onToggle, onDelete, onEdit, disabled }) => {
     const [localText, setLocalText] = React.useState(item.text);
 
     React.useEffect(() => {
@@ -93,13 +92,6 @@ export const SortableItem: React.FC<SortableItemProps> = ({ item, onToggle, onDe
                         >
                             {/* Render different icons based on state */}
                             {(() => {
-                                if (threeStageMode && item.state === 'ongoing') {
-                                    return (
-                                        <div className="text-yellow-500 hover:text-yellow-600">
-                                            <PlayCircle size={24} />
-                                        </div>
-                                    );
-                                }
                                 if (item.completed) {
                                     return (
                                         <div className="text-blue-500 hover:text-blue-600">
@@ -125,7 +117,6 @@ export const SortableItem: React.FC<SortableItemProps> = ({ item, onToggle, onDe
                             aria-label="Edit item text"
                             className={`flex-1 min-w-0 bg-transparent outline-none p-1 ${(() => {
                                 if (item.completed) return 'line-through text-gray-400';
-                                if (threeStageMode && item.state === 'ongoing') return 'text-gray-800 dark:text-gray-100';
                                 return 'text-gray-700 dark:text-gray-200';
                             })()} ${isReadOnly ? 'cursor-not-allowed' : ''}`}
                             // Stop propagation to prevent swipe start when interacting with input

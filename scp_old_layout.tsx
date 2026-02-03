@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useApp } from '../context/AppContext';
-import { Link, NavLink } from 'react-router-dom';
+import { Link, NavLink, useNavigate, useLocation } from 'react-router-dom';
 import { Moon, Sun, Search, Settings, LayoutGrid, SquareCheck } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { SearchResults } from './SearchResults';
@@ -10,14 +10,30 @@ import { OfflineIndicator } from './OfflineIndicator';
 
 export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     const { t } = useTranslation();
-    const { theme, toggleTheme, searchQuery, setSearchQuery } = useApp();
+    const { theme, toggleTheme, searchQuery, setSearchQuery, lists, loading } = useApp();
     const [isSettingsOpen, setIsSettingsOpen] = useState(false);
-    const [isSearchOpen, setIsSearchOpen] = useState(false);
+    const navigate = useNavigate();
+    const location = useLocation();
+    const hasCheckedPinned = useRef(false);
 
+    useEffect(() => {
+        if (!loading && !hasCheckedPinned.current && lists.length > 0) {
+            hasCheckedPinned.current = true;
+            // Only redirect if we are at the root path, implying a fresh open (or explicit navigation to root)
+            // But since this runs on mount, if the user reloads on a subpage, location will be that subpage.
+            // We usually only want to intercept the "Landing".
+            if (location.pathname === '/') {
+                const pinnedList = lists.find(l => l.settings?.pinned);
+                if (pinnedList) {
+                    navigate(`/list/${pinnedList.id}`);
+                }
+            }
+        }
+    }, [lists, loading, location.pathname, navigate]);
 
 
     return (
-        <div className="flex min-h-screen bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100 transition-colors duration-300 overflow-x-hidden">
+        <div className="flex min-h-screen bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100 transition-colors duration-200 overflow-x-hidden">
             {/* Desktop Sidebar */}
             <aside className="hidden md:flex w-72 flex-shrink-0 sticky top-0 h-screen z-20">
                 <Sidebar />
@@ -28,7 +44,7 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
                 <OfflineIndicator />
 
                 {/* Mobile Header */}
-                <header className="md:hidden sticky top-0 z-10 glass p-4 flex flex-col gap-4">
+                <header className="md:hidden sticky top-0 z-10 bg-white/80 dark:bg-gray-800/80 backdrop-blur-md shadow-sm p-4 flex flex-col gap-4 border-b border-gray-200 dark:border-gray-700">
                     <div className="flex justify-between items-center">
                         <div className="flex items-center gap-6">
                             <Link to="/" className="flex items-center gap-3 hover:opacity-80 transition-opacity">
@@ -38,36 +54,24 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
                                 </h1>
                             </Link>
                         </div>
-                        <div className="flex items-center gap-2">
-                            <button
-                                onClick={() => setIsSearchOpen(!isSearchOpen)}
-                                className={`p-2 rounded-full transition-colors ${isSearchOpen ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400' : 'text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'}`}
-                                aria-label={t('app.searchPlaceholder')}
-                            >
-                                <Search size={20} />
-                            </button>
-                            <button
-                                onClick={toggleTheme}
-                                className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors text-gray-600 dark:text-gray-300"
-                                aria-label={t('app.toggleTheme')}
-                            >
-                                {theme === 'light' ? <Moon size={20} /> : <Sun size={20} />}
-                            </button>
-                        </div>
+                        <button
+                            onClick={toggleTheme}
+                            className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors text-gray-600 dark:text-gray-300"
+                            aria-label={t('app.toggleTheme')}
+                        >
+                            {theme === 'light' ? <Moon size={20} /> : <Sun size={20} />}
+                        </button>
                     </div>
-                    {isSearchOpen && (
-                        <div className="relative animate-in slide-in-from-top-2 duration-200">
-                            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
-                            <input
-                                autoFocus
-                                type="text"
-                                value={searchQuery}
-                                onChange={(e) => setSearchQuery(e.target.value)}
-                                placeholder={t('app.searchPlaceholder')}
-                                className="w-full pl-10 pr-4 py-2 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900/50 focus:ring-2 focus:ring-blue-500 outline-none transition-all"
-                            />
-                        </div>
-                    )}
+                    <div className="relative">
+                        <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
+                        <input
+                            type="text"
+                            value={searchQuery}
+                            onChange={(e) => setSearchQuery(e.target.value)}
+                            placeholder={t('app.searchPlaceholder')}
+                            className="w-full pl-10 pr-4 py-2 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900/50 focus:ring-2 focus:ring-blue-500 outline-none transition-all"
+                        />
+                    </div>
                 </header>
 
                 {/* Main Scrollable Content */}
@@ -76,7 +80,7 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
                 </main>
 
                 {/* Mobile Bottom Navigation */}
-                <nav className="md:hidden fixed bottom-0 left-0 right-0 glass pb-safe z-30">
+                <nav className="md:hidden fixed bottom-0 left-0 right-0 bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-800 pb-safe z-30">
                     <div className="flex justify-around items-center h-16">
                         <NavLink
                             to="/"
@@ -88,7 +92,7 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
                             `}
                         >
                             <LayoutGrid size={24} />
-                            <span className="text-[10px] font-medium">{t('nav.home')}</span>
+                            <span className="text-[10px] font-medium">{t('nav.home', 'Hem')}</span>
                         </NavLink>
 
                         <NavLink
@@ -101,7 +105,7 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
                             `}
                         >
                             <SquareCheck size={24} />
-                            <span className="text-[10px] font-medium">{t('nav.todos')}</span>
+                            <span className="text-[10px] font-medium">{t('nav.todos', 'Att göra')}</span>
                         </NavLink>
 
                         <button
@@ -114,7 +118,7 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
                             `}
                         >
                             <Settings size={24} />
-                            <span className="text-[10px] font-medium">{t('nav.settings')}</span>
+                            <span className="text-[10px] font-medium">{t('nav.settings', 'Inställningar')}</span>
                         </button>
                     </div>
                 </nav>

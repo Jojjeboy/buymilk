@@ -6,7 +6,7 @@
     },
     "app": {
         "title": "BuyMilk",
-        "searchPlaceholder": "Sök listor, objekt, kategorier...",
+        "searchPlaceholder": "Sök matvaror",
         "settings": "Inställningar",
         "toggleTheme": "Växla tema",
         "notes": "Anteckningar",
@@ -58,6 +58,8 @@
         },
         "reset": "Återställ",
         "addItemPlaceholder": "Lägg till matvara",
+        "groceryList": "Inköpslista",
+        "groceryTitle": "Vad ska vi handla?",
         "emptyList": "Listan är tom.",
         "resetTitle": "Återställ lista",
         "resetMessage": "Är du säker på att du vill avmarkera alla objekt?",
@@ -66,10 +68,6 @@
         "clearCompletedMessage": "Är du säker på att du vill ta bort alla avklarade objekt från denna lista?",
         "settings": {
             "title": "Listinställningar",
-            "threeStage": {
-                "title": "Trestegsobjekt",
-                "description": "Olöst → Pågående → Klar"
-            },
             "sort": "Sortering",
             "calendar": {
                 "title": "Lägg till i kalender",
@@ -89,18 +87,7 @@
         "archivedWarning": "Denna lista är arkiverad och kan inte ändras.",
         "states": {
             "unresolved": "Olöst",
-            "ongoing": "Pågående",
             "completed": "Avklarad"
-        },
-        "sections": {
-            "title": "Sektioner",
-            "add": "Lägg till sektion",
-            "addPlaceholder": "Ny sektion...",
-            "empty": "Inga sektioner än",
-            "unsectioned": "Utan sektion",
-            "deleteTitle": "Ta bort sektion",
-            "deleteMessage": "Är du säker? Objekt i denna sektion kommer att flyttas till 'Utan sektion'.",
-            "deleteConfirm": "Ta bort"
         }
     },
     "todos": {
@@ -156,84 +143,6 @@
         "itemDeleted": "Objekt borttaget",
         "dataImported": "Data importerad",
         "importFailed": "Misslyckades med att importera data"
-    },
-    "sessions": {
-        "multiSession": "Multi-Session",
-        "createTitle": "Skapa Multi-Session",
-        "sessionName": "Sessionsnamn",
-        "namePlaceholder": "T.ex. Tisdagens morgon",
-        "selectLists": "Välj listor",
-        "noLists": "Inga listor tillgängliga",
-        "noListsInSession": "Inga listor i denna session",
-        "progress": "Framsteg",
-        "viewFullList": "Visa lista",
-        "completeSession": "Slutför Session & Återställ Listor",
-        "completeTitle": "Slutför Session",
-        "completeMessage": "Detta kommer att återställa alla listor i sessionen (markera alla items som icke-avklarade) och ta bort sessionen. Vill du fortsätta?",
-        "complete": "Slutför",
-        "notFound": "Session hittades inte",
-        "start": "Starta Session",
-        "newSession": "Ny Session",
-        "create": "Skapa Session",
-        "save": "Spara Session",
-        "minTwoLists": "(minst 2 listor krävs)",
-        "searchPlaceholder": "Sök listor...",
-        "noResults": "Inga listor hittades"
-    },
-    "combinations": {
-        "title": "Sparade Mallar",
-        "create": "Skapa kombination",
-        "createRaw": "+ Skapa ny mall",
-        "edit": "Redigera kombination",
-        "empty": "Du har inga sparade mallar än.",
-        "listCount": "{{count}} listor",
-        "saveAsTemplate": "Spara som mall för återanvändning",
-        "namePlaceholder": "T.ex. Helgrutin",
-        "deleteTitle": "Radera mall",
-        "deleteMessage": "Är du säker på att du vill radera denna mall? Listorna kommer inte att raderas."
-    },
-    "templates": {
-        "title": "Mallar",
-        "create": "Skapa från mall",
-        "grocery": {
-            "name": "Inköpslista",
-            "items": {
-                "milk": "Mjölk",
-                "bread": "Bröd",
-                "eggs": "Ägg",
-                "cheese": "Ost",
-                "butter": "Smör",
-                "coffee": "Kaffe",
-                "pasta": "Pasta",
-                "rice": "Ris",
-                "chicken": "Kyckling",
-                "vegetables": "Grönsaker"
-            }
-        },
-        "gym": {
-            "name": "Gymväska",
-            "items": {
-                "water": "Vattenflaska",
-                "towel": "Handduk",
-                "shoes": "Träningsskor",
-                "headphones": "Hörlurar",
-                "lock": "Hänglås",
-                "protein": "Proteinshake",
-                "clothes": "Träningskläder"
-            }
-        },
-        "travel": {
-            "name": "Resepackning",
-            "items": {
-                "passport": "Pass",
-                "tickets": "Biljetter",
-                "charger": "Mobilladdare",
-                "clothes": "Kläder",
-                "toiletries": "Necessär",
-                "medication": "Mediciner",
-                "camera": "Kamera"
-            }
-        }
     },
     "history": {
         "title": "Aktivitet",
@@ -293,15 +202,9 @@
         "todosPriority": "Prioriteringar",
         "completionRate": "Genomförandegrad",
         "metrics": {
-            "totalLists": "Listor",
+            "totalItems": "Totala varor",
             "completedItems": "Klara objekt",
-            "totalTodos": "Att göra",
-            "totalSessions": "Sessioner"
-        },
-        "charts": {
-            "usageCount": "Användningar",
-            "listCount": "Listor",
-            "sessionCount": "Sessioner"
+            "totalTodos": "Att göra"
         }
     }
 }
