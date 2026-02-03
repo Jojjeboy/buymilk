@@ -1,0 +1,102 @@
+[
+  {
+    "hash": "d14f8e3b4baf3e74577d150a1712d39ce7aaa4d0",
+    "date": "2026-01-20 10:19:40 +0100",
+    "message": "feat: add 3-stage mode to sessions, fix list clear, and restore theme toggle (v9.1.0)"
+  },
+  {
+    "hash": "0e99495e9874701bd6c9b780f0d186e106247cda",
+    "date": "2026-01-13 21:46:37 +0100",
+    "message": "Documentation"
+  },
+  {
+    "hash": "9e1c86217c1b8ac174ce6aff520c3bfaf175490e",
+    "date": "2026-01-13 21:29:02 +0100",
+    "message": "packa.json bump"
+  },
+  {
+    "hash": "c8123501b65d65293ea36cb5c700d5ebf258b8c5",
+    "date": "2026-01-13 21:25:01 +0100",
+    "message": "Fix again"
+  },
+  {
+    "hash": "32ce581fd01666eb8a8f18eb4cdb3304c2ba3a65",
+    "date": "2026-01-13 21:02:34 +0100",
+    "message": "Sortable fix"
+  },
+  {
+    "hash": "0bae7f3ac1b365b0ae45a24c65a713854b1ad6e8",
+    "date": "2026-01-13 09:38:05 +0100",
+    "message": "Bugfix"
+  },
+  {
+    "hash": "531cce9158d8919a4abdc6c4d4c261cc5401422f",
+    "date": "2026-01-12 19:18:58 +0100",
+    "message": "Fix modal scrolling and bump version to 8.0.1"
+  },
+  {
+    "hash": "56d3115f512b83011c601756b9e0fd46f2c5be2d",
+    "date": "2026-01-12 19:11:18 +0100",
+    "message": "Bugfix section"
+  },
+  {
+    "hash": "10a1c37c7bd73be56776bd861335b8674b06e328",
+    "date": "2026-01-12 19:00:56 +0100",
+    "message": "Fixed tests and stuff"
+  },
+  {
+    "hash": "255796b093c0d5e26966b9599c76440c4c1c6f21",
+    "date": "2026-01-12 18:43:14 +0100",
+    "message": "Sections"
+  },
+  {
+    "hash": "bf08f02f3898617397f373ef61baa7044914f7e6",
+    "date": "2026-01-12 13:02:30 +0100",
+    "message": "1. Settings Modal Layout Fix The settings modal previously opened inside the sidebar because of the sidebar's CSS context."
+  },
+  {
+    "hash": "3d1e71afd63e67497870df5441e94a82ac9f1055",
+    "date": "2026-01-12 09:35:04 +0100",
+    "message": "Statistics"
+  },
+  {
+    "hash": "368da7f9924bb0a7b2931d46c369f9722821cd30",
+    "date": "2026-01-09 11:56:32 +0100",
+    "message": "feat: add statistics page with usage metrics and charts"
+  },
+  {
+    "hash": "f2485454fbf461449b6d319ae419b95368d9141f",
+    "date": "2026-01-09 11:43:29 +0100",
+    "message": "feat: add header and github history link to activity log"
+  },
+  {
+    "hash": "febf0e4730359fa398ec89cf2154613591996b90",
+    "date": "2026-01-09 11:22:07 +0100",
+    "message": "Removed temp files"
+  },
+  {
+    "hash": "d14b07b25fea190a800ef7e61138f710c26f1517",
+    "date": "2026-01-09 11:20:07 +0100",
+    "message": "chore: remove activity log pagination and category bulk edit feature"
+  },
+  {
+    "hash": "61b09de729130218bd2fe0f76d58b39d0a719ada",
+    "date": "2026-01-09 11:07:02 +0100",
+    "message": "fix: revert sonar-scan-action to v6 and disable incompatible test report path"
+  },
+  {
+    "hash": "550454fbc5120595ef7cca17781456750123b192",
+    "date": "2026-01-09 10:53:33 +0100",
+    "message": "fix: resolve SonarQube build issues and enhance UpdatePrompt with multi-commit history and GitHub link"
+  },
+  {
+    "hash": "1db02a05776f1330b062d79fce10a05e945a144a",
+    "date": "2026-01-09 10:08:29 +0100",
+    "message": "Fix SonarQube CI/CD issue by using JUNIT XML format"
+  },
+  {
+    "hash": "66e96e923fff31433bea1028fed9523ae078119a",
+    "date": "2026-01-09 09:55:13 +0100",
+    "message": "Fix test failures: Update mock setup and correct test expectations for useFirestoreSync"
+  }
+]
