@@ -3,7 +3,7 @@ name: CI/CD Pages
 on:
   push:
     branches:
-      - master
+      - main
       - develop
 
 permissions:
@@ -28,7 +28,7 @@ jobs:
       VITE_FIREBASE_APP_ID: ${{ secrets.VITE_FIREBASE_APP_ID }}
 
   deploy:
-    if: github.ref == 'refs/heads/master'
+    if: github.ref == 'refs/heads/main'
     needs: ci
     runs-on: ubuntu-latest
     environment:
