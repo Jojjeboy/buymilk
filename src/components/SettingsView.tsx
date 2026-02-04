@@ -1,5 +1,5 @@
 import React from 'react';
-import { RefreshCw, LogOut, Activity, BarChart3, SortAsc, Calendar, ChevronDown, Settings, CloudUpload, FileJson, Check } from 'lucide-react';
+import { RefreshCw, LogOut, Activity, BarChart3, SortAsc, Calendar, ChevronDown, Settings, CloudUpload, FileJson, Check, Copy } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useApp } from '../context/AppContext';
 import { useToast } from '../context/ToastContext';
@@ -301,10 +301,23 @@ export const SettingsView: React.FC = () => {
 
                             <div className={`transition-all duration-300 ease-in-out px-4 overflow-hidden ${importAccordionOpen ? 'max-h-96 pb-4 opacity-100' : 'max-h-0 opacity-0'}`}>
                                 <div className="pt-2 space-y-4">
-                                    <div className="p-4 bg-gray-50 dark:bg-gray-900/50 rounded-xl border border-gray-100 dark:border-gray-700 text-xs font-mono space-y-2">
-                                        <div className="text-gray-500 uppercase tracking-wider font-bold mb-1 flex items-center gap-2">
-                                            <FileJson size={14} />
-                                            {t('settings.jsonFormat', 'Expected JSON Format:')}
+                                    <div className="p-4 bg-gray-50 dark:bg-gray-900/50 rounded-xl border border-gray-100 dark:border-gray-700 text-xs font-mono space-y-2 relative group-json">
+                                        <div className="text-gray-500 uppercase tracking-wider font-bold mb-1 flex items-center justify-between">
+                                            <div className="flex items-center gap-2">
+                                                <FileJson size={14} />
+                                                {t('settings.jsonFormat', 'Expected JSON Format:')}
+                                            </div>
+                                            <button
+                                                onClick={() => {
+                                                    const example = `[\n  { "text": "Milk" },\n  { "text": "Eggs" }\n]`;
+                                                    navigator.clipboard.writeText(example);
+                                                    showToast(t('common.copied', 'Copied to clipboard'), 'success');
+                                                }}
+                                                className="p-1.5 text-gray-400 hover:text-blue-500 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-lg transition-all"
+                                                title={t('common.copy', 'Copy')}
+                                            >
+                                                <Copy size={14} />
+                                            </button>
                                         </div>
                                         <div className="text-gray-600 dark:text-gray-400 pl-2 border-l-2 border-gray-200 dark:border-gray-700">
                                             [<br/>

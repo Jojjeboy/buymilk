@@ -79,6 +79,7 @@
                 "eventTitle": "Event Title",
                 "startTime": "Start Time",
                 "endTime": "End Time",
+                "addToCalendar": "Add to Calendar",
                 "generateLink": "Generate Calendar Link",
                 "description": "Create a Google Calendar event with the list content",
                 "linkText": "See the complete list here"
@@ -125,7 +126,9 @@
         "name": "Name",
         "edit": "Edit",
         "prev": "Prev",
-        "next": "Next"
+        "next": "Next",
+        "copy": "Copy",
+        "copied": "Copied to clipboard"
     },
     "settings": {
         "title": "Settings",

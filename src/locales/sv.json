@@ -79,6 +79,7 @@
                 "eventTitle": "Händelsetitel",
                 "startTime": "Starttid",
                 "endTime": "Sluttid",
+                "addToCalendar": "Lägg till i kalender",
                 "generateLink": "Skapa kalenderlänk",
                 "description": "Skapa en Google Kalender-händelse med listans innehåll",
                 "linkText": "Se hela listan här"
@@ -125,7 +126,9 @@
         "name": "Namn",
         "edit": "Redigera",
         "prev": "Föregående",
-        "next": "Nästa"
+        "next": "Nästa",
+        "copy": "Kopiera",
+        "copied": "Kopierades till urklipp"
     },
     "settings": {
         "title": "Inställningar",
