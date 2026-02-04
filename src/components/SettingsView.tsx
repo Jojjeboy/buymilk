@@ -1,14 +1,17 @@
 import React from 'react';
-import { RefreshCw, LogOut, Activity, BarChart3, SortAsc, Calendar, ChevronDown, Settings } from 'lucide-react';
+import { RefreshCw, LogOut, Activity, BarChart3, SortAsc, Calendar, ChevronDown, Settings, CloudUpload, FileJson, Check } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useApp } from '../context/AppContext';
+import { useToast } from '../context/ToastContext';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { v4 as uuidv4 } from 'uuid';
+import type { Item } from '../types';
 
 export const SettingsView: React.FC = () => {
     const { t, i18n } = useTranslation();
     const { user, logout } = useAuth();
-    const { lists, defaultListId, updateListSettings } = useApp();
+    const { lists, defaultListId, updateListSettings, updateListItems } = useApp();
     const list = lists.find(l => l.id === defaultListId);
     const sortBy = list?.settings?.defaultSort || 'manual';
 
@@ -58,6 +61,57 @@ export const SettingsView: React.FC = () => {
         const endTime = formatGoogleTime(calendarEndTime);
         const calendarUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${title}&details=${description}&dates=${startTime}/${endTime}`;
         window.open(calendarUrl, '_blank');
+    };
+
+    const { showToast } = useToast();
+    const [importAccordionOpen, setImportAccordionOpen] = React.useState(false);
+
+    const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const file = event.target.files?.[0];
+        if (!file || !list) return;
+
+        const reader = new FileReader();
+        reader.onload = async (e) => {
+            try {
+                const content = e.target?.result as string;
+                let data;
+                try {
+                    data = JSON.parse(content);
+                } catch {
+                    throw new Error('Invalid JSON');
+                }
+                
+                if (!Array.isArray(data)) throw new Error('Format must be an array');
+
+                const newItems: Item[] = [];
+                for (const entry of data) {
+                     let text = '';
+                     if (typeof entry === 'string') text = entry;
+                     else if (typeof entry === 'object' && entry !== null && entry.text) text = entry.text;
+                     
+                     if (text) {
+                         newItems.push({
+                             id: uuidv4(),
+                             text: text.trim(),
+                             completed: false
+                         });
+                     }
+                }
+
+                if (newItems.length > 0) {
+                    await updateListItems(list.id, [...list.items, ...newItems]);
+                    showToast(t('settings.importSuccess', 'Added {{count}} items', { count: newItems.length }), 'success');
+                } else {
+                    showToast(t('settings.importNoItems', 'No valid items found'), 'error');
+                }
+            } catch (error) {
+                console.error(error);
+                showToast(t('settings.importError', 'Failed to import file'), 'error');
+            }
+            // Reset input
+            event.target.value = '';
+        };
+        reader.readAsText(file);
     };
 
     return (
@@ -223,6 +277,56 @@ export const SettingsView: React.FC = () => {
                                 <div className="text-xs font-medium text-gray-500 dark:text-gray-400">{t('history.manageDesc', 'View and manage autocomplete suggestions')}</div>
                             </div>
                         </Link>
+                    </div>
+
+                    <div className="space-y-4">
+                        <h3 className="text-sm font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest px-1">{t('settings.dataManagement', 'Data Management')}</h3>
+                        
+                        <div className="bg-white dark:bg-gray-800 rounded-2xl overflow-hidden border border-gray-100 dark:border-gray-700 hover:border-blue-200 dark:hover:border-gray-600 transition-all">
+                            <button
+                                onClick={() => setImportAccordionOpen(!importAccordionOpen)}
+                                className="w-full p-4 flex items-center justify-between group"
+                            >
+                                <div className="flex items-center gap-4">
+                                    <div className="p-2.5 bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 rounded-xl group-hover:scale-110 transition-transform">
+                                        <CloudUpload size={22} />
+                                    </div>
+                                    <div className="text-left">
+                                        <div className="font-bold text-gray-900 dark:text-white">{t('settings.importTitle', 'Import List')}</div>
+                                        <div className="text-xs font-medium text-gray-500 dark:text-gray-400">{t('settings.importDesc', 'Add items from JSON file')}</div>
+                                    </div>
+                                </div>
+                                <ChevronDown size={20} className={`text-gray-400 transition-transform duration-300 ${importAccordionOpen ? 'rotate-180' : ''}`} />
+                            </button>
+
+                            <div className={`transition-all duration-300 ease-in-out px-4 overflow-hidden ${importAccordionOpen ? 'max-h-96 pb-4 opacity-100' : 'max-h-0 opacity-0'}`}>
+                                <div className="pt-2 space-y-4">
+                                    <div className="p-4 bg-gray-50 dark:bg-gray-900/50 rounded-xl border border-gray-100 dark:border-gray-700 text-xs font-mono space-y-2">
+                                        <div className="text-gray-500 uppercase tracking-wider font-bold mb-1 flex items-center gap-2">
+                                            <FileJson size={14} />
+                                            {t('settings.jsonFormat', 'Expected JSON Format:')}
+                                        </div>
+                                        <div className="text-gray-600 dark:text-gray-400 pl-2 border-l-2 border-gray-200 dark:border-gray-700">
+                                            [<br/>
+                                            &nbsp;&nbsp;{{ "text": "Milk" }},<br/>
+                                            &nbsp;&nbsp;{{ "text": "Eggs" }}<br/>
+                                            ]
+                                        </div>
+                                    </div>
+
+                                    <label className="flex items-center justify-center gap-3 w-full p-3 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-bold cursor-pointer transition-all shadow-lg shadow-blue-500/20 active:scale-[0.98]">
+                                        <CloudUpload size={18} />
+                                        <span>{t('settings.selectFile', 'Select JSON File')}</span>
+                                        <input 
+                                            type="file" 
+                                            accept=".json" 
+                                            className="hidden" 
+                                            onChange={handleFileUpload} 
+                                        />
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
                     </div>
 
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 pt-4">
