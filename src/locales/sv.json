@@ -154,6 +154,7 @@
         "statistics": "Statistik",
         "statisticsDesc": "Användningsinsikter och trender",
         "manageTitle": "Hantera historik",
+        "manageDesc": "Visa och hantera autokompletteringsförslag",
         "suggestionHistory": "Förslagshistorik",
         "clearAll": "Rensa alla",
         "clearAllConfirm": "Är du säker? Detta raderar alla {{count}} förslag från historiken.",
@@ -161,6 +162,9 @@
         "delete": "Radera",
         "items": "objekt",
         "noHistory": "Ingen förslagshistorik ännu",
+        "searchPlaceholder": "Sök i historik...",
+        "noResults": "Inga objekt matchar din sökning",
+        "used": "använd",
         "today": "Idag",
         "yesterday": "Igår"
     },

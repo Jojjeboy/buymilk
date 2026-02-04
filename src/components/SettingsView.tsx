@@ -4,7 +4,6 @@ import { useAuth } from '../context/AuthContext';
 import { useApp } from '../context/AppContext';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { HistoryManager } from './HistoryManager';
 
 export const SettingsView: React.FC = () => {
     const { t, i18n } = useTranslation();
@@ -212,7 +211,18 @@ export const SettingsView: React.FC = () => {
 
                     <div className="space-y-4">
                         <h3 className="text-sm font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest px-1">{t('history.manageTitle', 'Manage History')}</h3>
-                        <HistoryManager />
+                        <Link
+                            to="/history"
+                            className="flex items-center gap-4 p-4 bg-gray-50 dark:bg-gray-900/50 rounded-2xl hover:bg-gray-100 dark:hover:bg-gray-900 transition-all border border-transparent hover:border-gray-200 dark:hover:border-gray-700 group"
+                        >
+                            <div className="p-2.5 bg-purple-100 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400 rounded-xl group-hover:scale-110 transition-transform">
+                                <Activity size={22} />
+                            </div>
+                            <div>
+                                <div className="font-bold text-gray-900 dark:text-white">{t('history.suggestionHistory', 'Suggestion History')}</div>
+                                <div className="text-xs font-medium text-gray-500 dark:text-gray-400">{t('history.manageDesc', 'View and manage autocomplete suggestions')}</div>
+                            </div>
+                        </Link>
                     </div>
 
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 pt-4">

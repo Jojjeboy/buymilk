@@ -8,6 +8,7 @@ import { Plus, RotateCcw, ChevronDown, CloudUpload } from 'lucide-react';
 import { v4 as uuidv4 } from 'uuid';
 import { Modal } from './Modal';
 import { useTranslation } from 'react-i18next';
+import { InlineAutocompleteInput } from './InlineAutocompleteInput';
 
 
 export const GroceryListView: React.FC = React.memo(function GroceryListView() {
@@ -251,15 +252,14 @@ export const GroceryListView: React.FC = React.memo(function GroceryListView() {
                     <div className="relative group">
                         <form onSubmit={handleAddItem} className="flex gap-3 items-center bg-white dark:bg-gray-800 p-2 rounded-2xl shadow-2xl border border-gray-100 dark:border-gray-700 focus-within:ring-2 focus-within:ring-blue-500/50 transition-all">
                             <div className="relative flex-1">
-                                <Plus className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-blue-500 transition-colors" size={20} />
-                                <input
-                                    type="text"
+                                <Plus className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-blue-500 transition-colors pointer-events-none z-10" size={20} />
+                                <InlineAutocompleteInput
                                     value={newItemText}
-                                    onChange={(e) => setNewItemText(e.target.value)}
+                                    onChange={setNewItemText}
+                                    onSubmit={() => handleAddItem()}
+                                    suggestions={suggestions}
                                     placeholder={t('lists.addItemPlaceholder')}
                                     className="w-full pl-10 pr-4 py-3 bg-transparent text-gray-900 dark:text-gray-100 placeholder-gray-400 outline-none font-medium"
-                                    onBlur={() => setTimeout(() => setShowSuggestions(false), 200)}
-                                    onFocus={() => newItemText && setShowSuggestions(true)}
                                 />
                                 {showSuggestions && suggestions.length > 0 && (
                                     <div className="absolute bottom-full left-0 right-0 mb-4 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-2xl shadow-2xl z-50 overflow-hidden max-h-60 overflow-y-auto animate-in slide-in-from-bottom-2 duration-200">

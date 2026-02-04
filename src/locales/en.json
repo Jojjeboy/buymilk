@@ -154,6 +154,7 @@
         "statistics": "Statistics",
         "statisticsDesc": "Usage insights and trends",
         "manageTitle": "Manage History",
+        "manageDesc": "View and manage autocomplete suggestions",
         "suggestionHistory": "Suggestion History",
         "clearAll": "Clear All",
         "clearAllConfirm": "Are you sure? This will delete all {{count}} suggestion history items.",
@@ -161,6 +162,9 @@
         "delete": "Delete",
         "items": "items",
         "noHistory": "No suggestion history yet",
+        "searchPlaceholder": "Search history...",
+        "noResults": "No items match your search",
+        "used": "used",
         "today": "Today",
         "yesterday": "Yesterday"
     },

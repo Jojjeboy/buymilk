@@ -7,6 +7,7 @@ import { TodoView } from './components/TodoView'
 import { ActivityLog } from './components/ActivityLog'
 import { StatisticsView } from './components/StatisticsView'
 import { SettingsView } from './components/SettingsView'
+import { HistoryView } from './components/HistoryView'
 import { ToastProvider } from './context/ToastContext'
 import { ToastContainer } from './components/ToastContainer'
 import { UpdatePrompt } from './components/UpdatePrompt'
@@ -42,6 +43,10 @@ const router = createHashRouter([
             {
                 path: "/statistics",
                 element: <StatisticsView />,
+            },
+            {
+                path: "/history",
+                element: <HistoryView />,
             },
             {
                 path: "/settings",
