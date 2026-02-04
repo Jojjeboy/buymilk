@@ -1,5 +1,30 @@
 [
   {
+    "hash": "8dd169d479ab9e45c81663ef5355e7f671a770b9",
+    "date": "2026-02-04 07:25:21 +0100",
+    "message": "search query parameters"
+  },
+  {
+    "hash": "e52d3262551d41a8efe621f88512c7d15f2766c2",
+    "date": "2026-02-04 07:11:18 +0100",
+    "message": "empty"
+  },
+  {
+    "hash": "b7415c29424efe0c733c57f99f641fc48ee57354",
+    "date": "2026-02-04 06:26:46 +0100",
+    "message": "Fixes"
+  },
+  {
+    "hash": "668a85bd02d65968e1464275995802d9db2886f5",
+    "date": "2026-02-03 21:49:18 +0100",
+    "message": "bug fix"
+  },
+  {
+    "hash": "1d955fa5cdb3120303197e4586052ef3ffc3e683",
+    "date": "2026-02-03 21:43:25 +0100",
+    "message": "fix: resolve hook rendering error and optimize Firestore usage to mitigate quota exhaustion"
+  },
+  {
     "hash": "b8788936d3319775cdf2e7c8c925ee2637d74d28",
     "date": "2026-02-03 21:27:02 +0100",
     "message": "feat: enhance grocery list, stats and icons"

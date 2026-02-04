@@ -19,6 +19,7 @@ interface SidebarProps {
     onNavClick?: () => void;
 }
 
+// eslint-disable-next-line react/prop-types
 export const Sidebar: React.FC<SidebarProps> = ({ onNavClick }) => {
     const { t } = useTranslation();
     const { theme, toggleTheme } = useApp();

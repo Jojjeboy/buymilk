@@ -58,15 +58,20 @@ describe('useFirestoreSync', () => {
 
     it('should handle snapshot data correctly', async () => {
         const mockData = [
-            { id: '1', name: 'Test Item 1' },
-            { id: '2', name: 'Test Item 2' }
+            { id: '1', name: 'Test Item 1', isPending: false },
+            { id: '2', name: 'Test Item 2', isPending: false }
         ];
 
         (onSnapshot as Mock).mockImplementation((_, onNext: (snapshot: Partial<QuerySnapshot<DocumentData>>) => void) => {
             onNext({
-                forEach: (callback: (doc: { data: () => unknown }) => void) => {
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                forEach: (callback: (doc: any) => void) => {
                     mockData.forEach(item => {
-                        callback({ data: () => item });
+                        callback({ 
+                            data: () => item,
+                            metadata: { hasPendingWrites: false }
+                            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                        } as any);
                     });
                 }
             });

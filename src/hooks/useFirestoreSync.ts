@@ -55,7 +55,7 @@ export function useFirestoreSync<T extends { id: string }>(
                     // Use Firestore's built-in metadata to track pending writes
                     items.push({ 
                         ...data, 
-                        isPending: doc.metadata.hasPendingWrites 
+                        isPending: doc.metadata?.hasPendingWrites || false
                     } as T);
                 });
                 setData(items);

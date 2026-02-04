@@ -35,7 +35,7 @@ describe('SearchResults', () => {
             lists: mockLists,
             todos: mockTodos,
             loading: false,
-        } as any);
+        } as ReturnType<typeof AppContext.useApp>); // Removed 'any' as the object is now directly cast to the return type
 
         render(
             <MemoryRouter initialEntries={query ? [`/search?q=${query}`] : ['/search']}>
