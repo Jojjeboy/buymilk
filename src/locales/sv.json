@@ -59,6 +59,7 @@
         "reset": "Återställ",
         "addItemPlaceholder": "Lägg till matvara",
         "itemExists": "Varan finns redan i listan",
+        "added": "Tillagd",
         "groceryList": "Inköpslista",
         "groceryTitle": "Vad ska handlas?",
         "emptyList": "Listan är tom.",

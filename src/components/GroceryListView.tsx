@@ -272,7 +272,9 @@ export const GroceryListView: React.FC = React.memo(function GroceryListView() {
                                 {showSuggestions && suggestions.length > 0 && (
                                     <div className="absolute bottom-full left-0 right-0 mb-4 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-2xl shadow-2xl z-50 overflow-hidden max-h-60 overflow-y-auto animate-in slide-in-from-bottom-2 duration-200">
                                         {suggestions.map((suggestion) => {
-                                            const existingCompleted = list?.items.find(i => i.text.toLowerCase() === suggestion.text.toLowerCase() && i.completed);
+                                            const existingItem = list?.items.find(i => i.text.toLowerCase() === suggestion.text.toLowerCase());
+                                            const isCompleted = existingItem?.completed;
+                                            const isActive = existingItem && !isCompleted;
                                             
                                             return (
                                                 <button
@@ -283,11 +285,18 @@ export const GroceryListView: React.FC = React.memo(function GroceryListView() {
                                                 >
                                                     <div className="flex items-center gap-3">
                                                         <RotateCcw size={14} className="text-gray-400 group-hover:text-blue-500 transition-colors" />
-                                                        <span className="text-gray-700 dark:text-gray-200 font-medium">{suggestion.text}</span>
+                                                        <span className={`font-medium ${isActive ? 'text-gray-400 dark:text-gray-500 decoration-gray-400' : 'text-gray-700 dark:text-gray-200'}`}>
+                                                            {suggestion.text}
+                                                        </span>
                                                     </div>
-                                                    {existingCompleted && (
+                                                    {isCompleted && (
                                                         <span className="text-[10px] text-blue-500 font-bold bg-blue-50 dark:bg-blue-900/30 px-2 py-1 rounded-full uppercase tracking-tighter">
                                                             {t('lists.restore', 'Restore')}
+                                                        </span>
+                                                    )}
+                                                    {isActive && (
+                                                        <span className="text-[10px] text-green-600 font-bold bg-green-50 dark:bg-green-900/30 px-2 py-1 rounded-full uppercase tracking-tighter">
+                                                            {t('lists.added', 'Added')}
                                                         </span>
                                                     )}
                                                 </button>
