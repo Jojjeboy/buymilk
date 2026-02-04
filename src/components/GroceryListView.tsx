@@ -233,23 +233,24 @@ export const GroceryListView: React.FC = React.memo(function GroceryListView() {
                 );
             })()}
 
-            {/* Fullwidth Persistent Bottom Bar */}
-            <div className="fixed bottom-16 md:bottom-0 left-0 md:left-72 right-0 bg-white dark:bg-gray-800 border-t border-gray-100 dark:border-gray-700 z-30 transition-all duration-300">
-                <div className="max-w-4xl mx-auto px-4 py-3">
-                    <div className="relative">
-                        <form onSubmit={handleAddItem} className="flex gap-2 items-center">
-                            <div className="relative flex-1 bg-gray-50 dark:bg-gray-900/50 rounded-xl border border-gray-100 dark:border-gray-700 focus-within:ring-2 focus-within:ring-blue-500/20 transition-all">
+            {/* Floating Persistent Bottom Bar */}
+            <div className="fixed bottom-0 left-0 right-0 md:left-72 bg-gradient-to-t from-white via-white/95 to-white/0 dark:from-gray-900 dark:via-gray-900/95 dark:to-gray-900/0 pt-10 pb-6 px-4 z-40 transition-all duration-300">
+                <div className="max-w-4xl mx-auto">
+                    <div className="relative group">
+                        <form onSubmit={handleAddItem} className="flex gap-3 items-center bg-white dark:bg-gray-800 p-2 rounded-2xl shadow-2xl border border-gray-100 dark:border-gray-700 focus-within:ring-2 focus-within:ring-blue-500/50 transition-all">
+                            <div className="relative flex-1">
+                                <Plus className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-blue-500 transition-colors" size={20} />
                                 <input
                                     type="text"
                                     value={newItemText}
                                     onChange={(e) => setNewItemText(e.target.value)}
                                     placeholder={t('lists.addItemPlaceholder')}
-                                    className="w-full px-4 py-3 bg-transparent text-gray-900 dark:text-gray-100 placeholder-gray-400 outline-none"
+                                    className="w-full pl-10 pr-4 py-3 bg-transparent text-gray-900 dark:text-gray-100 placeholder-gray-400 outline-none font-medium"
                                     onBlur={() => setTimeout(() => setShowSuggestions(false), 200)}
                                     onFocus={() => newItemText && setShowSuggestions(true)}
                                 />
                                 {showSuggestions && suggestions.length > 0 && (
-                                    <div className="absolute bottom-full left-0 right-0 mb-2 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl shadow-lg z-50 overflow-hidden max-h-60 overflow-y-auto">
+                                    <div className="absolute bottom-full left-0 right-0 mb-4 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-2xl shadow-2xl z-50 overflow-hidden max-h-60 overflow-y-auto animate-in slide-in-from-bottom-2 duration-200">
                                         {suggestions.map((suggestion) => {
                                             const existingCompleted = list?.items.find(i => i.text.toLowerCase() === suggestion.text.toLowerCase() && i.completed);
                                             
@@ -260,12 +261,12 @@ export const GroceryListView: React.FC = React.memo(function GroceryListView() {
                                                     onClick={() => handleSuggestionClick(suggestion.text)}
                                                     className="w-full text-left px-4 py-3 hover:bg-gray-50 dark:hover:bg-gray-700/50 flex items-center justify-between group transition-colors"
                                                 >
-                                                    <div className="flex items-center gap-2">
-                                                        <RotateCcw size={14} className="text-gray-400 group-hover:text-blue-500" />
-                                                        <span className="text-gray-700 dark:text-gray-200">{suggestion.text}</span>
+                                                    <div className="flex items-center gap-3">
+                                                        <RotateCcw size={14} className="text-gray-400 group-hover:text-blue-500 transition-colors" />
+                                                        <span className="text-gray-700 dark:text-gray-200 font-medium">{suggestion.text}</span>
                                                     </div>
                                                     {existingCompleted && (
-                                                        <span className="text-xs text-blue-500 font-medium bg-blue-50 dark:bg-blue-900/30 px-2 py-0.5 rounded-full">
+                                                        <span className="text-[10px] text-blue-500 font-bold bg-blue-50 dark:bg-blue-900/30 px-2 py-1 rounded-full uppercase tracking-tighter">
                                                             {t('lists.restore', 'Restore')}
                                                         </span>
                                                     )}
@@ -277,9 +278,10 @@ export const GroceryListView: React.FC = React.memo(function GroceryListView() {
                             </div>
                             <button
                                 type="submit"
-                                className="p-3 bg-blue-600 text-white rounded-xl hover:bg-blue-700 shadow-sm transition-all active:scale-95"
+                                disabled={!newItemText.trim()}
+                                className="p-3 bg-blue-600 text-white rounded-xl hover:bg-blue-700 shadow-lg shadow-blue-500/25 transition-all active:scale-95 disabled:opacity-50 disabled:grayscale"
                             >
-                                <Plus size={20} strokeWidth={2.5} />
+                                <Plus size={22} strokeWidth={2.5} />
                             </button>
                         </form>
                     </div>

@@ -74,6 +74,9 @@ export const TodoView: React.FC = () => {
         if (editTitle.trim()) {
             await updateTodo(id, editTitle.trim(), editContent.trim(), editPriority);
             setEditingId(null);
+            setEditTitle('');
+            setEditContent('');
+            setEditPriority('low');
         }
     };
 
