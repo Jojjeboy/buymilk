@@ -98,7 +98,8 @@ export const GroceryListView: React.FC = React.memo(function GroceryListView() {
         if (list && textToAdd) {
             try {
                 // Check if item exists (completed) -> Restore it
-                const existingItem = list.items.find(i => i.text.toLowerCase() === textToAdd.toLowerCase());
+                const normalize = (s: string) => s.trim().toLowerCase().normalize("NFC");
+                const existingItem = list.items.find(i => normalize(i.text) === normalize(textToAdd));
             
                 if (existingItem) {
                     if (existingItem.completed) {
@@ -272,7 +273,8 @@ export const GroceryListView: React.FC = React.memo(function GroceryListView() {
                                 {showSuggestions && suggestions.length > 0 && (
                                     <div className="absolute bottom-full left-0 right-0 mb-4 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-2xl shadow-2xl z-50 overflow-hidden max-h-60 overflow-y-auto animate-in slide-in-from-bottom-2 duration-200">
                                         {suggestions.map((suggestion) => {
-                                            const existingItem = list?.items.find(i => i.text.toLowerCase() === suggestion.text.toLowerCase());
+                                            const normalize = (s: string) => s.trim().toLowerCase().normalize("NFC");
+                                            const existingItem = list?.items.find(i => normalize(i.text) === normalize(suggestion.text));
                                             const isCompleted = existingItem?.completed;
                                             const isActive = existingItem && !isCompleted;
                                             
