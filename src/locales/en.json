@@ -152,7 +152,17 @@
         "activityLog": "Activity Log",
         "activityLogDesc": "View change history",
         "statistics": "Statistics",
-        "statisticsDesc": "Usage insights and trends"
+        "statisticsDesc": "Usage insights and trends",
+        "manageTitle": "Manage History",
+        "suggestionHistory": "Suggestion History",
+        "clearAll": "Clear All",
+        "clearAllConfirm": "Are you sure? This will delete all {{count}} suggestion history items.",
+        "deleteSelected": "Delete Selected ({{count}})",
+        "delete": "Delete",
+        "items": "items",
+        "noHistory": "No suggestion history yet",
+        "today": "Today",
+        "yesterday": "Yesterday"
     },
     "activity": {
         "title": "Activity Log",

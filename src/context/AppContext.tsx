@@ -60,6 +60,8 @@ interface AppContextType {
     // History
     itemHistory: HistoryItem[];
     addToHistory: (text: string) => Promise<void>;
+    deleteFromHistory: (id: string) => Promise<void>;
+    clearAllHistory: () => Promise<void>;
 }
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
@@ -320,6 +322,17 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         }
     };
 
+    const deleteFromHistory = async (id: string) => {
+        await historySync.deleteItem(id);
+    };
+
+    const clearAllHistory = async () => {
+        const deletePromises = historySync.data.map(item => 
+            historySync.deleteItem(item.id)
+        );
+        await Promise.all(deletePromises);
+    };
+
     const defaultListId = listsSync.data.length > 0 ? listsSync.data[0].id : undefined;
 
     return (
@@ -351,6 +364,8 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
                 deleteCategory,
                 itemHistory: historySync.data,
                 addToHistory,
+                deleteFromHistory,
+                clearAllHistory,
             }}
         >
             <ErrorBoundary>

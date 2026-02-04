@@ -152,7 +152,17 @@
         "activityLog": "Aktivitetslogg",
         "activityLogDesc": "Visa ändringshistorik",
         "statistics": "Statistik",
-        "statisticsDesc": "Användningsinsikter och trender"
+        "statisticsDesc": "Användningsinsikter och trender",
+        "manageTitle": "Hantera historik",
+        "suggestionHistory": "Förslagshistorik",
+        "clearAll": "Rensa alla",
+        "clearAllConfirm": "Är du säker? Detta raderar alla {{count}} förslag från historiken.",
+        "deleteSelected": "Radera valda ({{count}})",
+        "delete": "Radera",
+        "items": "objekt",
+        "noHistory": "Ingen förslagshistorik ännu",
+        "today": "Idag",
+        "yesterday": "Igår"
     },
     "activity": {
         "title": "Aktivitetslogg",

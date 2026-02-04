@@ -4,6 +4,7 @@ import { useAuth } from '../context/AuthContext';
 import { useApp } from '../context/AppContext';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { HistoryManager } from './HistoryManager';
 
 export const SettingsView: React.FC = () => {
     const { t, i18n } = useTranslation();
@@ -207,6 +208,11 @@ export const SettingsView: React.FC = () => {
                                 </div>
                             </Link>
                         </div>
+                    </div>
+
+                    <div className="space-y-4">
+                        <h3 className="text-sm font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest px-1">{t('history.manageTitle', 'Manage History')}</h3>
+                        <HistoryManager />
                     </div>
 
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 pt-4">
