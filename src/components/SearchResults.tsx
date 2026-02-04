@@ -1,88 +1,116 @@
 import React from 'react';
 import { useApp } from '../context/AppContext';
-import { Link } from 'react-router-dom';
-import { Folder, FileText } from 'lucide-react';
-import { Category } from '../types';
+import { Link, useSearchParams } from 'react-router-dom';
+import { ShoppingBasket, CheckSquare, CloudUpload, ChevronRight } from 'lucide-react';
 
 export const SearchResults: React.FC = () => {
-    const { lists, categories, searchQuery, setSearchQuery } = useApp();
+    const { lists, todos } = useApp();
+    const [searchParams] = useSearchParams();
+    const query = (searchParams.get('q') || '').toLowerCase();
 
-    const filteredLists = lists.filter(list =>
-        list.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        list.items.some(item => item.text.toLowerCase().includes(searchQuery.toLowerCase()))
+    if (!query) return null;
+
+    const matchedGroceries = lists.flatMap(list => 
+        list.items
+            .filter(item => item.text.toLowerCase().includes(query))
+            .map(item => ({ ...item, listId: list.id, listName: list.name, listIsPending: list.isPending }))
     );
 
-    const filteredCategories = categories.filter((category: Category) =>
-        category.name.toLowerCase().includes(searchQuery.toLowerCase())
+    const matchedTodos = todos.filter(todo => 
+        todo.title.toLowerCase().includes(query) || 
+        todo.content.toLowerCase().includes(query)
     );
 
-    if (!searchQuery) return null;
+    const totalResults = matchedGroceries.length + matchedTodos.length;
+
+    if (totalResults === 0) {
+        return (
+            <div className="text-center py-20 bg-white dark:bg-gray-800 rounded-3xl border border-dashed border-gray-200 dark:border-gray-700 animate-in fade-in zoom-in duration-300">
+                <div className="w-16 h-16 bg-gray-50 dark:bg-gray-900 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <ShoppingBasket className="text-gray-300 dark:text-gray-600" size={32} />
+                </div>
+                <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">No items found</h3>
+                <p className="text-gray-500 dark:text-gray-400">Try searching for something else like &quot;milk&quot; or &quot;call&quot;</p>
+            </div>
+        );
+    }
 
     return (
-        <div className="space-y-6">
-            <h2 className="text-xl font-semibold">Search Results for &quot;{searchQuery}&quot;</h2>
+        <div className="space-y-8 animate-in fade-in duration-500">
+            <div className="flex items-center justify-between pb-2 border-b border-gray-100 dark:border-gray-800">
+                <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
+                    Results for &quot;<span className="text-blue-600 dark:text-blue-400">{query}</span>&quot;
+                </h2>
+                <span className="text-sm font-medium px-3 py-1 bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400 rounded-full">
+                    {totalResults} items
+                </span>
+            </div>
 
-            {filteredCategories.length > 0 && (
-                <div className="space-y-3">
-                    <h3 className="text-sm font-medium text-gray-500 uppercase tracking-wider">Categories</h3>
+            {matchedGroceries.length > 0 && (
+                <div className="space-y-4">
+                    <h3 className="text-sm font-bold text-gray-400 uppercase tracking-widest flex items-center gap-2">
+                        <ShoppingBasket size={16} /> Groceries
+                    </h3>
                     <div className="grid gap-3">
-                        {filteredCategories.map((category: Category) => (
+                        {matchedGroceries.map((item) => (
                             <Link
-                                key={category.id}
-                                to={`/category/${category.id}`}
-                                onClick={() => setSearchQuery('')}
-                                className="flex items-center gap-3 p-4 bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 hover:shadow-md transition-all"
+                                key={`${item.listId}-${item.id}`}
+                                to={`/list/${item.listId}`}
+                                className="group flex items-center gap-4 p-4 bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 hover:border-blue-500/50 hover:shadow-xl hover:shadow-blue-500/10 transition-all"
                             >
-                                <Folder className="text-blue-500" />
-                                <span className="font-medium text-gray-700 dark:text-gray-200">{category.name}</span>
+                                <div className={`w-10 h-10 rounded-xl flex items-center justify-center transition-colors ${item.completed ? 'bg-green-50 dark:bg-green-900/20 text-green-500' : 'bg-blue-50 dark:bg-blue-900/20 text-blue-500'}`}>
+                                    <ShoppingBasket size={20} />
+                                </div>
+                                <div className="flex-1 min-w-0">
+                                    <h4 className={`font-semibold truncate ${item.completed ? 'text-gray-400 line-through decoration-2' : 'text-gray-900 dark:text-white'}`}>
+                                        {item.text}
+                                    </h4>
+                                    <div className="flex items-center gap-2 mt-0.5">
+                                        <span className="text-xs text-gray-500 dark:text-gray-400 font-medium">In {item.listName}</span>
+                                        {(item.isPending || item.listIsPending) && (
+                                            <CloudUpload size={12} className="text-blue-400 animate-pulse" />
+                                        )}
+                                    </div>
+                                </div>
+                                <ChevronRight className="text-gray-300 group-hover:text-blue-500 transition-colors" size={20} />
                             </Link>
                         ))}
                     </div>
                 </div>
             )}
 
-            {filteredLists.length > 0 && (
-                <div className="space-y-3">
-                    <h3 className="text-sm font-medium text-gray-500 uppercase tracking-wider">Lists</h3>
+            {matchedTodos.length > 0 && (
+                <div className="space-y-4">
+                    <h3 className="text-sm font-bold text-gray-400 uppercase tracking-widest flex items-center gap-2">
+                        <CheckSquare size={16} /> Todos
+                    </h3>
                     <div className="grid gap-3">
-                        {filteredLists.map(list => (
+                        {matchedTodos.map((todo) => (
                             <Link
-                                key={list.id}
-                                to={`/list/${list.id}`}
-                                onClick={() => setSearchQuery('')}
-                                className="flex items-center gap-3 p-4 bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 hover:shadow-md transition-all"
+                                key={todo.id}
+                                to="/todos"
+                                className="group flex items-center gap-4 p-4 bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 hover:border-purple-500/50 hover:shadow-xl hover:shadow-purple-500/10 transition-all"
                             >
-                                <FileText className="text-purple-500" />
-                                <div className="flex-1">
+                                <div className={`w-10 h-10 rounded-xl flex items-center justify-center transition-colors ${todo.completed ? 'bg-green-50 dark:bg-green-900/20 text-green-500' : 'bg-purple-50 dark:bg-purple-900/20 text-purple-500'}`}>
+                                    <CheckSquare size={20} />
+                                </div>
+                                <div className="flex-1 min-w-0">
                                     <div className="flex items-center gap-2">
-                                        <span className="font-medium text-gray-700 dark:text-gray-200 block">{list.name}</span>
+                                        <h4 className={`font-semibold truncate ${todo.completed ? 'text-gray-400 line-through decoration-2' : 'text-gray-900 dark:text-white'}`}>
+                                            {todo.title}
+                                        </h4>
+                                        {todo.isPending && (
+                                            <CloudUpload size={14} className="text-blue-400 animate-pulse" />
+                                        )}
                                     </div>
-                                    <span className="text-xs text-gray-400">
-                                        In {categories.find((c: Category) => c.id === list.categoryId)?.name || 'Unknown'} • {list.items.length} items
-                                    </span>
-                                    {list.items.length > 0 && (
-                                        <div className="mt-2 flex items-center gap-2">
-                                            <div className="flex-1 bg-gray-100 dark:bg-gray-700 rounded-full h-1 overflow-hidden">
-                                                <div
-                                                    className="bg-purple-500 h-full rounded-full transition-all duration-500"
-                                                    style={{ width: `${(list.items.filter(i => i.completed).length / list.items.length) * 100}%` }}
-                                                />
-                                            </div>
-                                            <span className="text-[10px] text-gray-400">
-                                                {Math.round((list.items.filter(i => i.completed).length / list.items.length) * 100)}%
-                                            </span>
-                                        </div>
+                                    {todo.content && (
+                                        <p className="text-xs text-gray-500 dark:text-gray-400 truncate mt-0.5">{todo.content}</p>
                                     )}
                                 </div>
+                                <ChevronRight className="text-gray-300 group-hover:text-purple-500 transition-colors" size={20} />
                             </Link>
                         ))}
                     </div>
-                </div>
-            )}
-
-            {filteredCategories.length === 0 && filteredLists.length === 0 && (
-                <div className="text-center py-10">
-                    <p className="text-gray-500">No results found.</p>
                 </div>
             )}
         </div>

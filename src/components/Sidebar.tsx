@@ -1,12 +1,13 @@
-import React from 'react';
-import { NavLink, Link } from 'react-router-dom';
+import { NavLink, Link, useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import {
     Sun,
     LayoutGrid,
     SquareCheck,
     Settings,
-    Moon
+    Moon,
+    Search,
+    X
 } from 'lucide-react';
 import { useApp } from '../context/AppContext';
 import { Commit } from '../types';
@@ -21,7 +22,19 @@ interface SidebarProps {
 export const Sidebar: React.FC<SidebarProps> = ({ onNavClick }) => {
     const { t } = useTranslation();
     const { theme, toggleTheme } = useApp();
+    const [searchParams, setSearchParams] = useSearchParams();
+    const searchQuery = searchParams.get('q') || '';
     const latestCommit = commits[0];
+
+    const handleSearchChange = (val: string) => {
+        if (val) {
+            setSearchParams({ q: val }, { replace: true });
+        } else {
+            const nextParams = new URLSearchParams(searchParams);
+            nextParams.delete('q');
+            setSearchParams(nextParams, { replace: true });
+        }
+    };
 
     const navItems = [
         { path: '/', icon: LayoutGrid, label: t('nav.home') },
@@ -33,12 +46,37 @@ export const Sidebar: React.FC<SidebarProps> = ({ onNavClick }) => {
         <div className="flex h-full flex-col glass border-r-0">
             {/* Logo Area */}
             <div className="p-6">
-                <Link to="/" onClick={onNavClick} className="flex items-center gap-3 hover:opacity-80 transition-opacity">
+                <Link to="/" onClick={() => {
+                    handleSearchChange('');
+                    onNavClick?.();
+                }} className="flex items-center gap-3 hover:opacity-80 transition-opacity">
                     <img src="/buymilk/favicon.png" alt="Logo" className="w-20 h-20 rounded-2xl shadow-sm" />
                     <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
                         BuyMilk
                     </h1>
                 </Link>
+            </div>
+
+            {/* Search Input (Desktop/Drawer) */}
+            <div className="px-4 mb-6">
+                <div className="relative group">
+                    <Search className={`absolute left-4 top-1/2 -translate-y-1/2 transition-colors ${searchQuery ? 'text-blue-500' : 'text-gray-400 group-focus-within:text-blue-500'}`} size={18} />
+                    <input
+                        type="text"
+                        value={searchQuery}
+                        onChange={(e) => handleSearchChange(e.target.value)}
+                        placeholder={t('app.searchPlaceholder')}
+                        className="w-full pl-11 pr-10 py-3 rounded-2xl border border-gray-100 dark:border-gray-800 bg-gray-50 dark:bg-gray-900/50 focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 outline-none transition-all text-sm"
+                    />
+                    {searchQuery && (
+                        <button
+                            onClick={() => handleSearchChange('')}
+                            className="absolute right-3 top-1/2 -translate-y-1/2 p-1 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200"
+                        >
+                            <X size={14} />
+                        </button>
+                    )}
+                </div>
             </div>
 
             {/* Navigation */}

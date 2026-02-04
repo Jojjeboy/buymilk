@@ -1,20 +1,20 @@
 import { render, screen } from '@testing-library/react';
 import { SearchResults } from './SearchResults';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { MemoryRouter } from 'react-router-dom';
+import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import * as AppContext from '../context/AppContext';
 
-// Mock i18next - although SearchResults doesn't seem to use useTranslation directly based on file view, 
-// usually apps do. Inspecting file showed "Search Results for..." text, suggesting hardcoded or English.
-// Let's mock it just in case.
+// Mock i18next
 vi.mock('react-i18next', () => ({
     useTranslation: () => ({ t: (key: string) => key }),
 }));
 
 // Mock Lucide icons
 vi.mock('lucide-react', () => ({
-    Folder: () => <div data-testid="folder-icon" />,
-    FileText: () => <div data-testid="file-icon" />
+    ShoppingBasket: () => <div data-testid="shopping-basket-icon" />,
+    CheckSquare: () => <div data-testid="check-square-icon" />,
+    CloudUpload: () => <div data-testid="cloud-sync-icon" />,
+    ChevronRight: () => <div data-testid="chevron-right-icon" />
 }));
 
 describe('SearchResults', () => {
@@ -23,60 +23,55 @@ describe('SearchResults', () => {
     });
 
     const mockLists = [
-        { id: 'l1', name: 'Groceries', categoryId: 'c1', items: [{ text: 'Milk', completed: false }] },
-        { id: 'l2', name: 'Gym', categoryId: 'c2', items: [] }
+        { id: 'l1', name: 'Inköpslista', categoryId: 'c1', items: [{ id: 'i1', text: 'Milk', completed: false }] },
     ];
 
-    const mockCategories = [
-        { id: 'c1', name: 'Home' },
-        { id: 'c2', name: 'Work' }
+    const mockTodos = [
+        { id: 't1', title: 'Call Mom', content: 'About dinner', completed: false, priority: 'high', createdAt: '' }
     ];
 
-    const setup = (searchQuery: string) => {
+    const setup = (query: string) => {
         vi.spyOn(AppContext, 'useApp').mockReturnValue({
             lists: mockLists,
-            categories: mockCategories,
-            searchQuery,
-            setSearchQuery: vi.fn(),
-            // defaults
+            todos: mockTodos,
             loading: false,
-            // ...
-        } as Partial<ReturnType<typeof AppContext.useApp>> as ReturnType<typeof AppContext.useApp>);
+        } as any);
 
         render(
-            <MemoryRouter>
-                <SearchResults />
+            <MemoryRouter initialEntries={query ? [`/search?q=${query}`] : ['/search']}>
+                <Routes>
+                    <Route path="/search" element={<SearchResults />} />
+                </Routes>
             </MemoryRouter>
         );
     };
 
     it('renders nothing when query is empty', () => {
         setup('');
-        expect(screen.queryByText(/Search Results/)).toBeNull();
+        expect(screen.queryByText(/Results for/)).toBeNull();
     });
 
-    it('filters categories by name', () => {
-        setup('Home');
-        expect(screen.getByText('Categories')).toBeDefined();
-        expect(screen.getByText('Home')).toBeDefined();
-        expect(screen.queryByText('Work')).toBeNull();
-    });
-
-    it('filters lists by name', () => {
-        setup('Groceries');
-        expect(screen.getByText('Lists')).toBeDefined();
-        expect(screen.getByText('Groceries')).toBeDefined();
-        expect(screen.queryByText('Gym')).toBeNull();
-    });
-
-    it('filters lists by item text', () => {
+    it('filters grocery items by text', () => {
         setup('Milk');
-        expect(screen.getByText('Lists')).toBeDefined();
-        expect(screen.getByText('Groceries')).toBeDefined(); // Contains Milk
+        expect(screen.getByText('Groceries')).toBeDefined();
+        expect(screen.getByText('Milk')).toBeDefined();
+        expect(screen.getByText(/In Inköpslista/)).toBeDefined();
     });
 
-    it('shows no results found', () => {
+    it('filters todos by title', () => {
+        setup('Call');
+        expect(screen.getByText('Todos')).toBeDefined();
+        expect(screen.getByText('Call Mom')).toBeDefined();
+    });
+
+    it('filters todos by content', () => {
+        setup('dinner');
+        expect(screen.getByText('Todos')).toBeDefined();
+        expect(screen.getByText('Call Mom')).toBeDefined();
+    });
+
+    it('shows no results found state', () => {
         setup('Astronaut');
-        expect(screen.getByText('No results found.')).toBeDefined();
+        expect(screen.getByText('No items found')).toBeDefined();
     });
 });

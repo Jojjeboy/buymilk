@@ -41,6 +41,7 @@ export interface List {
   settings?: ListSettings;
   lastAccessedAt?: string;
   archived?: boolean; // Kept for interface compatibility
+  isPending?: boolean;
 }
 
 export interface Commit {

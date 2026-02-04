@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useApp } from '../context/AppContext';
-import { Link } from 'react-router-dom';
+import { useSearchParams, Link } from 'react-router-dom';
 import { Moon, Sun, Search, Menu, X } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { SearchResults } from './SearchResults';
@@ -9,9 +9,22 @@ import { OfflineIndicator } from './OfflineIndicator';
 
 export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     const { t } = useTranslation();
-    const { theme, toggleTheme, searchQuery, setSearchQuery } = useApp();
+    const { theme, toggleTheme } = useApp();
+    const [searchParams, setSearchParams] = useSearchParams();
+    const searchQuery = searchParams.get('q') || '';
+    
     const [isMenuOpen, setIsMenuOpen] = useState(false);
-    const [isSearchOpen, setIsSearchOpen] = useState(false);
+    const [isSearchOpen, setIsSearchOpen] = useState(!!searchQuery);
+
+    const handleSearchChange = (val: string) => {
+        if (val) {
+            setSearchParams({ q: val }, { replace: true });
+        } else {
+            const nextParams = new URLSearchParams(searchParams);
+            nextParams.delete('q');
+            setSearchParams(nextParams, { replace: true });
+        }
+    };
 
     return (
         <div className="flex min-h-screen bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100 transition-colors duration-300 overflow-x-hidden">
@@ -89,7 +102,7 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
                                 autoFocus
                                 type="text"
                                 value={searchQuery}
-                                onChange={(e) => setSearchQuery(e.target.value)}
+                                onChange={(e) => handleSearchChange(e.target.value)}
                                 placeholder={t('app.searchPlaceholder')}
                                 className="w-full pl-10 pr-4 py-3 rounded-2xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900/50 focus:ring-2 focus:ring-blue-500 outline-none transition-all px-4"
                             />

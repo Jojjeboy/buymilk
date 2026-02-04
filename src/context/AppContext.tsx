@@ -31,9 +31,6 @@ interface AppContextType {
     toggleTodo: (id: string) => Promise<void>;
     deleteTodo: (id: string) => Promise<void>;
     
-    // Search
-    searchQuery: string;
-    setSearchQuery: (query: string) => void;
     
     // Loading
     loading: boolean;
@@ -81,7 +78,6 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     const historySync = useFirestoreSync<HistoryItem>('users/{uid}/history', user?.uid);
 
     const [theme, setTheme] = useState<'light' | 'dark'>('light');
-    const [searchQuery, setSearchQuery] = useState('');
     const { showToast } = useToast();
     const { t } = useTranslation();
     const [isCreatingDefault, setIsCreatingDefault] = React.useState(false);
@@ -342,8 +338,6 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
                 updateTodo,
                 toggleTodo,
                 deleteTodo,
-                searchQuery,
-                setSearchQuery,
                 loading: listsSync.loading || todosSync.loading || isCreatingDefault,
                 updateListAccess,
                 addSection,

@@ -4,7 +4,7 @@ import type { Item, List } from '../types';
 import { DndContext, closestCenter, KeyboardSensor, PointerSensor, useSensor, useSensors, type DragEndEvent } from '@dnd-kit/core';
 import { arrayMove, SortableContext, sortableKeyboardCoordinates, verticalListSortingStrategy } from '@dnd-kit/sortable';
 import { SortableItem } from './SortableItem';
-import { Plus, RotateCcw, ChevronDown } from 'lucide-react';
+import { Plus, RotateCcw, ChevronDown, CloudUpload } from 'lucide-react';
 import { v4 as uuidv4 } from 'uuid';
 import { Modal } from './Modal';
 import { useTranslation } from 'react-i18next';
@@ -171,6 +171,11 @@ export const GroceryListView: React.FC = React.memo(function GroceryListView() {
                 <div className="flex items-center gap-2 flex-1 min-w-0">
                     <div className="flex items-center gap-2 group min-w-0 flex-1">
                         <h2 className="text-xl font-semibold truncate">{t('lists.groceryTitle')}</h2>
+                        {list.isPending && (
+                            <div className="text-blue-500 animate-pulse" title="Syncing list...">
+                                <CloudUpload size={20} />
+                            </div>
+                        )}
                     </div>
                 </div>
             </div>
@@ -189,7 +194,7 @@ export const GroceryListView: React.FC = React.memo(function GroceryListView() {
                                     {activeItems.map((item) => (
                                         <SortableItem
                                             key={item.id}
-                                            item={item}
+                                            item={{ ...item, isPending: item.isPending || list.isPending }}
                                             onToggle={handleToggle}
                                             onDelete={handleDelete}
                                             onEdit={handleEdit}
@@ -224,7 +229,7 @@ export const GroceryListView: React.FC = React.memo(function GroceryListView() {
                                         {completedItems.map(item => (
                                             <div key={item.id} className="opacity-60 hover:opacity-100 transition-opacity">
                                                  <SortableItem
-                                                    item={item}
+                                                    item={{ ...item, isPending: item.isPending || list.isPending }}
                                                     onToggle={handleToggle}
                                                     onDelete={handleDelete}
                                                     onEdit={handleEdit}
