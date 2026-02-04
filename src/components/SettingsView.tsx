@@ -308,8 +308,8 @@ export const SettingsView: React.FC = () => {
                                         </div>
                                         <div className="text-gray-600 dark:text-gray-400 pl-2 border-l-2 border-gray-200 dark:border-gray-700">
                                             [<br/>
-                                            &nbsp;&nbsp;{{ "text": "Milk" }},<br/>
-                                            &nbsp;&nbsp;{{ "text": "Eggs" }}<br/>
+                                            &nbsp;&nbsp;{'{ "text": "Milk" }'},<br/>
+                                            &nbsp;&nbsp;{'{ "text": "Eggs" }'}<br/>
                                             ]
                                         </div>
                                     </div>
