@@ -6,8 +6,9 @@ interface InlineAutocompleteInputProps {
     onSubmit: () => void;
     suggestions: Array<{ id: string; text: string }>;
     placeholder?: string;
-    className?: string;
+    className?: string; // Class for the input element
     autoFocus?: boolean;
+    inputPaddingClass?: string; // Padding class to align shadow text (e.g., "pl-10")
 }
 
 export const InlineAutocompleteInput: React.FC<InlineAutocompleteInputProps> = ({
@@ -17,7 +18,8 @@ export const InlineAutocompleteInput: React.FC<InlineAutocompleteInputProps> = (
     suggestions,
     placeholder = '',
     className = '',
-    autoFocus = false
+    autoFocus = false,
+    inputPaddingClass = 'px-4'
 }) => {
     const inputRef = useRef<HTMLInputElement>(null);
     const [showTooltip, setShowTooltip] = useState(false);
@@ -68,7 +70,7 @@ export const InlineAutocompleteInput: React.FC<InlineAutocompleteInputProps> = (
                 className="absolute inset-0 pointer-events-none flex items-center"
                 aria-hidden="true"
             >
-                <div className="px-4 text-gray-400 dark:text-gray-600 select-none whitespace-pre">
+                <div className={`${inputPaddingClass} text-gray-400 dark:text-gray-600 select-none whitespace-pre overflow-hidden`}>
                     <span className="invisible">{value}</span>
                     <span>{shadowText}</span>
                 </div>

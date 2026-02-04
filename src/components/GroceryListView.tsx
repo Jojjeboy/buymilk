@@ -73,8 +73,7 @@ export const GroceryListView: React.FC = React.memo(function GroceryListView() {
         
         // Filter history
         const historyMatches = itemHistory.filter(h => 
-            h.text.toLowerCase().includes(searchText) &&
-            !list?.items.some(i => i.text.toLowerCase() === h.text.toLowerCase() && !i.completed) // Don't suggest if already active
+            h.text.toLowerCase().includes(searchText)
         );
 
         // Sort by usage count
@@ -82,7 +81,7 @@ export const GroceryListView: React.FC = React.memo(function GroceryListView() {
 
         setSuggestions(historyMatches.slice(0, 5));
         setShowSuggestions(true);
-    }, [newItemText, itemHistory, list?.items]);
+    }, [newItemText, itemHistory]);
 
     if (loading && !list) {
         return <div className="flex justify-center items-center h-64"><div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></div></div>;
@@ -260,6 +259,7 @@ export const GroceryListView: React.FC = React.memo(function GroceryListView() {
                                     suggestions={suggestions}
                                     placeholder={t('lists.addItemPlaceholder')}
                                     className="w-full pl-10 pr-4 py-3 bg-transparent text-gray-900 dark:text-gray-100 placeholder-gray-400 outline-none font-medium"
+                                    inputPaddingClass="pl-10"
                                 />
                                 {showSuggestions && suggestions.length > 0 && (
                                     <div className="absolute bottom-full left-0 right-0 mb-4 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-2xl shadow-2xl z-50 overflow-hidden max-h-60 overflow-y-auto animate-in slide-in-from-bottom-2 duration-200">
