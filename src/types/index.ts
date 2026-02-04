@@ -4,6 +4,7 @@ export interface Item {
   completed: boolean;
   state?: "unresolved" | "ongoing" | "completed";
   sectionId?: string;
+  isPending?: boolean;
 }
 
 export interface Section {
@@ -19,6 +20,7 @@ export interface Todo {
   createdAt: string;
   priority: "low" | "medium" | "high";
   completed: boolean;
+  isPending?: boolean;
 }
 
 export interface ListSettings {

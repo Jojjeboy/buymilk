@@ -91,24 +91,31 @@ export const GroceryListView: React.FC = React.memo(function GroceryListView() {
 
     const handleAddItem = async (e?: React.FormEvent, textOverride?: string) => {
         if (e) e.preventDefault();
-        const textToAdd = textOverride || newItemText.trim();
+        const textToAdd = (textOverride || newItemText).trim();
         
         if (list && textToAdd) {
-             // Check if item exists (completed) -> Restore it
-             const existingItem = list.items.find(i => i.text.toLowerCase() === textToAdd.toLowerCase());
+            // Clear input immediately for "Optimistic" feel
+            setNewItemText('');
+            setSuggestions([]);
+            setShowSuggestions(false);
+
+            try {
+                // Check if item exists (completed) -> Restore it
+                const existingItem = list.items.find(i => i.text.toLowerCase() === textToAdd.toLowerCase());
             
-             if (existingItem) {
-                 if (existingItem.completed) {
-                     await handleToggle(existingItem.id);
-                 }
-             } else {
-                 const newItem = { id: uuidv4(), text: textToAdd, completed: false };
-                 await updateListItems(list.id, [...list.items, newItem]);
-                 await addToHistory(textToAdd);
-             }
-             setNewItemText('');
-             setSuggestions([]);
-             setShowSuggestions(false);
+                if (existingItem) {
+                    if (existingItem.completed) {
+                        await handleToggle(existingItem.id);
+                    }
+                } else {
+                    const newItem: Item = { id: uuidv4(), text: textToAdd, completed: false };
+                    await updateListItems(list.id, [...list.items, newItem]);
+                    await addToHistory(textToAdd);
+                }
+            } catch (error) {
+                console.error("Failed to add item:", error);
+                // Optionally restore the text if it failed (but user just wants it cleared)
+            }
         }
     };
 

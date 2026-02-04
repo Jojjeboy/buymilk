@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useApp } from '../context/AppContext';
-import { Plus, Trash2, Edit2, Save, X, Check } from 'lucide-react';
+import { Plus, Trash2, Edit2, Save, X, Check, CloudUpload } from 'lucide-react';
 import { Modal } from './Modal';
 import { useTranslation } from 'react-i18next';
 import { clsx } from 'clsx';
@@ -54,12 +54,22 @@ export const TodoView: React.FC = () => {
 
     const handleAdd = async (e: React.FormEvent) => {
         e.preventDefault();
-        if (newTitle.trim()) {
-            await addTodo(newTitle.trim(), newContent.trim(), newPriority);
+        const title = newTitle.trim();
+        const content = newContent.trim();
+        const priority = newPriority;
+
+        if (title) {
+            // Immediate feedback
             setNewTitle('');
             setNewContent('');
             setNewPriority('low');
             setIsAdding(false);
+
+            try {
+                await addTodo(title, content, priority);
+            } catch (error) {
+                console.error("Failed to add todo:", error);
+            }
         }
     };
 
@@ -71,12 +81,22 @@ export const TodoView: React.FC = () => {
     };
 
     const handleUpdate = async (id: string) => {
-        if (editTitle.trim()) {
-            await updateTodo(id, editTitle.trim(), editContent.trim(), editPriority);
+        const title = editTitle.trim();
+        const content = editContent.trim();
+        const priority = editPriority;
+
+        if (title) {
+            // Immediate feedback
             setEditingId(null);
             setEditTitle('');
             setEditContent('');
             setEditPriority('low');
+
+            try {
+                await updateTodo(id, title, content, priority);
+            } catch (error) {
+                console.error("Failed to update todo:", error);
+            }
         }
     };
 
@@ -231,31 +251,38 @@ export const TodoView: React.FC = () => {
                                     {todo.completed && <Check size={14} strokeWidth={3} />}
                                 </button>
 
-                                <button
-                                    type="button"
-                                    className="flex-1 min-w-0 cursor-pointer outline-none focus:ring-2 focus:ring-blue-500 rounded-lg p-1 -m-1 text-left"
-                                    onClick={() => startEditing(todo)}
-                                >
-                                    <div className="flex items-start justify-between gap-4">
-                                        <div className="space-y-1">
+                                <div className="flex-1 min-w-0">
+                                    <button
+                                        type="button"
+                                        className="w-full text-left cursor-pointer outline-none group/title"
+                                        onClick={() => startEditing(todo)}
+                                    >
+                                        <div className="flex items-center gap-2">
                                             <h3 className={clsx(
-                                                "text-lg font-medium transition-all duration-200 cursor-pointer",
+                                                "text-lg font-medium transition-all duration-200 group-hover/title:text-blue-600 dark:group-hover/title:text-blue-400",
                                                 todo.completed
                                                     ? "text-gray-400 dark:text-gray-500 line-through decoration-2 decoration-gray-200 dark:decoration-gray-700"
                                                     : "text-gray-900 dark:text-white"
                                             )}>
                                                 {todo.title}
                                             </h3>
-                                            {todo.content && (
-                                                <p className={clsx(
-                                                    "text-sm whitespace-pre-wrap leading-relaxed cursor-pointer",
-                                                    todo.completed ? "text-gray-300 dark:text-gray-600" : "text-gray-600 dark:text-gray-300"
-                                                )}>
-                                                    {todo.content}
-                                                </p>
+                                            {todo.isPending && (
+                                                <div className="text-blue-400 animate-pulse" title="Syncing...">
+                                                    <CloudUpload size={14} />
+                                                </div>
                                             )}
                                         </div>
-                                    </div>
+                                    </button>
+                                    
+                                    {todo.content && (
+                                        <p className={clsx(
+                                            "text-sm whitespace-pre-wrap mt-1 leading-relaxed",
+                                            todo.completed ? "text-gray-300 dark:text-gray-600" : "text-gray-600 dark:text-gray-300"
+                                        )}>
+                                            {todo.content}
+                                        </p>
+                                    )}
+
                                     <div className="mt-3 flex items-center gap-2">
                                         <span className={clsx(
                                             "text-[10px] px-2 py-0.5 rounded-full font-bold uppercase tracking-wider",
@@ -264,7 +291,7 @@ export const TodoView: React.FC = () => {
                                             {t(`todos.priority.${todo.priority}`)}
                                         </span>
                                     </div>
-                                </button>
+                                </div>
 
                                 <div className="flex flex-col gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
                                     <button

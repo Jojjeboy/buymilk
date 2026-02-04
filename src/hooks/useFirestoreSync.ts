@@ -51,7 +51,12 @@ export function useFirestoreSync<T extends { id: string }>(
             (snapshot) => {
                 const items: T[] = [];
                 snapshot.forEach((doc: QueryDocumentSnapshot<DocumentData>) => {
-                    items.push(doc.data() as T);
+                    const data = doc.data() as T;
+                    // Use Firestore's built-in metadata to track pending writes
+                    items.push({ 
+                        ...data, 
+                        isPending: doc.metadata.hasPendingWrites 
+                    } as T);
                 });
                 setData(items);
                 setLoading(false);

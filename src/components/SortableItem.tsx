@@ -2,7 +2,7 @@ import React from 'react';
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import type { Item } from '../types';
-import { Trash2, GripVertical, Circle, CheckCircle2 } from 'lucide-react';
+import { Trash2, GripVertical, Circle, CheckCircle2, CloudUpload } from 'lucide-react';
 import {
     SwipeableList,
     SwipeableListItem,
@@ -123,6 +123,12 @@ export const SortableItem: React.FC<SortableItemProps> = ({ item, onToggle, onDe
                             onMouseDown={(e) => e.stopPropagation()}
                             onTouchStart={(e) => e.stopPropagation()}
                         />
+
+                        {item.isPending && (
+                            <div className="flex-shrink-0 text-blue-400 dark:text-blue-500 animate-pulse" title="Syncing...">
+                                <CloudUpload size={16} />
+                            </div>
+                        )}
 
                         {!disabled && (
                             <div {...attributes} {...listeners} className="cursor-grab active:cursor-grabbing text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 p-1 touch-none" aria-label="Drag to reorder item">
