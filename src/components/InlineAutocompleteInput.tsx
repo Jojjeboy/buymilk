@@ -63,15 +63,20 @@ export const InlineAutocompleteInput: React.FC<InlineAutocompleteInputProps> = (
         }
     };
 
+    // Debug logging
+    // console.log('Input:', value, 'Suggestions:', suggestions.length, 'Top:', topSuggestion?.text, 'Shadow:', shadowText);
+
     return (
         <div className="relative">
-            {/* Shadow text layer */}
+            {/* Shadow text layer */ }
             <div 
-                className="absolute inset-0 pointer-events-none flex items-center"
+                className="absolute inset-0 flex items-center pointer-events-none"
                 aria-hidden="true"
+                style={{ zIndex: 0 }} 
             >
-                <div className={`${inputPaddingClass} text-gray-400 dark:text-gray-600 select-none whitespace-pre overflow-hidden`}>
-                    <span className="invisible">{value}</span>
+                {/* Debug border can be added here if needed: border border-red-500 */}
+                <div className={`${inputPaddingClass} text-gray-400 dark:text-gray-500 select-none whitespace-pre overflow-hidden w-full font-medium`}>
+                    <span className="opacity-0">{value}</span>
                     <span>{shadowText}</span>
                 </div>
             </div>
@@ -85,7 +90,8 @@ export const InlineAutocompleteInput: React.FC<InlineAutocompleteInputProps> = (
                 onKeyDown={handleKeyDown}
                 placeholder={placeholder}
                 autoFocus={autoFocus}
-                className={`relative bg-transparent ${className}`}
+                className={`relative z-10 bg-transparent ${className}`}
+                style={{ backgroundColor: 'transparent' }} // Force transparency
             />
 
             {/* Tap target for mobile (invisible overlay on shadow text) */}
