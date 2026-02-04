@@ -59,6 +59,7 @@
         },
         "reset": "Reset",
         "addItemPlaceholder": "Add item...",
+        "itemExists": "Item is already in the list",
         "groceryTitle": "What should we buy?",
         "emptyList": "List is empty.",
         "emptySection": "Empty section",

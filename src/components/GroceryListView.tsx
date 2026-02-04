@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useApp } from '../context/AppContext';
+import { useToast } from '../context/ToastContext';
 import type { Item, List } from '../types';
 import { DndContext, closestCenter, KeyboardSensor, PointerSensor, useSensor, useSensors, type DragEndEvent } from '@dnd-kit/core';
 import { arrayMove, SortableContext, sortableKeyboardCoordinates, verticalListSortingStrategy } from '@dnd-kit/sortable';
@@ -14,6 +15,7 @@ import { InlineAutocompleteInput } from './InlineAutocompleteInput';
 export const GroceryListView: React.FC = React.memo(function GroceryListView() {
     const { t } = useTranslation();
     const { lists, defaultListId, updateListItems, deleteItem, updateListAccess, loading, itemHistory, addToHistory } = useApp();
+    const { showToast } = useToast();
     const [newItemText, setNewItemText] = useState('');
     const [uncheckModalOpen, setUncheckModalOpen] = useState(false);
     const [suggestions, setSuggestions] = useState<(typeof itemHistory)>([]);
@@ -94,27 +96,33 @@ export const GroceryListView: React.FC = React.memo(function GroceryListView() {
         const textToAdd = (textOverride || newItemText).trim();
         
         if (list && textToAdd) {
-            // Clear input immediately for "Optimistic" feel
-            setNewItemText('');
-            setSuggestions([]);
-            setShowSuggestions(false);
-
             try {
                 // Check if item exists (completed) -> Restore it
                 const existingItem = list.items.find(i => i.text.toLowerCase() === textToAdd.toLowerCase());
             
                 if (existingItem) {
                     if (existingItem.completed) {
+                        // Clear input immediately for "Optimistic" feel
+                        setNewItemText('');
+                        setSuggestions([]);
+                        setShowSuggestions(false);
                         await handleToggle(existingItem.id);
+                    } else {
+                        // Item exists and is active - notify user
+                        showToast(t('lists.itemExists', 'Item is already in the list'), 'info');
                     }
                 } else {
+                    // Clear input immediately for "Optimistic" feel
+                    setNewItemText('');
+                    setSuggestions([]);
+                    setShowSuggestions(false);
+
                     const newItem: Item = { id: uuidv4(), text: textToAdd, completed: false };
                     await updateListItems(list.id, [...list.items, newItem]);
                     await addToHistory(textToAdd);
                 }
             } catch (error) {
                 console.error("Failed to add item:", error);
-                // Optionally restore the text if it failed (but user just wants it cleared)
             }
         }
     };
