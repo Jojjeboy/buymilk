@@ -138,6 +138,8 @@
         "light": "Light",
         "dark": "Dark",
         "auto": "Auto",
+        "wakeLock": "Keep Screen On",
+        "wakeLockDesc": "Prevent screen from sleeping",
         "dataManagement": "Data Management",
         "importTitle": "Import List",
         "importDesc": "Add items from JSON file",

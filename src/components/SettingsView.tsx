@@ -1,5 +1,6 @@
 import React from 'react';
-import { RefreshCw, LogOut, Activity, BarChart3, SortAsc, Calendar, ChevronDown, Settings, CloudUpload, FileJson, Check, Copy } from 'lucide-react';
+import { RefreshCw, LogOut, Activity, BarChart3, SortAsc, Calendar, ChevronDown, Settings, CloudUpload, FileJson, Copy, Smartphone } from 'lucide-react';
+import { useWakeLock } from '../hooks/useWakeLock';
 import { useAuth } from '../context/AuthContext';
 import { useApp } from '../context/AppContext';
 import { useToast } from '../context/ToastContext';
@@ -14,6 +15,8 @@ export const SettingsView: React.FC = () => {
     const { lists, defaultListId, updateListSettings, updateListItems } = useApp();
     const list = lists.find(l => l.id === defaultListId);
     const sortBy = list?.settings?.defaultSort || 'manual';
+
+    const { isSupported, isLocked, requestWakeLock, releaseWakeLock } = useWakeLock();
 
     const [calendarAccordionOpen, setCalendarAccordionOpen] = React.useState(false);
     
@@ -65,49 +68,58 @@ export const SettingsView: React.FC = () => {
 
     const { showToast } = useToast();
     const [importAccordionOpen, setImportAccordionOpen] = React.useState(false);
+    const [jsonText, setJsonText] = React.useState('');
+
+    const handleImportJson = async (content: string) => {
+        if (!list) return;
+
+        try {
+            let data;
+            try {
+                data = JSON.parse(content);
+            } catch {
+                throw new Error('Invalid JSON');
+            }
+            
+            if (!Array.isArray(data)) throw new Error('Format must be an array');
+
+            const newItems: Item[] = [];
+            for (const entry of data) {
+                 let text = '';
+                 if (typeof entry === 'string') text = entry;
+                 else if (typeof entry === 'object' && entry !== null && entry.text) text = entry.text;
+                 
+                 if (text) {
+                     newItems.push({
+                         id: uuidv4(),
+                         text: text.trim(),
+                         completed: false
+                     });
+                 }
+            }
+
+            if (newItems.length > 0) {
+                await updateListItems(list.id, [...list.items, ...newItems]);
+                showToast(t('settings.importSuccess', 'Added {{count}} items', { count: newItems.length }), 'success');
+                setJsonText('');
+                setImportAccordionOpen(false);
+            } else {
+                showToast(t('settings.importNoItems', 'No valid items found'), 'error');
+            }
+        } catch (error) {
+            console.error(error);
+            showToast(t('settings.importError', 'Failed to import: Invalid format'), 'error');
+        }
+    };
 
     const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
         const file = event.target.files?.[0];
-        if (!file || !list) return;
+        if (!file) return;
 
         const reader = new FileReader();
         reader.onload = async (e) => {
-            try {
-                const content = e.target?.result as string;
-                let data;
-                try {
-                    data = JSON.parse(content);
-                } catch {
-                    throw new Error('Invalid JSON');
-                }
-                
-                if (!Array.isArray(data)) throw new Error('Format must be an array');
-
-                const newItems: Item[] = [];
-                for (const entry of data) {
-                     let text = '';
-                     if (typeof entry === 'string') text = entry;
-                     else if (typeof entry === 'object' && entry !== null && entry.text) text = entry.text;
-                     
-                     if (text) {
-                         newItems.push({
-                             id: uuidv4(),
-                             text: text.trim(),
-                             completed: false
-                         });
-                     }
-                }
-
-                if (newItems.length > 0) {
-                    await updateListItems(list.id, [...list.items, ...newItems]);
-                    showToast(t('settings.importSuccess', 'Added {{count}} items', { count: newItems.length }), 'success');
-                } else {
-                    showToast(t('settings.importNoItems', 'No valid items found'), 'error');
-                }
-            } catch (error) {
-                console.error(error);
-                showToast(t('settings.importError', 'Failed to import file'), 'error');
-            }
+            const content = e.target?.result as string;
+            await handleImportJson(content);
             // Reset input
             event.target.value = '';
         };
@@ -118,7 +130,7 @@ export const SettingsView: React.FC = () => {
         <div className="max-w-2xl mx-auto space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500 pb-20">
             <div className="flex items-center gap-4 mb-8">
                 <div className="p-3 bg-blue-100 dark:bg-blue-900/40 text-blue-600 dark:text-blue-400 rounded-2xl shadow-sm">
-                    <Settings size={28} />
+                    <Settings size={22} />
                 </div>
                 <div>
                     <h2 className="text-3xl font-bold text-gray-900 dark:text-white tracking-tight">{t('settings.title')}</h2>
@@ -146,6 +158,36 @@ export const SettingsView: React.FC = () => {
                                     {lang.label}
                                 </button>
                             ))}
+                        </div>
+                    </div>
+
+                    <div className="space-y-4">
+                        <h3 className="text-sm font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest px-1">{t('settings.display', 'Skärm')}</h3>
+                        <div className="bg-white dark:bg-gray-800 rounded-2xl overflow-hidden border border-gray-100 dark:border-gray-700">
+                             <div className="p-4 flex items-center justify-between">
+                                <div className="flex items-center gap-4">
+                                    <div className={`p-2.5 rounded-xl transition-colors ${isLocked ? 'bg-yellow-100 dark:bg-yellow-900/30 text-yellow-600 dark:text-yellow-400' : 'bg-gray-100 dark:bg-gray-700 text-gray-400'}`}>
+                                        <Smartphone size={22} />
+                                    </div>
+                                    <div>
+                                        <div className="font-bold text-gray-900 dark:text-white">{t('settings.wakeLock')}</div>
+                                        <div className="text-xs font-medium text-gray-500 dark:text-gray-400">{t('settings.wakeLockDesc')}</div>
+                                    </div>
+                                </div>
+                                <button
+                                    onClick={() => isLocked ? releaseWakeLock() : requestWakeLock()}
+                                    disabled={!isSupported}
+                                    className={`relative inline-flex h-7 w-12 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 ${
+                                        isLocked ? 'bg-blue-600' : 'bg-gray-200 dark:bg-gray-700'
+                                    } ${!isSupported ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}
+                                >
+                                    <span
+                                        className={`${
+                                            isLocked ? 'translate-x-6' : 'translate-x-1'
+                                        } inline-block h-5 w-5 transform rounded-full bg-white transition-transform`}
+                                    />
+                                </button>
+                            </div>
                         </div>
                     </div>
 
@@ -293,13 +335,13 @@ export const SettingsView: React.FC = () => {
                                     </div>
                                     <div className="text-left">
                                         <div className="font-bold text-gray-900 dark:text-white">{t('settings.importTitle', 'Import List')}</div>
-                                        <div className="text-xs font-medium text-gray-500 dark:text-gray-400">{t('settings.importDesc', 'Add items from JSON file')}</div>
+                                        <div className="text-xs font-medium text-gray-500 dark:text-gray-400">{t('settings.importDesc', 'Add items from JSON file or text')}</div>
                                     </div>
                                 </div>
                                 <ChevronDown size={20} className={`text-gray-400 transition-transform duration-300 ${importAccordionOpen ? 'rotate-180' : ''}`} />
                             </button>
 
-                            <div className={`transition-all duration-300 ease-in-out px-4 overflow-hidden ${importAccordionOpen ? 'max-h-96 pb-4 opacity-100' : 'max-h-0 opacity-0'}`}>
+                            <div className={`transition-all duration-300 ease-in-out px-4 overflow-hidden ${importAccordionOpen ? 'max-h-[800px] pb-4 opacity-100' : 'max-h-0 opacity-0'}`}>
                                 <div className="pt-2 space-y-4">
                                     <div className="p-4 bg-gray-50 dark:bg-gray-900/50 rounded-xl border border-gray-100 dark:border-gray-700 text-xs font-mono space-y-2 relative group-json">
                                         <div className="text-gray-500 uppercase tracking-wider font-bold mb-1 flex items-center justify-between">
@@ -327,16 +369,40 @@ export const SettingsView: React.FC = () => {
                                         </div>
                                     </div>
 
-                                    <label className="flex items-center justify-center gap-3 w-full p-3 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-bold cursor-pointer transition-all shadow-lg shadow-blue-500/20 active:scale-[0.98]">
-                                        <CloudUpload size={18} />
-                                        <span>{t('settings.selectFile', 'Select JSON File')}</span>
-                                        <input 
-                                            type="file" 
-                                            accept=".json" 
-                                            className="hidden" 
-                                            onChange={handleFileUpload} 
+                                    <div className="relative">
+                                        <textarea
+                                            value={jsonText}
+                                            onChange={(e) => setJsonText(e.target.value)}
+                                            placeholder={t('settings.pasteJson', 'Paste JSON here...')}
+                                            className="w-full h-32 p-3 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900/50 focus:ring-2 focus:ring-blue-500 outline-none text-sm font-mono resize-none"
                                         />
-                                    </label>
+                                    </div>
+
+                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                                        <button
+                                            onClick={() => handleImportJson(jsonText)}
+                                            disabled={!jsonText.trim()}
+                                            className={`flex items-center justify-center gap-2 p-3 rounded-xl font-bold transition-all ${
+                                                jsonText.trim()
+                                                    ? 'bg-blue-600 hover:bg-blue-700 text-white shadow-lg shadow-blue-500/20 active:scale-[0.98]' 
+                                                    : 'bg-gray-100 dark:bg-gray-800 text-gray-400 cursor-not-allowed'
+                                            }`}
+                                        >
+                                            <FileJson size={18} />
+                                            <span>{t('settings.importText', 'Import Text')}</span>
+                                        </button>
+
+                                        <label className="flex items-center justify-center gap-2 p-3 bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-xl font-bold cursor-pointer transition-all active:scale-[0.98]">
+                                            <CloudUpload size={18} />
+                                            <span>{t('settings.selectFile', 'Upload File')}</span>
+                                            <input 
+                                                type="file" 
+                                                accept=".json" 
+                                                className="hidden" 
+                                                onChange={handleFileUpload} 
+                                            />
+                                        </label>
+                                    </div>
                                 </div>
                             </div>
                         </div>

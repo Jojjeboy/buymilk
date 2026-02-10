@@ -255,7 +255,7 @@ export const GroceryListView: React.FC = React.memo(function GroceryListView() {
             })()}
 
             {/* Floating Persistent Bottom Bar */}
-            <div className="fixed bottom-0 left-0 right-0 md:left-72 bg-gradient-to-t from-white via-white/95 to-white/0 dark:from-gray-900 dark:via-gray-900/95 dark:to-gray-900/0 pt-10 pb-6 px-4 z-40 transition-all duration-300">
+            <div className="fixed bottom-0 left-0 right-0 md:left-72 bg-gradient-to-t from-white via-white/95 to-white/0 dark:from-gray-900 dark:via-gray-900/95 dark:to-gray-900/0 pt-10 pb-6 px-4 z-50 transition-all duration-300">
                 <div className="max-w-4xl mx-auto">
                     <div className="relative group">
                         <form onSubmit={handleAddItem} className="flex gap-3 items-center bg-white dark:bg-gray-800 p-2 rounded-2xl shadow-2xl border border-gray-100 dark:border-gray-700 focus-within:ring-2 focus-within:ring-blue-500/50 transition-all">

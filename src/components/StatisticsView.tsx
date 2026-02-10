@@ -5,8 +5,8 @@ import {
     PieChart, Pie, Cell, Legend, Tooltip, ResponsiveContainer, BarChart, Bar, XAxis, YAxis, CartesianGrid
 } from 'recharts';
 import {
-     List, CheckCircle2,
-    ListTodo, ShoppingCart
+    List, CheckCircle2,
+    ListTodo, ShoppingCart, Activity
 } from 'lucide-react';
 
 export const StatisticsView: React.FC = () => {
@@ -22,15 +22,15 @@ export const StatisticsView: React.FC = () => {
 
     // Calculate overall metrics
     const metrics = useMemo(() => {
-        // Since we only have one list technically, but the UI shows "Default List"
-        // Let's count total items across all lists (should be just one)
         const totalItems = lists.reduce((acc, list) => acc + list.items.length, 0);
         const totalCompletedItems = lists.reduce((acc, list) =>
             acc + list.items.filter(item => item.completed).length, 0);
+        const completionRate = totalItems > 0 ? Math.round((totalCompletedItems / totalItems) * 100) : 0;
 
         return [
             { id: 'items', label: t('stats.metrics.totalItems', 'Totala varor'), value: totalItems, icon: List, color: 'text-blue-600', bg: 'bg-blue-100/50' },
             { id: 'completed', label: t('stats.metrics.completedItems'), value: totalCompletedItems, icon: CheckCircle2, color: 'text-green-600', bg: 'bg-green-100/50' },
+            { id: 'rate', label: t('stats.completionRate', 'Genomförandegrad'), value: `${completionRate}%`, icon: Activity, color: 'text-orange-600', bg: 'bg-orange-100/50' },
             { id: 'todos', label: t('stats.metrics.totalTodos'), value: todos.length, icon: ListTodo, color: 'text-purple-600', bg: 'bg-purple-100/50' },
         ];
     }, [lists, todos, t]);
@@ -48,7 +48,7 @@ export const StatisticsView: React.FC = () => {
     const topItemsData = useMemo(() => {
         return [...itemHistory]
             .sort((a, b) => b.usageCount - a.usageCount)
-            .slice(0, 5)
+            .slice(0, 10)
             .map(item => ({
                 name: item.text,
                 count: item.usageCount
@@ -68,7 +68,7 @@ export const StatisticsView: React.FC = () => {
             </div>
 
             {/* Metrics Overview */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                 {metrics.map((metric) => (
                     <div key={metric.id} className="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 flex flex-col items-center text-center group hover:shadow-md transition-all">
                         <div className={`p-3 rounded-xl ${metric.bg} ${metric.color} mb-3 group-hover:scale-110 transition-transform`}>
@@ -120,7 +120,7 @@ export const StatisticsView: React.FC = () => {
                             <ShoppingCart className="text-blue-500" size={20} />
                             <h3 className="font-bold text-gray-900 dark:text-white uppercase tracking-wider text-sm">{t('stats.topItems', 'Most Added Items')}</h3>
                         </div>
-                        <div className="h-[280px] w-full">
+                        <div className="h-[280px] w-full mb-6">
                             <ResponsiveContainer width="100%" height="100%">
                                 <BarChart data={topItemsData} layout="vertical" margin={{ top: 5, right: 30, left: 40, bottom: 5 }}>
                                     <CartesianGrid strokeDasharray="3 3" horizontal={true} vertical={false} stroke="#E5E7EB" />
@@ -140,6 +140,22 @@ export const StatisticsView: React.FC = () => {
                                     <Bar dataKey="count" fill="#3B82F6" radius={[0, 4, 4, 0]} barSize={20} />
                                 </BarChart>
                             </ResponsiveContainer>
+                        </div>
+                        
+                        <div className="space-y-3">
+                            {topItemsData.map((item, index) => (
+                                <div key={item.name} className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-900/50 rounded-xl">
+                                    <div className="flex items-center gap-3">
+                                        <div className="w-6 h-6 flex items-center justify-center rounded-full bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 text-xs font-bold">
+                                            {index + 1}
+                                        </div>
+                                        <span className="font-medium text-gray-900 dark:text-white">{item.name}</span>
+                                    </div>
+                                    <div className="text-sm font-bold text-gray-500 dark:text-gray-400">
+                                        {item.count} <span className="text-xs font-normal opacity-70">{t('history.used', 'used')}</span>
+                                    </div>
+                                </div>
+                            ))}
                         </div>
                     </div>
                )}
