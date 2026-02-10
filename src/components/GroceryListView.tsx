@@ -172,7 +172,7 @@ export const GroceryListView: React.FC = React.memo(function GroceryListView() {
 
     return (
         <div className="flex flex-col min-h-[calc(100vh-8rem)] relative pb-40 md:pb-32">
-            {showConfetti && <Confetti />}
+            {showConfetti && <Confetti trigger={true} />}
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
                 <div className="flex items-center gap-2 flex-1 min-w-0">
                     <div className="flex items-center gap-2 group min-w-0 flex-1">

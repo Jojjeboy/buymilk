@@ -69,7 +69,7 @@ export const Confetti: React.FC<ConfettiProps> = ({ trigger, duration = 3000 }) 
         }
 
         let animationId: number;
-        let startTime = Date.now();
+        const startTime = Date.now();
 
         const animate = () => {
             if (!ctx) return;
