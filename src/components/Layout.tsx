@@ -1,30 +1,18 @@
 import React, { useState } from 'react';
 import { useApp } from '../context/AppContext';
-import { useSearchParams, Link } from 'react-router-dom';
-import { Moon, Sun, Search, Menu, X } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { Moon, Sun, Menu, X, Smartphone } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
-import { SearchResults } from './SearchResults';
 import { Sidebar } from './Sidebar';
 import { OfflineIndicator } from './OfflineIndicator';
+import { useWakeLock } from '../hooks/useWakeLock';
 
 export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     const { t } = useTranslation();
     const { theme, toggleTheme } = useApp();
-    const [searchParams, setSearchParams] = useSearchParams();
-    const searchQuery = searchParams.get('q') || '';
+    const { isSupported, isLocked, requestWakeLock, releaseWakeLock } = useWakeLock();
     
     const [isMenuOpen, setIsMenuOpen] = useState(false);
-    const [isSearchOpen, setIsSearchOpen] = useState(!!searchQuery);
-
-    const handleSearchChange = (val: string) => {
-        if (val) {
-            setSearchParams({ q: val }, { replace: true });
-        } else {
-            const nextParams = new URLSearchParams(searchParams);
-            nextParams.delete('q');
-            setSearchParams(nextParams, { replace: true });
-        }
-    };
 
     return (
         <div className="flex min-h-screen bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100 transition-colors duration-300 overflow-x-hidden">
@@ -72,13 +60,19 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
                             </Link>
                         </div>
                         <div className="flex items-center gap-2">
-                            <button
-                                onClick={() => setIsSearchOpen(!isSearchOpen)}
-                                className={`p-2 rounded-full transition-colors ${isSearchOpen ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400' : 'text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'}`}
-                                aria-label={t('app.searchPlaceholder')}
-                            >
-                                <Search size={22} />
-                            </button>
+                            {isSupported && (
+                                <button
+                                    onClick={() => isLocked ? releaseWakeLock() : requestWakeLock()}
+                                    className={`p-2 rounded-full transition-colors ${
+                                        isLocked 
+                                            ? 'bg-yellow-100 dark:bg-yellow-900/30 text-yellow-600 dark:text-yellow-400' 
+                                            : 'text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700'
+                                    }`}
+                                    title={t('settings.wakeLock')}
+                                >
+                                    <Smartphone size={22} />
+                                </button>
+                            )}
                             <button
                                 onClick={toggleTheme}
                                 className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors text-gray-600 dark:text-gray-300"
@@ -95,24 +89,11 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
                             </button>
                         </div>
                     </div>
-                    {isSearchOpen && (
-                        <div className="relative animate-in slide-in-from-top-2 duration-200">
-                            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
-                            <input
-                                autoFocus
-                                type="text"
-                                value={searchQuery}
-                                onChange={(e) => handleSearchChange(e.target.value)}
-                                placeholder={t('app.searchPlaceholder')}
-                                className="w-full pl-10 pr-4 py-3 rounded-2xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900/50 focus:ring-2 focus:ring-blue-500 outline-none transition-all px-4"
-                            />
-                        </div>
-                    )}
                 </header>
 
                 {/* Main Scrollable Content */}
                 <main className="flex-1 p-4 w-full mx-auto md:p-8 md:max-w-7xl pb-8 min-w-0">
-                    {searchQuery ? <SearchResults /> : children}
+                    {children}
                 </main>
             </div>
         </div>
