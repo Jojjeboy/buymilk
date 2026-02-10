@@ -8,7 +8,7 @@ import { arrayMove, SortableContext, sortableKeyboardCoordinates, verticalListSo
 import { SortableItem } from './SortableItem';
 import { Plus, RotateCcw, ChevronDown, CloudUpload } from 'lucide-react';
 import { v4 as uuidv4 } from 'uuid';
-import { Modal } from './Modal';
+import { Confetti } from './Confetti';
 import { useTranslation } from 'react-i18next';
 import { InlineAutocompleteInput } from './InlineAutocompleteInput';
 
@@ -18,7 +18,7 @@ export const GroceryListView: React.FC = React.memo(function GroceryListView() {
     const { lists, defaultListId, updateListItems, deleteItem, updateListAccess, loading, itemHistory, addToHistory } = useApp();
     const { showToast } = useToast();
     const [newItemText, setNewItemText] = useState('');
-    const [uncheckModalOpen, setUncheckModalOpen] = useState(false);
+    const [showConfetti, setShowConfetti] = useState(false);
     const [suggestions, setSuggestions] = useState<(typeof itemHistory)>([]);
     const [showSuggestions, setShowSuggestions] = useState(false);
     const [completedAccordionOpen, setCompletedAccordionOpen] = useState(false);
@@ -154,7 +154,8 @@ export const GroceryListView: React.FC = React.memo(function GroceryListView() {
 
         const allCompleted = newItems.every(item => item.completed);
         if (allCompleted && newItems.length > 0) {
-            setUncheckModalOpen(true);
+            setShowConfetti(true);
+            setTimeout(() => setShowConfetti(false), 5000); // Stop confetti after 5 seconds
         }
     };
 
@@ -169,14 +170,9 @@ export const GroceryListView: React.FC = React.memo(function GroceryListView() {
         await updateListItems(list.id, newItems);
     };
 
-    const confirmUncheckAll = async () => {
-        const newItems = list.items.map(item => ({ ...item, completed: false }));
-        await updateListItems(list.id, newItems);
-        setUncheckModalOpen(false);
-    };
-
     return (
         <div className="flex flex-col min-h-[calc(100vh-8rem)] relative pb-40 md:pb-32">
+            {showConfetti && <Confetti />}
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
                 <div className="flex items-center gap-2 flex-1 min-w-0">
                     <div className="flex items-center gap-2 group min-w-0 flex-1">
@@ -322,15 +318,6 @@ export const GroceryListView: React.FC = React.memo(function GroceryListView() {
                     </div>,
                 document.body
             )}
-
-            <Modal
-                isOpen={uncheckModalOpen}
-                onClose={() => setUncheckModalOpen(false)}
-                onConfirm={confirmUncheckAll}
-                title={t('lists.resetTitle')}
-                message={t('lists.resetMessage')}
-                confirmText={t('lists.reset')}
-            />
         </div>
     );
 });

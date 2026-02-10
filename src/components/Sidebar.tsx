@@ -1,4 +1,4 @@
-import { NavLink, Link, useSearchParams } from 'react-router-dom';
+import { NavLink, Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import {
     Sun,
@@ -6,8 +6,10 @@ import {
     SquareCheck,
     Settings,
     Moon,
-    Search,
-    X
+    Activity,
+    BarChart3,
+    History,
+    RefreshCw
 } from 'lucide-react';
 import { useApp } from '../context/AppContext';
 import { Commit } from '../types';
@@ -23,34 +25,31 @@ interface SidebarProps {
 export const Sidebar: React.FC<SidebarProps> = ({ onNavClick }) => {
     const { t } = useTranslation();
     const { theme, toggleTheme } = useApp();
-    const [searchParams, setSearchParams] = useSearchParams();
-    const searchQuery = searchParams.get('q') || '';
     const latestCommit = commits[0];
-
-    const handleSearchChange = (val: string) => {
-        if (val) {
-            setSearchParams({ q: val }, { replace: true });
-        } else {
-            const nextParams = new URLSearchParams(searchParams);
-            nextParams.delete('q');
-            setSearchParams(nextParams, { replace: true });
-        }
-    };
 
     const navItems = [
         { path: '/', icon: LayoutGrid, label: t('nav.home') },
         { path: '/todos', icon: SquareCheck, label: t('nav.todos') },
+        { path: '/activity', icon: Activity, label: t('history.title', 'Activity') },
+        { path: '/statistics', icon: BarChart3, label: t('history.statistics', 'Statistics') },
+        { path: '/history', icon: History, label: t('history.suggestionHistory', 'History') },
         { path: '/settings', icon: Settings, label: t('nav.settings') },
     ];
+
+    const handleReload = () => {
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.getRegistrations().then((registrations) => {
+                for (const registration of registrations) { registration.unregister(); }
+                window.location.reload();
+            });
+        } else { window.location.reload(); }
+    };
 
     return (
         <div className="flex h-full flex-col glass border-r-0">
             {/* Logo Area */}
             <div className="p-6">
-                <Link to="/" onClick={() => {
-                    handleSearchChange('');
-                    onNavClick?.();
-                }} className="flex items-center gap-3 hover:opacity-80 transition-opacity">
+                <Link to="/" onClick={onNavClick} className="flex items-center gap-3 hover:opacity-80 transition-opacity">
                     <img src="/buymilk/favicon.png" alt="Logo" className="w-20 h-20 rounded-2xl shadow-sm" />
                     <h1 className="text-2xl font-bold text-[#2c6de3]">
                         BuyMilk
@@ -58,30 +57,8 @@ export const Sidebar: React.FC<SidebarProps> = ({ onNavClick }) => {
                 </Link>
             </div>
 
-            {/* Search Input (Desktop/Drawer) */}
-            <div className="px-4 mb-6">
-                <div className="relative group">
-                    <Search className={`absolute left-4 top-1/2 -translate-y-1/2 transition-colors ${searchQuery ? 'text-blue-500' : 'text-gray-400 group-focus-within:text-blue-500'}`} size={18} />
-                    <input
-                        type="text"
-                        value={searchQuery}
-                        onChange={(e) => handleSearchChange(e.target.value)}
-                        placeholder={t('app.searchPlaceholder')}
-                        className="w-full pl-11 pr-10 py-3 rounded-2xl border border-gray-100 dark:border-gray-800 bg-gray-50 dark:bg-gray-900/50 focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 outline-none transition-all text-sm"
-                    />
-                    {searchQuery && (
-                        <button
-                            onClick={() => handleSearchChange('')}
-                            className="absolute right-3 top-1/2 -translate-y-1/2 p-1 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200"
-                        >
-                            <X size={14} />
-                        </button>
-                    )}
-                </div>
-            </div>
-
             {/* Navigation */}
-            <nav className="flex-1 px-4 space-y-1">
+            <nav className="flex-1 px-4 space-y-1 overflow-y-auto">
                 {navItems.map((item) => (
                     <NavLink
                         key={item.path}
@@ -111,6 +88,13 @@ export const Sidebar: React.FC<SidebarProps> = ({ onNavClick }) => {
                             title={t('app.toggleTheme')}
                         >
                             {theme === 'light' ? <Moon size={20} /> : <Sun size={20} />}
+                        </button>
+                        <button
+                            onClick={handleReload}
+                            className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors text-gray-600 dark:text-gray-400"
+                            title={t('settings.reloadUpdate', 'Reload & Update')}
+                        >
+                            <RefreshCw size={20} />
                         </button>
                     </div>
                 </div>

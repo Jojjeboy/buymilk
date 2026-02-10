@@ -1,5 +1,15 @@
 [
   {
+    "hash": "498d002dc81103c527806152998c1a69eae019e3",
+    "date": "2026-02-10 22:39:20 +0100",
+    "message": "feat: introduce `GroceryListView` component with item management, drag-and-drop, sorting, and autocomplete, alongside a new `Layout` component."
+  },
+  {
+    "hash": "c5f5cc72748b723681d6b443bf62522400f97a3c",
+    "date": "2026-02-10 22:29:41 +0100",
+    "message": "feat: Implement core grocery list view with drag-and-drop item management and autocomplete, alongside new settings, statistics, internationalization, and wake lock features."
+  },
+  {
     "hash": "7188b4c0d4abc57aef9f3144588bd2aa76218c35",
     "date": "2026-02-04 15:40:08 +0100",
     "message": "feat: add copy to clipboard for json import and fix calendar translation"
@@ -88,15 +98,5 @@
     "hash": "b8788936d3319775cdf2e7c8c925ee2637d74d28",
     "date": "2026-02-03 21:27:02 +0100",
     "message": "feat: enhance grocery list, stats and icons"
-  },
-  {
-    "hash": "9ab472aebec0c31ece178c74998914e8a6a80b3e",
-    "date": "2026-02-03 20:33:33 +0100",
-    "message": "Error fix"
-  },
-  {
-    "hash": "85658178bc5971e993809c549253b6ccda1ff995",
-    "date": "2026-02-03 19:51:19 +0100",
-    "message": "feat: toggleable search bar and simplified list settings"
   }
 ]

@@ -1,10 +1,10 @@
 import React from 'react';
-import { RefreshCw, LogOut, Activity, BarChart3, SortAsc, Calendar, ChevronDown, Settings, CloudUpload, FileJson, Copy, Smartphone } from 'lucide-react';
+import { LogOut, SortAsc, Calendar, ChevronDown, Settings, CloudUpload, FileJson, Copy, Smartphone } from 'lucide-react';
 import { useWakeLock } from '../hooks/useWakeLock';
 import { useAuth } from '../context/AuthContext';
 import { useApp } from '../context/AppContext';
 import { useToast } from '../context/ToastContext';
-import { Link } from 'react-router-dom';
+
 import { useTranslation } from 'react-i18next';
 import { v4 as uuidv4 } from 'uuid';
 import type { Item } from '../types';
@@ -276,52 +276,6 @@ export const SettingsView: React.FC = () => {
                     </div>
 
                     <div className="space-y-4">
-                        <h3 className="text-sm font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest px-1">{t('history.title', 'Insikter')}</h3>
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                            <Link
-                                to="/activity"
-                                className="flex items-center gap-4 p-4 bg-gray-50 dark:bg-gray-900/50 rounded-2xl hover:bg-gray-100 dark:hover:bg-gray-900 transition-all border border-transparent hover:border-gray-200 dark:hover:border-gray-700 group"
-                            >
-                                <div className="p-2.5 bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 rounded-xl group-hover:scale-110 transition-transform">
-                                    <Activity size={22} />
-                                </div>
-                                <div>
-                                    <div className="font-bold text-gray-900 dark:text-white">{t('history.activityLog', 'Aktivitetslogg')}</div>
-                                    <div className="text-xs font-medium text-gray-500 dark:text-gray-400">{t('history.activityLogDesc', 'Visa ändringshistorik')}</div>
-                                </div>
-                            </Link>
-                            <Link
-                                to="/statistics"
-                                className="flex items-center gap-4 p-4 bg-gray-50 dark:bg-gray-900/50 rounded-2xl hover:bg-gray-100 dark:hover:bg-gray-900 transition-all border border-transparent hover:border-gray-200 dark:hover:border-gray-700 group"
-                            >
-                                <div className="p-2.5 bg-purple-100 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400 rounded-xl group-hover:scale-110 transition-transform">
-                                    <BarChart3 size={22} />
-                                </div>
-                                <div>
-                                    <div className="font-bold text-gray-900 dark:text-white">{t('history.statistics', 'Statistik')}</div>
-                                    <div className="text-xs font-medium text-gray-500 dark:text-gray-400">{t('history.statisticsDesc', 'Användningsinsikter')}</div>
-                                </div>
-                            </Link>
-                        </div>
-                    </div>
-
-                    <div className="space-y-4">
-                        <h3 className="text-sm font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest px-1">{t('history.manageTitle', 'Manage History')}</h3>
-                        <Link
-                            to="/history"
-                            className="flex items-center gap-4 p-4 bg-gray-50 dark:bg-gray-900/50 rounded-2xl hover:bg-gray-100 dark:hover:bg-gray-900 transition-all border border-transparent hover:border-gray-200 dark:hover:border-gray-700 group"
-                        >
-                            <div className="p-2.5 bg-purple-100 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400 rounded-xl group-hover:scale-110 transition-transform">
-                                <Activity size={22} />
-                            </div>
-                            <div>
-                                <div className="font-bold text-gray-900 dark:text-white">{t('history.suggestionHistory', 'Suggestion History')}</div>
-                                <div className="text-xs font-medium text-gray-500 dark:text-gray-400">{t('history.manageDesc', 'View and manage autocomplete suggestions')}</div>
-                            </div>
-                        </Link>
-                    </div>
-
-                    <div className="space-y-4">
                         <h3 className="text-sm font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest px-1">{t('settings.dataManagement', 'Data Management')}</h3>
                         
                         <div className="bg-white dark:bg-gray-800 rounded-2xl overflow-hidden border border-gray-100 dark:border-gray-700 hover:border-blue-200 dark:hover:border-gray-600 transition-all">
@@ -408,30 +362,7 @@ export const SettingsView: React.FC = () => {
                         </div>
                     </div>
 
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 pt-4">
-                        <div className="space-y-4">
-                            <h3 className="text-sm font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest px-1">{t('settings.system', 'System')}</h3>
-                            <button
-                                onClick={() => {
-                                    if ('serviceWorker' in navigator) {
-                                        navigator.serviceWorker.getRegistrations().then((registrations) => {
-                                            for (const registration of registrations) { registration.unregister(); }
-                                            window.location.reload();
-                                        });
-                                    } else { window.location.reload(); }
-                                }}
-                                className="flex items-center gap-4 p-4 bg-gray-50 dark:bg-gray-900/50 rounded-2xl hover:bg-gray-100 dark:hover:bg-gray-900 transition-all border border-transparent hover:border-gray-200 dark:hover:border-gray-700 group w-full"
-                            >
-                                <div className="p-2.5 bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400 rounded-xl group-hover:scale-110 transition-transform">
-                                    <RefreshCw size={22} />
-                                </div>
-                                <div className="text-left">
-                                    <div className="font-bold text-gray-900 dark:text-white">{t('settings.reloadUpdate', 'Reload & Update')}</div>
-                                    <div className="text-xs font-medium text-gray-500 dark:text-gray-400">{t('settings.reloadUpdateDesc', 'Tvinga uppdatering')}</div>
-                                </div>
-                            </button>
-                        </div>
-
+                    <div className="pt-4">
                         <div className="space-y-4">
                             <h3 className="text-sm font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest px-1">{t('settings.account', 'Konto')}</h3>
                             <div className="flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-900/50 rounded-2xl border border-transparent group">
