@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useApp } from '../context/AppContext';
 import { Link } from 'react-router-dom';
-import { Moon, Sun, Menu, X, Smartphone } from 'lucide-react';
+import { Moon, Sun, Menu, X, Eye, EyeOff } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { Sidebar } from './Sidebar';
 import { OfflineIndicator } from './OfflineIndicator';
@@ -70,7 +70,7 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
                                     }`}
                                     title={t('settings.wakeLock')}
                                 >
-                                    <Smartphone size={22} />
+                                    {isLocked ? <Eye size={22} /> : <EyeOff size={22} />}
                                 </button>
                             )}
                             <button

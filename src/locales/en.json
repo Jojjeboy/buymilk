@@ -226,6 +226,28 @@
         "importing": "Importing...",
         "import": "Import"
     },
+    "importItems": {
+        "title": "Import Items from JSON",
+        "description": "Paste JSON below or upload a file to add items to this list.",
+        "showExample": "Show example format",
+        "hideExample": "Hide example",
+        "exampleLabel": "Accepted formats:",
+        "simpleFormat": "Simple (recommended) — array of strings:",
+        "objectFormat": "Object format — array of objects:",
+        "wrappedFormat": "Wrapped format — object with items array:",
+        "placeholder": "Paste JSON here...",
+        "orUpload": "or upload a file",
+        "selectFile": "Select JSON file",
+        "import": "Import",
+        "importing": "Importing...",
+        "successCount": "Added {{count}} item(s)",
+        "skippedDupes": "{{count}} duplicate(s) skipped",
+        "errorEmpty": "Please paste JSON or select a file.",
+        "errorInvalidJson": "Invalid JSON — please check your syntax.",
+        "errorInvalidFormat": "JSON must be an array of strings, or an object with an \"items\" array.",
+        "errorNoItems": "No valid items found in the JSON.",
+        "errorFailed": "Failed to import items. Please try again."
+    },
     "stats": {
         "title": "Statistics",
         "subtitle": "Insights into your productivity and habits",

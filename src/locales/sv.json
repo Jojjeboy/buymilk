@@ -226,6 +226,28 @@
         "importing": "Importerar...",
         "import": "Importera"
     },
+    "importItems": {
+        "title": "Importera varor från JSON",
+        "description": "Klistra in JSON nedan eller ladda upp en fil för att lägga till varor i listan.",
+        "showExample": "Visa exempelformat",
+        "hideExample": "Dölj exempel",
+        "exampleLabel": "Godkända format:",
+        "simpleFormat": "Enkelt (rekommenderas) — array med strängar:",
+        "objectFormat": "Objektformat — array med objekt:",
+        "wrappedFormat": "Inlindat format — objekt med items-array:",
+        "placeholder": "Klistra in JSON här...",
+        "orUpload": "eller ladda upp en fil",
+        "selectFile": "Välj JSON-fil",
+        "import": "Importera",
+        "importing": "Importerar...",
+        "successCount": "Lade till {{count}} vara(or)",
+        "skippedDupes": "{{count}} duplikat hoppades över",
+        "errorEmpty": "Klistra in JSON eller välj en fil.",
+        "errorInvalidJson": "Ogiltig JSON — kontrollera syntaxen.",
+        "errorInvalidFormat": "JSON måste vara en array med strängar eller ett objekt med en \"items\"-array.",
+        "errorNoItems": "Inga giltiga varor hittades i JSON-filen.",
+        "errorFailed": "Misslyckades med att importera varor. Försök igen."
+    },
     "stats": {
         "title": "Statistik",
         "subtitle": "Insikter i din produktivitet och dina vanor",

@@ -9,7 +9,15 @@ vi.mock('react-i18next', () => ({
     useTranslation: () => ({ t: (key: string) => key }),
 }));
 
+// Mock ToastContext so useToast doesn't throw
+vi.mock('../context/ToastContext', () => ({
+    useToast: () => ({ showToast: vi.fn() }),
+}));
 
+// Mock ImportItemsModal to avoid rendering its internals in these unit tests
+vi.mock('./ImportItemsModal', () => ({
+    ImportItemsModal: () => null,
+}));
 
 // Mock dnd-kit
 vi.mock('@dnd-kit/core', () => ({
@@ -44,7 +52,10 @@ vi.mock('lucide-react', () => ({
     RotateCcw: () => <div />,
     Settings: () => <div data-testid="settings-icon" />,
     ChevronDown: () => <div />,
-    Pin: () => <div />
+    Pin: () => <div />,
+    Upload: () => <div />,
+    Trash2: () => <div />,
+    Edit2: () => <div />,
 }));
 
 const mockUpdateListItems = vi.fn();

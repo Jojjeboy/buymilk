@@ -1,10 +1,9 @@
 import React from 'react';
-import { LogOut, SortAsc, Calendar, ChevronDown, Settings, CloudUpload, FileJson, Copy, Smartphone } from 'lucide-react';
+import { LogOut, SortAsc, Calendar, ChevronDown, Settings, Eye, EyeOff, CloudUpload, FileJson, Copy } from 'lucide-react';
 import { useWakeLock } from '../hooks/useWakeLock';
 import { useAuth } from '../context/AuthContext';
 import { useApp } from '../context/AppContext';
 import { useToast } from '../context/ToastContext';
-
 import { useTranslation } from 'react-i18next';
 import { v4 as uuidv4 } from 'uuid';
 import type { Item } from '../types';
@@ -13,6 +12,9 @@ export const SettingsView: React.FC = () => {
     const { t, i18n } = useTranslation();
     const { user, logout } = useAuth();
     const { lists, defaultListId, updateListSettings, updateListItems } = useApp();
+    const { showToast } = useToast();
+    const [importAccordionOpen, setImportAccordionOpen] = React.useState(false);
+    const [jsonText, setJsonText] = React.useState('');
     const list = lists.find(l => l.id === defaultListId);
     const sortBy = list?.settings?.defaultSort || 'manual';
 
@@ -65,10 +67,6 @@ export const SettingsView: React.FC = () => {
         const calendarUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${title}&details=${description}&dates=${startTime}/${endTime}`;
         window.open(calendarUrl, '_blank');
     };
-
-    const { showToast } = useToast();
-    const [importAccordionOpen, setImportAccordionOpen] = React.useState(false);
-    const [jsonText, setJsonText] = React.useState('');
 
     const handleImportJson = async (content: string) => {
         if (!list) return;
@@ -167,7 +165,7 @@ export const SettingsView: React.FC = () => {
                              <div className="p-4 flex items-center justify-between">
                                 <div className="flex items-center gap-4">
                                     <div className={`p-2.5 rounded-xl transition-colors ${isLocked ? 'bg-yellow-100 dark:bg-yellow-900/30 text-yellow-600 dark:text-yellow-400' : 'bg-gray-100 dark:bg-gray-700 text-gray-400'}`}>
-                                        <Smartphone size={22} />
+                                        {isLocked ? <Eye size={22} /> : <EyeOff size={22} />}
                                     </div>
                                     <div>
                                         <div className="font-bold text-gray-900 dark:text-white">{t('settings.wakeLock')}</div>

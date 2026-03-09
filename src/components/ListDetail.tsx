@@ -1124,7 +1124,7 @@ export const ListDetail: React.FC = React.memo(function ListDetail() {
                     </p>
                 </div>
             </Modal>
-        </div >
+        </div>
     );
 });
 
