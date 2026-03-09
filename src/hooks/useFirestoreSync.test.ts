@@ -37,12 +37,19 @@ describe('useFirestoreSync', () => {
 
     it('should call onSnapshot when userId is provided', () => {
         const mockUnsubscribe = vi.fn();
-        (onSnapshot as Mock).mockImplementation((_, onNext: (snapshot: Partial<QuerySnapshot<DocumentData>>) => void) => {
-            onNext({
-                forEach: (_callback: (doc: unknown) => void) => {
-                    // Simulate empty collection
-                }
-            });
+        (onSnapshot as Mock).mockImplementation((_, options: { includeMetadataChanges?: boolean }, onNext: (snapshot: Partial<QuerySnapshot<DocumentData>>) => void) => {
+            if (typeof options === 'function') {
+                // Fallback for old signature if needed, but we want to test the new one
+                (options as Function)({
+                    forEach: () => {}
+                });
+            } else {
+                onNext({
+                    forEach: (_callback: (doc: unknown) => void) => {
+                        // Simulate empty collection
+                    }
+                });
+            }
             return mockUnsubscribe;
         });
 
@@ -50,6 +57,7 @@ describe('useFirestoreSync', () => {
 
         expect(onSnapshot).toHaveBeenCalledWith(
             expect.any(Object),
+            { includeMetadataChanges: true },
             expect.any(Function),
             expect.any(Function)
         );
@@ -62,7 +70,7 @@ describe('useFirestoreSync', () => {
             { id: '2', name: 'Test Item 2', isPending: false }
         ];
 
-        (onSnapshot as Mock).mockImplementation((_, onNext: (snapshot: Partial<QuerySnapshot<DocumentData>>) => void) => {
+        (onSnapshot as Mock).mockImplementation((_, _options: unknown, onNext: (snapshot: Partial<QuerySnapshot<DocumentData>>) => void) => {
             onNext({
                 // eslint-disable-next-line @typescript-eslint/no-explicit-any
                 forEach: (callback: (doc: any) => void) => {
@@ -93,7 +101,7 @@ describe('useFirestoreSync', () => {
     it('should handle snapshot errors', async () => {
         const mockError = new Error('Firestore error');
 
-        (onSnapshot as Mock).mockImplementation((_, __: unknown, onError: (error: Error) => void) => {
+        (onSnapshot as Mock).mockImplementation((_, _options: unknown, __: unknown, onError: (error: Error) => void) => {
             onError(mockError);
             return vi.fn();
         });

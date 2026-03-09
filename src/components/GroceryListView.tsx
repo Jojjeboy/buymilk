@@ -178,7 +178,7 @@ export const GroceryListView: React.FC = React.memo(function GroceryListView() {
                     <div className="flex items-center gap-2 group min-w-0 flex-1">
                         <h2 className="text-xl font-semibold truncate">{t('lists.groceryTitle')}</h2>
                         {list.isPending && (
-                            <div className="text-blue-500 animate-pulse" title="Syncing list...">
+                            <div className="text-blue-500 animate-in fade-in duration-300" title="Syncing list...">
                                 <CloudUpload size={20} />
                             </div>
                         )}

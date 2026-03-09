@@ -1,5 +1,20 @@
 [
   {
+    "hash": "1926903a58000ad9caedf8ba3cf649b0fce9b86a",
+    "date": "2026-03-09 16:26:50 +0100",
+    "message": "chore: Add dependency override for `serialize-javascript` in `package.json`."
+  },
+  {
+    "hash": "eff2fadd768967a9d7778e3930f33db200b8f1f5",
+    "date": "2026-03-09 16:22:39 +0100",
+    "message": "chore: update dependencies"
+  },
+  {
+    "hash": "59ba27ac26b97b2cc6aad20fa5089af664ad157c",
+    "date": "2026-03-09 16:18:05 +0100",
+    "message": "Import json functionality"
+  },
+  {
     "hash": "f0e17a1e1ca12eec4a69af59f432a871363ebe8c",
     "date": "2026-02-10 23:16:06 +0100",
     "message": "minor fixes"
@@ -83,20 +98,5 @@
     "hash": "3a8496406481132133ecbbd8843ceab88371ada1",
     "date": "2026-02-04 12:46:52 +0100",
     "message": "feat: implement optimistic UI and URL-driven search with lint and test fixes"
-  },
-  {
-    "hash": "8dd169d479ab9e45c81663ef5355e7f671a770b9",
-    "date": "2026-02-04 07:25:21 +0100",
-    "message": "search query parameters"
-  },
-  {
-    "hash": "e52d3262551d41a8efe621f88512c7d15f2766c2",
-    "date": "2026-02-04 07:11:18 +0100",
-    "message": "empty"
-  },
-  {
-    "hash": "b7415c29424efe0c733c57f99f641fc48ee57354",
-    "date": "2026-02-04 06:26:46 +0100",
-    "message": "Fixes"
   }
 ]

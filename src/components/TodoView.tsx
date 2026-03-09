@@ -267,7 +267,7 @@ export const TodoView: React.FC = () => {
                                                 {todo.title}
                                             </h3>
                                             {todo.isPending && (
-                                                <div className="text-blue-400 animate-pulse" title="Syncing...">
+                                                <div className="text-blue-400 animate-in fade-in duration-300" title="Syncing...">
                                                     <CloudUpload size={14} />
                                                 </div>
                                             )}

@@ -125,7 +125,7 @@ export const SortableItem: React.FC<SortableItemProps> = ({ item, onToggle, onDe
                         />
 
                         {item.isPending && (
-                            <div className="flex-shrink-0 text-blue-400 dark:text-blue-500 animate-pulse" title="Syncing...">
+                            <div className="flex-shrink-0 text-blue-400 dark:text-blue-500 animate-in fade-in duration-300" title="Syncing...">
                                 <CloudUpload size={16} />
                             </div>
                         )}

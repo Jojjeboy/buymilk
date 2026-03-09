@@ -48,6 +48,7 @@ export function useFirestoreSync<T extends { id: string }>(
 
         const unsubscribe = onSnapshot(
             collectionRef,
+            { includeMetadataChanges: true },
             (snapshot) => {
                 const items: T[] = [];
                 snapshot.forEach((doc: QueryDocumentSnapshot<DocumentData>) => {

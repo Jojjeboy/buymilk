@@ -68,7 +68,7 @@ export const SearchResults: React.FC = () => {
                                     <div className="flex items-center gap-2 mt-0.5">
                                         <span className="text-xs text-gray-500 dark:text-gray-400 font-medium">In {item.listName}</span>
                                         {(item.isPending || item.listIsPending) && (
-                                            <CloudUpload size={12} className="text-blue-400 animate-pulse" />
+                                            <CloudUpload size={12} className="text-blue-400 animate-in fade-in duration-300" />
                                         )}
                                     </div>
                                 </div>
@@ -100,7 +100,7 @@ export const SearchResults: React.FC = () => {
                                             {todo.title}
                                         </h4>
                                         {todo.isPending && (
-                                            <CloudUpload size={14} className="text-blue-400 animate-pulse" />
+                                            <CloudUpload size={14} className="text-blue-400 animate-in fade-in duration-300" />
                                         )}
                                     </div>
                                     {todo.content && (
