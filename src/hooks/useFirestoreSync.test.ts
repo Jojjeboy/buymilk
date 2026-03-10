@@ -40,7 +40,7 @@ describe('useFirestoreSync', () => {
         (onSnapshot as Mock).mockImplementation((_, options: { includeMetadataChanges?: boolean }, onNext: (snapshot: Partial<QuerySnapshot<DocumentData>>) => void) => {
             if (typeof options === 'function') {
                 // Fallback for old signature if needed, but we want to test the new one
-                (options as Function)({
+                (options as (snapshot: unknown) => void)({
                     forEach: () => {}
                 });
             } else {
