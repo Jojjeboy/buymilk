@@ -1,5 +1,15 @@
 [
   {
+    "hash": "cba9954e8afcb665c515bd1dc58e4fb762a7ba22",
+    "date": "2026-03-10 10:24:49 +0100",
+    "message": "lint fix"
+  },
+  {
+    "hash": "461e2e3face92f3a8e8147b568036fa60a4e2dc1",
+    "date": "2026-03-09 16:36:06 +0100",
+    "message": "feat: Implement a new `useFirestoreSync` hook for real-time data management with Firestore, including CRUD operations, and introduce new components for grocery lists, todo items, search results, and sortable items."
+  },
+  {
     "hash": "1926903a58000ad9caedf8ba3cf649b0fce9b86a",
     "date": "2026-03-09 16:26:50 +0100",
     "message": "chore: Add dependency override for `serialize-javascript` in `package.json`."
@@ -88,15 +98,5 @@
     "hash": "86c90b7f84f2243fc954f1a423fc8be68f34660d",
     "date": "2026-02-04 13:30:11 +0100",
     "message": "feat: add history management UI to clean up suggestion data"
-  },
-  {
-    "hash": "0bf15771dd150ba2e30090057edfcfd05b3588fc",
-    "date": "2026-02-04 13:06:18 +0100",
-    "message": "feat: update app icons and branding color"
-  },
-  {
-    "hash": "3a8496406481132133ecbbd8843ceab88371ada1",
-    "date": "2026-02-04 12:46:52 +0100",
-    "message": "feat: implement optimistic UI and URL-driven search with lint and test fixes"
   }
 ]

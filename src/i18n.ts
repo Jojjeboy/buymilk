@@ -13,7 +13,12 @@ i18n
             en: { translation: en },
             sv: { translation: sv },
         },
-        fallbackLng: 'en',
+        fallbackLng: 'sv',
+        detection: {
+            order: ['localStorage', 'querystring'],
+            lookupLocalStorage: 'buymilk_language',
+            caches: ['localStorage'],
+        },
         interpolation: {
             escapeValue: false,
         },

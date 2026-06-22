@@ -12,6 +12,7 @@
     "test": "vitest run --coverage",
     "lint": "eslint .",
     "check-any": "eslint . --config eslint.strict.config.ts",
+    "generate-env": "node scripts/generate-env.js",
     "validate": "node scripts/run-validate.js"
   },
   "dependencies": {

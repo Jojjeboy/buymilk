@@ -1,5 +1,5 @@
 import React from 'react';
-import { LogOut, SortAsc, Calendar, ChevronDown, Settings, Eye, EyeOff, CloudUpload, FileJson, Copy } from 'lucide-react';
+import { LogOut, SortAsc, Calendar, ChevronDown, Settings, Eye, EyeOff, CloudUpload, FileJson, Copy, Globe, Sliders, Database, User } from 'lucide-react';
 import { useWakeLock } from '../hooks/useWakeLock';
 import { useAuth } from '../context/AuthContext';
 import { useApp } from '../context/AppContext';
@@ -139,28 +139,37 @@ export const SettingsView: React.FC = () => {
             <div className="bg-white dark:bg-gray-800 rounded-3xl shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden">
                 <div className="p-6 space-y-8">
                     <div className="space-y-4">
-                        <h3 className="text-sm font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest px-1">{t('settings.language')}</h3>
+                        <h3 className="text-base font-semibold text-gray-900 dark:text-white tracking-tight flex items-center gap-2 pb-2 border-b border-gray-100 dark:border-gray-700/60">
+                            <Globe size={18} className="text-blue-500" />
+                            {t('settings.language')}
+                        </h3>
                         <div className="grid grid-cols-2 gap-4">
                             {[
-                                { code: 'en', label: 'English' },
-                                { code: 'sv', label: 'Svenska' }
-                            ].map((lang) => (
-                                <button
-                                    key={lang.code}
-                                    onClick={() => i18n.changeLanguage(lang.code)}
-                                    className={`p-4 rounded-2xl border-2 transition-all flex items-center justify-center font-semibold ${i18n.language === lang.code
-                                        ? 'bg-blue-50 border-blue-500 text-blue-600 dark:bg-blue-900/30 dark:border-blue-500 dark:text-blue-400 shadow-[0_0_15px_rgba(59,130,246,0.1)]'
-                                        : 'border-gray-100 dark:border-gray-700 text-gray-500 dark:text-gray-400 hover:border-blue-200 dark:hover:border-blue-800'
-                                        }`}
-                                >
-                                    {lang.label}
-                                </button>
-                            ))}
+                                { code: 'sv', label: 'Svenska' },
+                                { code: 'en', label: 'English' }
+                            ].map((lang) => {
+                                const isSelected = i18n.language?.startsWith(lang.code);
+                                return (
+                                    <button
+                                        key={lang.code}
+                                        onClick={() => i18n.changeLanguage(lang.code)}
+                                        className={`p-4 rounded-2xl border-2 transition-all flex items-center justify-center font-semibold ${isSelected
+                                            ? 'bg-blue-50 border-blue-500 text-blue-600 dark:bg-blue-900/30 dark:border-blue-500 dark:text-blue-400 shadow-[0_0_15px_rgba(59,130,246,0.1)]'
+                                            : 'border-gray-100 dark:border-gray-700 text-gray-500 dark:text-gray-400 hover:border-blue-200 dark:hover:border-blue-800'
+                                            }`}
+                                    >
+                                        {lang.label}
+                                    </button>
+                                );
+                            })}
                         </div>
                     </div>
 
                     <div className="space-y-4">
-                        <h3 className="text-sm font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest px-1">{t('settings.display', 'Skärm')}</h3>
+                        <h3 className="text-base font-semibold text-gray-900 dark:text-white tracking-tight flex items-center gap-2 pb-2 border-b border-gray-100 dark:border-gray-700/60">
+                            <Sliders size={18} className="text-blue-500" />
+                            {t('settings.display', 'Skärm')}
+                        </h3>
                         <div className="bg-white dark:bg-gray-800 rounded-2xl overflow-hidden border border-gray-100 dark:border-gray-700">
                              <div className="p-4 flex items-center justify-between">
                                 <div className="flex items-center gap-4">
@@ -190,10 +199,13 @@ export const SettingsView: React.FC = () => {
                     </div>
 
                     <div className="space-y-4">
-                        <h3 className="text-sm font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest px-1">{t('lists.settings.title')}</h3>
+                        <h3 className="text-base font-semibold text-gray-900 dark:text-white tracking-tight flex items-center gap-2 pb-2 border-b border-gray-100 dark:border-gray-700/60">
+                            <Settings size={18} className="text-blue-500" />
+                            {t('lists.settings.title')}
+                        </h3>
                         <div className="space-y-3">
-                            <label className="text-xs font-bold text-gray-400 flex items-center gap-2 px-1 uppercase tracking-wider">
-                                <SortAsc size={14} />
+                            <label className="text-sm font-medium text-gray-600 dark:text-gray-400 flex items-center gap-2 px-1">
+                                <SortAsc size={16} className="text-gray-400 dark:text-gray-500" />
                                 {t('lists.settings.sort')}
                             </label>
                             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
@@ -274,7 +286,10 @@ export const SettingsView: React.FC = () => {
                     </div>
 
                     <div className="space-y-4">
-                        <h3 className="text-sm font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest px-1">{t('settings.dataManagement', 'Data Management')}</h3>
+                        <h3 className="text-base font-semibold text-gray-900 dark:text-white tracking-tight flex items-center gap-2 pb-2 border-b border-gray-100 dark:border-gray-700/60">
+                            <Database size={18} className="text-blue-500" />
+                            {t('settings.dataManagement', 'Data Management')}
+                        </h3>
                         
                         <div className="bg-white dark:bg-gray-800 rounded-2xl overflow-hidden border border-gray-100 dark:border-gray-700 hover:border-blue-200 dark:hover:border-gray-600 transition-all">
                             <button
@@ -362,7 +377,10 @@ export const SettingsView: React.FC = () => {
 
                     <div className="pt-4">
                         <div className="space-y-4">
-                            <h3 className="text-sm font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest px-1">{t('settings.account', 'Konto')}</h3>
+                            <h3 className="text-base font-semibold text-gray-900 dark:text-white tracking-tight flex items-center gap-2 pb-2 border-b border-gray-100 dark:border-gray-700/60">
+                                <User size={18} className="text-blue-500" />
+                                {t('settings.account', 'Konto')}
+                            </h3>
                             <div className="flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-900/50 rounded-2xl border border-transparent group">
                                 <div className="flex items-center gap-4">
                                     <div className="w-12 h-12 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center font-bold text-blue-600 dark:text-blue-400">
