@@ -12,17 +12,19 @@ import { Confetti } from './Confetti';
 import { useTranslation } from 'react-i18next';
 import { InlineAutocompleteInput } from './InlineAutocompleteInput';
 import { matchesCategoryKeywords } from '../utils/keywordMatch';
+import { CategorizeModal } from './CategorizeModal';
 
 
 export const GroceryListView: React.FC = React.memo(function GroceryListView() {
     const { t } = useTranslation();
-    const { lists, defaultListId, updateListItems, deleteItem, updateListAccess, loading, itemHistory, addToHistory, categories } = useApp();
+    const { lists, defaultListId, updateListItems, deleteItem, updateListAccess, loading, itemHistory, addToHistory, categories, addCategory } = useApp();
     const { showToast } = useToast();
     const [newItemText, setNewItemText] = useState('');
     const [showConfetti, setShowConfetti] = useState(false);
     const [suggestions, setSuggestions] = useState<(typeof itemHistory)>([]);
     const [showSuggestions, setShowSuggestions] = useState(false);
     const [completedAccordionOpen, setCompletedAccordionOpen] = useState(false);
+    const [categorizingItem, setCategorizingItem] = useState<{ id: string; text: string } | null>(null);
 
     const list: List | undefined = lists.find((l) => l.id === defaultListId);
 
@@ -173,6 +175,38 @@ export const GroceryListView: React.FC = React.memo(function GroceryListView() {
         await deleteItem(list.id, itemId);
     };
 
+    const handleCategorize = (itemId: string) => {
+        const item = list?.items.find(i => i.id === itemId);
+        if (item) {
+            setCategorizingItem({ id: item.id, text: item.text });
+        }
+    };
+
+    const handleAssignToCategory = async (categoryId: string) => {
+        if (!list || !categorizingItem) return;
+        
+        const newItems = list.items.map(item => 
+            item.id === categorizingItem.id ? { ...item, sectionId: categoryId } : item
+        );
+        await updateListItems(list.id, newItems);
+        setCategorizingItem(null);
+    };
+
+    const handleCreateCategory = async (name: string) => {
+        if (!list || !categorizingItem) return;
+
+        try {
+            const newCategoryId = await addCategory(name);
+            const newItems = list.items.map(item => 
+                item.id === categorizingItem.id ? { ...item, sectionId: newCategoryId } : item
+            );
+            await updateListItems(list.id, newItems);
+            setCategorizingItem(null);
+        } catch (error) {
+            console.error("Failed to create category and assign item:", error);
+        }
+    };
+
     const handleEdit = async (itemId: string, text: string) => {
         const newItems = list.items.map(item =>
             item.id === itemId ? { ...item, text } : item
@@ -224,13 +258,13 @@ export const GroceryListView: React.FC = React.memo(function GroceryListView() {
                                                 <SortableContext items={itemsInCategory.map(i => i.id)} strategy={verticalListSortingStrategy}>
                                                     <div className="space-y-2">
                                                         {itemsInCategory.map((item) => (
-                                                            <SortableItem
-                                                                key={item.id}
-                                                                item={{ ...item, isPending: item.isPending || list.isPending }}
-                                                                onToggle={handleToggle}
-                                                                onDelete={handleDelete}
-                                                                onEdit={handleEdit}
-                                                            />
+                                                             <SortableItem
+                                                                 key={item.id}
+                                                                 item={{ ...item, isPending: item.isPending || list.isPending }}
+                                                                 onToggle={handleToggle}
+                                                                 onDelete={handleDelete}
+                                                                 onEdit={handleEdit}
+                                                             />
                                                         ))}
                                                     </div>
                                                 </SortableContext>
@@ -260,13 +294,14 @@ export const GroceryListView: React.FC = React.memo(function GroceryListView() {
                                                 <SortableContext items={otherItems.map(i => i.id)} strategy={verticalListSortingStrategy}>
                                                     <div className="space-y-2">
                                                         {otherItems.map((item) => (
-                                                            <SortableItem
-                                                                key={item.id}
-                                                                item={{ ...item, isPending: item.isPending || list.isPending }}
-                                                                onToggle={handleToggle}
-                                                                onDelete={handleDelete}
-                                                                onEdit={handleEdit}
-                                                            />
+                                                             <SortableItem
+                                                                 key={item.id}
+                                                                 item={{ ...item, isPending: item.isPending || list.isPending }}
+                                                                 onToggle={handleToggle}
+                                                                 onDelete={handleDelete}
+                                                                 onEdit={handleEdit}
+                                                                 onCategorize={handleCategorize}
+                                                             />
                                                         ))}
                                                     </div>
                                                 </SortableContext>
@@ -280,13 +315,14 @@ export const GroceryListView: React.FC = React.memo(function GroceryListView() {
                                 <SortableContext items={activeItems.map(i => i.id)} strategy={verticalListSortingStrategy}>
                                     <div className="space-y-2">
                                         {activeItems.map((item) => (
-                                            <SortableItem
-                                                key={item.id}
-                                                item={{ ...item, isPending: item.isPending || list.isPending }}
-                                                onToggle={handleToggle}
-                                                onDelete={handleDelete}
-                                                onEdit={handleEdit}
-                                            />
+                                                             <SortableItem
+                                                                 key={item.id}
+                                                                 item={{ ...item, isPending: item.isPending || list.isPending }}
+                                                                 onToggle={handleToggle}
+                                                                 onDelete={handleDelete}
+                                                                 onEdit={handleEdit}
+                                                                 onCategorize={handleCategorize}
+                                                             />
                                         ))}
                                     </div>
                                 </SortableContext>
@@ -301,6 +337,14 @@ export const GroceryListView: React.FC = React.memo(function GroceryListView() {
                                 <p className="text-gray-500 font-medium">{t('lists.emptyList')}</p>
                             </div>
                         )}
+                        <CategorizeModal
+                            isOpen={!!categorizingItem}
+                            onClose={() => setCategorizingItem(null)}
+                            itemText={categorizingItem?.text || ''}
+                            categories={categories}
+                            onAssignToCategory={handleAssignToCategory}
+                            onCreateCategory={handleCreateCategory}
+                        />
 
                         {/* Completed Items Accordion */}
                         {completedItems.length > 0 && (

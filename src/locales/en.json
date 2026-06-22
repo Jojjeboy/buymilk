@@ -298,9 +298,17 @@
         "skippedDupes": "{{count}} duplicate(s) skipped",
         "errorEmpty": "Please paste JSON or select a file.",
         "errorInvalidJson": "Invalid JSON — please check your syntax.",
-        "errorInvalidFormat": "JSON must be an array of strings, or an object with an \"items\" array.",
+        "errorInvalidFormat": "JSON must be an array of strings, or an object with items array.",
         "errorNoItems": "No valid items found in the JSON.",
-        "errorFailed": "Failed to import items. Please try again."
+        "errorFailed": "Failed to import file."
+    },
+    "categorize": {
+        "title": "Categorize Item",
+        "addToExisting": "Add to existing category",
+        "addKeyword": "+ keyword",
+        "createNew": "Create new category",
+        "newNamePlaceholder": "Category name...",
+        "create": "Create"
     },
     "stats": {
         "title": "Statistics",

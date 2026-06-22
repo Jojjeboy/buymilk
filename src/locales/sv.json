@@ -302,6 +302,14 @@
         "errorNoItems": "Inga giltiga varor hittades i JSON-filen.",
         "errorFailed": "Misslyckades med att importera varor. Försök igen."
     },
+    "categorize": {
+        "title": "Kategorisera vara",
+        "addToExisting": "Lägg till i befintlig kategori",
+        "addKeyword": "+ nyckelord",
+        "createNew": "Skapa ny kategori",
+        "newNamePlaceholder": "Kategorinamn...",
+        "create": "Skapa"
+    },
     "stats": {
         "title": "Statistik",
         "subtitle": "Insikter i din produktivitet och dina vanor",
