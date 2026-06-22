@@ -1,5 +1,15 @@
 [
   {
+    "hash": "43e40f1744f4a0a67401a010dda9a277393b4cc0",
+    "date": "2026-06-22 13:52:33 +0200",
+    "message": "improvements"
+  },
+  {
+    "hash": "462972e15e7a13bee93900fdea1729f664c6eac5",
+    "date": "2026-06-22 10:43:30 +0200",
+    "message": "Settings cleanup"
+  },
+  {
     "hash": "cba9954e8afcb665c515bd1dc58e4fb762a7ba22",
     "date": "2026-03-10 10:24:49 +0100",
     "message": "lint fix"
@@ -88,15 +98,5 @@
     "hash": "2dfe4dd3a234f1722bfe4d0a2713f83e2d773dad",
     "date": "2026-02-04 13:49:18 +0100",
     "message": "fix: align shadow text and allow suggesting items already in list"
-  },
-  {
-    "hash": "4026d7b1f8de805fdb5b94446446ba4b03435437",
-    "date": "2026-02-04 13:42:41 +0100",
-    "message": "feat: add history subpage, inline autocomplete with shadow text, and UX improvements"
-  },
-  {
-    "hash": "86c90b7f84f2243fc954f1a423fc8be68f34660d",
-    "date": "2026-02-04 13:30:11 +0100",
-    "message": "feat: add history management UI to clean up suggestion data"
   }
 ]

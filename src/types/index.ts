@@ -29,6 +29,8 @@ export interface ListSettings {
   calendarStartTime?: string;
   calendarEndTime?: string;
   pinned?: boolean; // Kept for interface compatibility but logic disabled
+  autoGrouping?: boolean;
+  predictionsEnabled?: boolean;
 }
 
 export interface List {
