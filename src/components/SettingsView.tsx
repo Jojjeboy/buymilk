@@ -1,18 +1,132 @@
 import React from 'react';
-import { LogOut, SortAsc, Calendar, ChevronDown, Settings, Eye, EyeOff, CloudUpload, FileJson, Copy, Globe, Sliders, Database, User } from 'lucide-react';
+import {
+    LogOut, SortAsc, Calendar, ChevronDown, Settings, Eye, EyeOff,
+    Globe, Sliders, Database, Plus, Trash2, Edit3, X, History, User,
+    Layers, GripVertical
+} from 'lucide-react';
+import {
+    DndContext,
+    closestCenter,
+    KeyboardSensor,
+    PointerSensor,
+    useSensor,
+    useSensors,
+    DragEndEvent,
+} from '@dnd-kit/core';
+import {
+    arrayMove,
+    SortableContext,
+    sortableKeyboardCoordinates,
+    useSortable,
+    verticalListSortingStrategy,
+} from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
 import { useWakeLock } from '../hooks/useWakeLock';
 import { useAuth } from '../context/AuthContext';
 import { useApp } from '../context/AppContext';
 import { useToast } from '../context/ToastContext';
+import type { Category, Item, HistoryItem } from '../types';
 import { useTranslation } from 'react-i18next';
 import { v4 as uuidv4 } from 'uuid';
-import type { Item } from '../types';
 
+// ---------------------------------------------------------------------------
+// Sortable aisle row
+// ---------------------------------------------------------------------------
+interface SortableAisleRowProps {
+    cat: Category;
+    onEdit: (cat: Category) => void;
+    onDelete: (id: string) => void;
+    displayName: string;
+    keywordsLabel: string;
+    editLabel: string;
+    deleteLabel: string;
+}
+
+const SortableAisleRow: React.FC<SortableAisleRowProps> = ({
+    cat,
+    onEdit,
+    onDelete,
+    displayName,
+    keywordsLabel,
+    editLabel,
+    deleteLabel,
+}) => {
+    const { attributes, listeners, setNodeRef, transform, transition, isDragging } =
+        useSortable({ id: cat.id });
+
+    const style: React.CSSProperties = {
+        transform: CSS.Transform.toString(transform),
+        transition,
+        opacity: isDragging ? 0.5 : 1,
+        zIndex: isDragging ? 10 : undefined,
+    };
+
+    return (
+        <div
+            ref={setNodeRef}
+            style={style}
+            className="flex items-center justify-between p-3 bg-white dark:bg-gray-800 rounded-xl border border-gray-100 dark:border-gray-700 group"
+        >
+            <div className="flex items-center gap-2 overflow-hidden">
+                <button
+                    {...attributes}
+                    {...listeners}
+                    className="p-1 text-gray-300 dark:text-gray-600 hover:text-gray-500 dark:hover:text-gray-400 cursor-grab active:cursor-grabbing touch-none"
+                    tabIndex={-1}
+                    aria-label="drag to reorder"
+                >
+                    <GripVertical size={16} />
+                </button>
+                <div className="flex flex-col overflow-hidden">
+                    <span className="font-bold text-gray-900 dark:text-white truncate">{displayName}</span>
+                    <span className="text-xs text-gray-500 dark:text-gray-400 truncate">{keywordsLabel}</span>
+                </div>
+            </div>
+            <div className="flex items-center gap-1 shrink-0">
+                <button
+                    onClick={() => onEdit(cat)}
+                    className="p-2 text-gray-400 hover:text-blue-500 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-lg transition-all"
+                    title={editLabel}
+                >
+                    <Edit3 size={16} />
+                </button>
+                <button
+                    onClick={() => onDelete(cat.id)}
+                    className="p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-all"
+                    title={deleteLabel}
+                >
+                    <Trash2 size={16} />
+                </button>
+            </div>
+        </div>
+    );
+};
+
+// ---------------------------------------------------------------------------
+// Main component
+// ---------------------------------------------------------------------------
 export const SettingsView: React.FC = () => {
     const { t, i18n } = useTranslation();
     const { user, logout } = useAuth();
-    const { lists, defaultListId, updateListSettings, updateListItems } = useApp();
+    const {
+        lists,
+        defaultListId,
+        updateListSettings,
+        updateListItems,
+        theme,
+        setTheme,
+        categories,
+        addCategory,
+        updateCategory,
+        deleteCategory,
+        reorderCategories,
+        itemHistory,
+        updateHistoryItem,
+        deleteFromHistory,
+        clearAllHistory
+    } = useApp();
     const { showToast } = useToast();
+
     const [importAccordionOpen, setImportAccordionOpen] = React.useState(false);
     const [jsonText, setJsonText] = React.useState('');
     const list = lists.find(l => l.id === defaultListId);
@@ -21,7 +135,45 @@ export const SettingsView: React.FC = () => {
     const { isSupported, isLocked, requestWakeLock, releaseWakeLock } = useWakeLock();
 
     const [calendarAccordionOpen, setCalendarAccordionOpen] = React.useState(false);
-    
+    const [aisleAccordionOpen, setAisleAccordionOpen] = React.useState(false);
+    const [historyAccordionOpen, setHistoryAccordionOpen] = React.useState(false);
+
+    const [editingHistoryItem, setEditingHistoryItem] = React.useState<HistoryItem | null>(null);
+    const [editHistoryText, setEditHistoryText] = React.useState('');
+
+    const [newAisleName, setNewAisleName] = React.useState('');
+    const [newAisleKeywords, setNewAisleKeywords] = React.useState('');
+    const [editingAisle, setEditingAisle] = React.useState<Category | null>(null);
+    const [editName, setEditName] = React.useState('');
+    const [editKeywords, setEditKeywords] = React.useState('');
+
+    // Sorted categories for the DnD list (by order field)
+    const sortedCategories = React.useMemo(
+        () => [...categories].sort((a, b) => (a.order ?? 0) - (b.order ?? 0)),
+        [categories]
+    );
+
+    // DnD sensors
+    const sensors = useSensors(
+        useSensor(PointerSensor, { activationConstraint: { distance: 5 } }),
+        useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates })
+    );
+
+    const handleAisleDragEnd = async (event: DragEndEvent) => {
+        const { active, over } = event;
+        if (!over || active.id === over.id) return;
+
+        const oldIndex = sortedCategories.findIndex(c => c.id === active.id);
+        const newIndex = sortedCategories.findIndex(c => c.id === over.id);
+        if (oldIndex === -1 || newIndex === -1) return;
+
+        const reordered = arrayMove(sortedCategories, oldIndex, newIndex);
+        await reorderCategories(reordered.map(c => c.id));
+    };
+
+    // -----------------------------------------------------------------------
+    // Calendar helpers
+    // -----------------------------------------------------------------------
     const toLocalISOString = (date: Date) => {
         const offset = date.getTimezoneOffset() * 60000;
         const localDate = new Date(date.getTime() - offset);
@@ -50,99 +202,558 @@ export const SettingsView: React.FC = () => {
 
     const generateGoogleCalendarLink = () => {
         if (!list) return;
-
         const title = encodeURIComponent(t('lists.groceryTitle'));
         const itemsText = list.items.map(item => `• ${item.text}`).join('\n');
         const linkText = t('lists.settings.calendar.linkText');
-        const deepLink = window.location.origin; 
+        const deepLink = window.location.origin;
         const description = encodeURIComponent(`${itemsText}\n\n${linkText}: ${deepLink}`);
-
-        const formatGoogleTime = (isoString: string) => {
-            const date = new Date(isoString);
-            return date.toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z';
-        };
-
+        const formatGoogleTime = (isoString: string) =>
+            new Date(isoString).toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z';
         const startTime = formatGoogleTime(calendarStartTime);
         const endTime = formatGoogleTime(calendarEndTime);
-        const calendarUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${title}&details=${description}&dates=${startTime}/${endTime}`;
-        window.open(calendarUrl, '_blank');
+        window.open(
+            `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${title}&details=${description}&dates=${startTime}/${endTime}`,
+            '_blank'
+        );
     };
 
+    // -----------------------------------------------------------------------
+    // Import
+    // -----------------------------------------------------------------------
     const handleImportJson = async (content: string) => {
         if (!list) return;
-
         try {
             let data;
-            try {
-                data = JSON.parse(content);
-            } catch {
-                throw new Error('Invalid JSON');
-            }
-            
+            try { data = JSON.parse(content); } catch { throw new Error('Invalid JSON'); }
             if (!Array.isArray(data)) throw new Error('Format must be an array');
-
             const newItems: Item[] = [];
             for (const entry of data) {
-                 let text = '';
-                 if (typeof entry === 'string') text = entry;
-                 else if (typeof entry === 'object' && entry !== null && entry.text) text = entry.text;
-                 
-                 if (text) {
-                     newItems.push({
-                         id: uuidv4(),
-                         text: text.trim(),
-                         completed: false
-                     });
-                 }
+                let text = '';
+                if (typeof entry === 'string') text = entry;
+                else if (typeof entry === 'object' && entry !== null && entry.text) text = entry.text;
+                if (text) newItems.push({ id: uuidv4(), text: text.trim(), completed: false });
             }
-
             if (newItems.length > 0) {
                 await updateListItems(list.id, [...list.items, ...newItems]);
-                showToast(t('settings.importSuccess', 'Added {{count}} items', { count: newItems.length }), 'success');
+                showToast(t('settings.importSuccess', { count: newItems.length }), 'success');
                 setJsonText('');
                 setImportAccordionOpen(false);
             } else {
-                showToast(t('settings.importNoItems', 'No valid items found'), 'error');
+                showToast(t('settings.importNoItems'), 'error');
             }
         } catch (error) {
             console.error(error);
-            showToast(t('settings.importError', 'Failed to import: Invalid format'), 'error');
+            showToast(t('settings.importError'), 'error');
         }
+    };
+
+    // -----------------------------------------------------------------------
+    // Aisles CRUD
+    // -----------------------------------------------------------------------
+    const handleAddAisle = async () => {
+        if (!newAisleName.trim()) return;
+        const keywords = newAisleKeywords.split(',').map(k => k.trim()).filter(k => k !== '');
+        await addCategory(newAisleName.trim(), keywords);
+        setNewAisleName('');
+        setNewAisleKeywords('');
+        showToast(t('common.save'), 'success');
+    };
+
+    const handleSaveAisle = async () => {
+        if (!editingAisle || !editName.trim()) return;
+        const keywords = editKeywords.split(',').map(k => k.trim()).filter(k => k !== '');
+        await updateCategory(editingAisle.id, { name: editName.trim(), keywords });
+        setEditingAisle(null);
+        showToast(t('common.save'), 'success');
+    };
+
+    const handleDeleteAisle = async (id: string) => {
+        await deleteCategory(id);
+        showToast(t('toasts.itemDeleted'), 'info');
+    };
+
+    const handleEditAisle = (cat: Category) => {
+        setEditingAisle(cat);
+        setEditName(cat.name);
+        setEditKeywords(cat.keywords?.join(', ') || '');
+    };
+
+    // -----------------------------------------------------------------------
+    // History
+    // -----------------------------------------------------------------------
+    const handleEditHistoryItem = (item: HistoryItem) => {
+        setEditingHistoryItem(item);
+        setEditHistoryText(item.text);
+    };
+
+    const handleSaveHistoryItem = async () => {
+        if (!editingHistoryItem || !editHistoryText.trim()) return;
+        await updateHistoryItem(editingHistoryItem.id, { text: editHistoryText.trim() });
+        setEditingHistoryItem(null);
+        showToast(t('common.save'), 'success');
     };
 
     const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
         const file = event.target.files?.[0];
         if (!file) return;
-
         const reader = new FileReader();
         reader.onload = async (e) => {
             const content = e.target?.result as string;
             await handleImportJson(content);
-            // Reset input
             event.target.value = '';
         };
         reader.readAsText(file);
     };
 
+    const autoGroupingEnabled = list?.settings?.autoGrouping ?? false;
+
+    // -----------------------------------------------------------------------
+    // Render
+    // -----------------------------------------------------------------------
     return (
-        <div className="max-w-2xl mx-auto space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500 pb-20">
-            <div className="flex items-center gap-4 mb-8">
+        <div className="max-w-2xl mx-auto space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500 pb-20">
+
+            {/* Page header */}
+            <div className="flex items-center gap-4 mb-6">
                 <div className="p-3 bg-blue-100 dark:bg-blue-900/40 text-blue-600 dark:text-blue-400 rounded-2xl shadow-sm">
                     <Settings size={22} />
                 </div>
-                <div>
-                    <h2 className="text-3xl font-bold text-gray-900 dark:text-white tracking-tight">{t('settings.title')}</h2>
-                    <p className="text-gray-500 dark:text-gray-400 font-medium">{t('settings.subtitle', 'Hantera dina appinställningar och konto')}</p>
+                <div className="text-left">
+                    <h1 className="text-3xl font-bold text-gray-900 dark:text-white tracking-tight">{t('settings.title')}</h1>
+                    <p className="text-gray-500 dark:text-gray-400 font-medium">{t('settings.subtitle')}</p>
                 </div>
             </div>
 
-            <div className="bg-white dark:bg-gray-800 rounded-3xl shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden">
-                <div className="p-6 space-y-8">
-                    <div className="space-y-4">
-                        <h3 className="text-base font-semibold text-gray-900 dark:text-white tracking-tight flex items-center gap-2 pb-2 border-b border-gray-100 dark:border-gray-700/60">
-                            <Globe size={18} className="text-blue-500" />
+            {/* CARD 1: List Settings */}
+            <div className="bg-white dark:bg-gray-800 rounded-3xl shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden text-left">
+                <div className="p-6 space-y-6">
+
+                    <div className="flex items-center gap-4">
+                        <div className="p-2.5 bg-blue-100 dark:bg-blue-900/40 text-blue-600 dark:text-blue-400 rounded-2xl shadow-sm">
+                            <Sliders size={20} />
+                        </div>
+                        <div>
+                            <h2 className="text-lg font-bold text-gray-900 dark:text-white tracking-tight">{t('lists.settings.title')}</h2>
+                            <p className="text-xs font-medium text-gray-500 dark:text-gray-400">{t('lists.settings.subtitle', 'Configure sorting and features for the shopping list')}</p>
+                        </div>
+                    </div>
+
+                    <hr className="border-gray-100 dark:border-gray-700/60" />
+
+                    {/* Sort order */}
+                    <div className="space-y-3">
+                        <label className="text-sm font-semibold text-gray-600 dark:text-gray-400 flex items-center gap-2 px-1">
+                            <SortAsc size={16} className="text-gray-400 dark:text-gray-500" />
+                            {t('lists.settings.sort')}
+                        </label>
+                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                            {(['manual', 'alphabetical', 'completed'] as const).map((mode) => (
+                                <button
+                                    key={mode}
+                                    onClick={() => {
+                                        if (list) {
+                                            updateListSettings(list.id, {
+                                                threeStageMode: list.settings?.threeStageMode ?? false,
+                                                defaultSort: mode,
+                                                calendarStartTime: list.settings?.calendarStartTime,
+                                                calendarEndTime: list.settings?.calendarEndTime,
+                                                pinned: list.settings?.pinned,
+                                                autoGrouping: list.settings?.autoGrouping
+                                            });
+                                        }
+                                    }}
+                                    className={`flex flex-col items-center justify-center p-3.5 rounded-2xl border-2 transition-all font-bold ${sortBy === mode
+                                        ? 'bg-blue-50 border-blue-500 text-blue-600 dark:bg-blue-900/30 dark:border-blue-500 dark:text-blue-400 shadow-[0_0_15px_rgba(59,130,246,0.1)]'
+                                        : 'border-gray-100 dark:border-gray-700 text-gray-500 dark:text-gray-400 hover:border-blue-200 dark:hover:border-blue-800'
+                                    }`}
+                                >
+                                    <span className="text-sm">{t(`lists.sort.${mode}`)}</span>
+                                </button>
+                            ))}
+                        </div>
+                    </div>
+
+                    {/* Auto-Grouping Toggle */}
+                    <div className="bg-gray-50 dark:bg-gray-900/40 rounded-2xl overflow-hidden border border-gray-100 dark:border-gray-700/60">
+                        <div className="p-4 flex items-center justify-between">
+                            <div className="flex items-center gap-4">
+                                <div className={`p-2.5 rounded-xl transition-colors ${autoGroupingEnabled ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400' : 'bg-gray-100 dark:bg-gray-700 text-gray-400'}`}>
+                                    <Layers size={22} />
+                                </div>
+                                <div className="text-left">
+                                    <div className="font-bold text-gray-900 dark:text-white">{t('lists.settings.autoGrouping.title')}</div>
+                                    <div className="text-xs font-medium text-gray-500 dark:text-gray-400">{t('lists.settings.autoGrouping.description')}</div>
+                                </div>
+                            </div>
+                            <button
+                                onClick={() => {
+                                    if (list) {
+                                        updateListSettings(list.id, {
+                                            threeStageMode: list.settings?.threeStageMode ?? false,
+                                            defaultSort: list.settings?.defaultSort || 'manual',
+                                            calendarStartTime: list.settings?.calendarStartTime,
+                                            calendarEndTime: list.settings?.calendarEndTime,
+                                            pinned: list.settings?.pinned,
+                                            autoGrouping: !autoGroupingEnabled
+                                        });
+                                    }
+                                }}
+                                className={`relative inline-flex h-7 w-12 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 ${autoGroupingEnabled ? 'bg-blue-600' : 'bg-gray-200 dark:bg-gray-700'}`}
+                            >
+                                <span className={`${autoGroupingEnabled ? 'translate-x-6' : 'translate-x-1'} inline-block h-5 w-5 transform rounded-full bg-white transition-transform`} />
+                            </button>
+                        </div>
+                    </div>
+
+                    {/* Calendar Accordion */}
+                    <div className="pt-2">
+                        <button
+                            onClick={() => setCalendarAccordionOpen(!calendarAccordionOpen)}
+                            className="flex items-center justify-between w-full p-4 rounded-2xl bg-gray-50 dark:bg-gray-900/40 hover:bg-gray-100/80 dark:hover:bg-gray-900 transition-all border border-gray-100 dark:border-gray-700/60 group"
+                        >
+                            <div className="flex items-center gap-4">
+                                <div className="p-2.5 bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400 rounded-xl group-hover:scale-110 transition-transform">
+                                    <Calendar size={22} />
+                                </div>
+                                <div className="text-left">
+                                    <div className="font-bold text-gray-900 dark:text-white">{t('lists.settings.calendar.title')}</div>
+                                    <div className="text-xs font-medium text-gray-500 dark:text-gray-400">{t('lists.settings.calendar.description')}</div>
+                                </div>
+                            </div>
+                            <ChevronDown className={`text-gray-400 transition-transform duration-300 ${calendarAccordionOpen ? 'rotate-180' : ''}`} size={20} />
+                        </button>
+
+                        {calendarAccordionOpen && (
+                            <div className="mt-4 space-y-6 p-6 rounded-2xl bg-gray-50 dark:bg-gray-900/50 border border-gray-200 dark:border-gray-700 animate-in slide-in-from-top-4 duration-300">
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                    <div className="space-y-2">
+                                        <label className="text-xs font-bold text-gray-500 uppercase tracking-wider">{t('lists.settings.calendar.startTime')}</label>
+                                        <input
+                                            type="datetime-local"
+                                            value={calendarStartTime}
+                                            onChange={(e) => setCalendarStartTime(e.target.value)}
+                                            className="w-full p-3 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 focus:ring-2 focus:ring-blue-500 outline-none text-sm font-medium"
+                                        />
+                                    </div>
+                                    <div className="space-y-2">
+                                        <label className="text-xs font-bold text-gray-500 uppercase tracking-wider">{t('lists.settings.calendar.endTime')}</label>
+                                        <input
+                                            type="datetime-local"
+                                            value={calendarEndTime}
+                                            onChange={(e) => setCalendarEndTime(e.target.value)}
+                                            className="w-full p-3 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 focus:ring-2 focus:ring-blue-500 outline-none text-sm font-medium"
+                                        />
+                                    </div>
+                                </div>
+                                <button
+                                    onClick={generateGoogleCalendarLink}
+                                    className="w-full py-4 px-6 bg-blue-600 text-white rounded-2xl font-bold hover:bg-blue-700 shadow-lg shadow-blue-500/25 transition-all active:scale-[0.98] flex items-center justify-center gap-3"
+                                >
+                                    <Calendar size={20} />
+                                    {t('lists.settings.calendar.addToCalendar')}
+                                </button>
+                            </div>
+                        )}
+                    </div>
+
+                </div>
+            </div>
+
+            {/* CARD 2: Categories & Items */}
+            <div className="bg-white dark:bg-gray-800 rounded-3xl shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden text-left">
+                <div className="p-6 space-y-6">
+                    <div className="flex items-center gap-4">
+                        <div className="p-2.5 bg-purple-100 dark:bg-purple-900/40 text-purple-600 dark:text-purple-400 rounded-2xl shadow-sm">
+                            <Database size={20} />
+                        </div>
+                        <div className="text-left">
+                            <h2 className="text-lg font-bold text-gray-900 dark:text-white tracking-tight">{t('settings.databases.title')}</h2>
+                            <p className="text-xs font-medium text-gray-500 dark:text-gray-400">{t('settings.databases.subtitle')}</p>
+                        </div>
+                    </div>
+
+                    <hr className="border-gray-100 dark:border-gray-700/60" />
+
+                    {/* Aisle Templates Accordion */}
+                    <div className="space-y-2">
+                        <button
+                            onClick={() => setAisleAccordionOpen(!aisleAccordionOpen)}
+                            className="flex items-center justify-between w-full p-4 rounded-2xl bg-gray-50 dark:bg-gray-900/40 hover:bg-gray-100/80 dark:hover:bg-gray-900 transition-all border border-gray-100 dark:border-gray-700/60 group"
+                        >
+                            <div className="flex items-center gap-4">
+                                <div className="p-2.5 bg-purple-100 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400 rounded-xl group-hover:scale-110 transition-transform">
+                                    <Database size={22} />
+                                </div>
+                                <div className="text-left">
+                                    <div className="font-bold text-gray-900 dark:text-white">{t('aisles.templates')}</div>
+                                    <div className="text-xs font-medium text-gray-500 dark:text-gray-400">{t('aisles.templatesDesc')}</div>
+                                </div>
+                            </div>
+                            <ChevronDown className={`text-gray-400 transition-transform duration-300 ${aisleAccordionOpen ? 'rotate-180' : ''}`} size={20} />
+                        </button>
+
+                        {aisleAccordionOpen && (
+                            <div className="mt-4 space-y-6 p-6 rounded-2xl bg-gray-50 dark:bg-gray-900/50 border border-gray-200 dark:border-gray-700 animate-in slide-in-from-top-4 duration-300">
+                                {/* Add new aisle */}
+                                <div className="space-y-3">
+                                    <div className="flex items-center gap-2 mb-2">
+                                        <Plus size={16} className="text-blue-500" />
+                                        <span className="text-sm font-bold text-gray-700 dark:text-gray-300">{t('common.add')}</span>
+                                    </div>
+                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                                        <input
+                                            type="text"
+                                            value={newAisleName}
+                                            onChange={(e) => setNewAisleName(e.target.value)}
+                                            placeholder={t('aisles.namePlaceholder')}
+                                            className="p-3 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 focus:ring-2 focus:ring-blue-500 outline-none text-sm"
+                                        />
+                                        <input
+                                            type="text"
+                                            value={newAisleKeywords}
+                                            onChange={(e) => setNewAisleKeywords(e.target.value)}
+                                            placeholder={t('aisles.keywordsPlaceholder')}
+                                            className="p-3 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 focus:ring-2 focus:ring-blue-500 outline-none text-sm"
+                                        />
+                                    </div>
+                                    <button
+                                        onClick={handleAddAisle}
+                                        disabled={!newAisleName.trim()}
+                                        className="w-full py-3 bg-blue-600 text-white rounded-xl font-bold hover:bg-blue-700 transition-all active:scale-[0.98] disabled:opacity-50"
+                                    >
+                                        {t('common.add')}
+                                    </button>
+                                </div>
+
+                                {/* Existing aisles — sortable when autogrouping is on */}
+                                <div className="pt-6 border-t border-gray-200 dark:border-gray-700 space-y-3">
+                                    <div className="flex items-center justify-between mb-3">
+                                        <div className="text-sm font-bold text-gray-500 uppercase tracking-wider">{t('aisles.existing')}</div>
+                                        {autoGroupingEnabled && (
+                                            <div className="text-xs text-gray-400 dark:text-gray-500 flex items-center gap-1">
+                                                <GripVertical size={12} />
+                                                {t('aisles.dragToReorder', 'Drag to reorder')}
+                                            </div>
+                                        )}
+                                    </div>
+                                    <div className="space-y-2">
+                                        {autoGroupingEnabled ? (
+                                            <DndContext
+                                                sensors={sensors}
+                                                collisionDetection={closestCenter}
+                                                onDragEnd={handleAisleDragEnd}
+                                            >
+                                                <SortableContext
+                                                    items={sortedCategories.map(c => c.id)}
+                                                    strategy={verticalListSortingStrategy}
+                                                >
+                                                    {sortedCategories.map(cat => (
+                                                        <SortableAisleRow
+                                                            key={cat.id}
+                                                            cat={cat}
+                                                            onEdit={handleEditAisle}
+                                                            onDelete={handleDeleteAisle}
+                                                            displayName={(cat.name.startsWith('aisles.') || cat.name.startsWith('categories.')) ? t(cat.name) : cat.name}
+                                                            keywordsLabel={cat.keywords?.join(', ') || t('aisles.noKeywords')}
+                                                            editLabel={t('common.edit')}
+                                                            deleteLabel={t('common.delete')}
+                                                        />
+                                                    ))}
+                                                </SortableContext>
+                                            </DndContext>
+                                        ) : (
+                                            sortedCategories.map(cat => (
+                                                <div key={cat.id} className="flex items-center justify-between p-3 bg-white dark:bg-gray-800 rounded-xl border border-gray-100 dark:border-gray-700 group">
+                                                    <div className="flex flex-col overflow-hidden">
+                                                        <span className="font-bold text-gray-900 dark:text-white truncate">
+                                                            {(cat.name.startsWith('aisles.') || cat.name.startsWith('categories.')) ? t(cat.name) : cat.name}
+                                                        </span>
+                                                        <span className="text-xs text-gray-500 dark:text-gray-400 truncate">
+                                                            {cat.keywords?.join(', ') || t('aisles.noKeywords')}
+                                                        </span>
+                                                    </div>
+                                                    <div className="flex items-center gap-1">
+                                                        <button onClick={() => handleEditAisle(cat)} className="p-2 text-gray-400 hover:text-blue-500 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-lg transition-all" title={t('common.edit')}>
+                                                            <Edit3 size={16} />
+                                                        </button>
+                                                        <button onClick={() => handleDeleteAisle(cat.id)} className="p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-all" title={t('common.delete')}>
+                                                            <Trash2 size={16} />
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            ))
+                                        )}
+                                    </div>
+                                </div>
+
+                                {/* Edit aisle modal */}
+                                {editingAisle && (
+                                    <div className="fixed inset-0 z-[200] flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm animate-in fade-in duration-200">
+                                        <div className="bg-white dark:bg-gray-800 w-full max-w-md rounded-3xl shadow-2xl p-6 space-y-4 animate-in zoom-in-95 duration-200">
+                                            <div className="flex items-center justify-between mb-4">
+                                                <h4 className="text-lg font-bold text-gray-900 dark:text-white">{t('aisles.editTitle')}</h4>
+                                                <button onClick={() => setEditingAisle(null)} className="p-2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 rounded-full transition-colors">
+                                                    <X size={20} />
+                                                </button>
+                                            </div>
+                                            <div className="space-y-4">
+                                                <div className="space-y-1">
+                                                    <label className="text-xs font-bold text-gray-500 uppercase tracking-wider pl-1">{t('aisles.name')}</label>
+                                                    <input
+                                                        type="text"
+                                                        value={editName}
+                                                        onChange={(e) => setEditName(e.target.value)}
+                                                        className="w-full p-3 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 focus:ring-2 focus:ring-blue-500 outline-none text-sm"
+                                                    />
+                                                </div>
+                                                <div className="space-y-1">
+                                                    <label className="text-xs font-bold text-gray-500 uppercase tracking-wider pl-1">{t('aisles.keywords')}</label>
+                                                    <input
+                                                        type="text"
+                                                        value={editKeywords}
+                                                        onChange={(e) => setEditKeywords(e.target.value)}
+                                                        placeholder={t('aisles.keywordsPlaceholder')}
+                                                        className="w-full p-3 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 focus:ring-2 focus:ring-blue-500 outline-none text-sm"
+                                                    />
+                                                </div>
+                                            </div>
+                                            <div className="flex gap-3 pt-4">
+                                                <button onClick={() => setEditingAisle(null)} className="flex-1 py-3 px-4 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-xl font-bold hover:bg-gray-200 dark:hover:bg-gray-600 transition-all">
+                                                    {t('common.cancel')}
+                                                </button>
+                                                <button onClick={handleSaveAisle} disabled={!editName.trim()} className="flex-1 py-3 px-4 bg-blue-600 text-white rounded-xl font-bold hover:bg-blue-700 transition-all active:scale-[0.98] disabled:opacity-50">
+                                                    {t('common.save')}
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                )}
+                            </div>
+                        )}
+                    </div>
+
+                    {/* Product History Accordion */}
+                    <div className="space-y-2">
+                        <button
+                            onClick={() => setHistoryAccordionOpen(!historyAccordionOpen)}
+                            className="flex items-center justify-between w-full p-4 rounded-2xl bg-gray-50 dark:bg-gray-900/40 hover:bg-gray-100/80 dark:hover:bg-gray-900 transition-all border border-gray-100 dark:border-gray-700/60 group"
+                        >
+                            <div className="flex items-center gap-4">
+                                <div className="p-2.5 bg-orange-100 dark:bg-orange-900/30 text-orange-600 dark:text-orange-400 rounded-xl group-hover:scale-110 transition-transform">
+                                    <History size={22} />
+                                </div>
+                                <div className="text-left">
+                                    <div className="font-bold text-gray-900 dark:text-white">{t('settings.productHistoryTitle')}</div>
+                                    <div className="text-xs font-medium text-gray-500 dark:text-gray-400">{t('settings.productHistoryDesc')}</div>
+                                </div>
+                            </div>
+                            <ChevronDown className={`text-gray-400 transition-transform duration-300 ${historyAccordionOpen ? 'rotate-180' : ''}`} size={20} />
+                        </button>
+                        {historyAccordionOpen && (
+                            <div className="mt-4 space-y-6 p-6 rounded-2xl bg-gray-50 dark:bg-gray-900/50 border border-gray-200 dark:border-gray-700 animate-in slide-in-from-top-4 duration-300">
+                                <div className="flex justify-between items-center mb-4">
+                                    <div className="text-sm font-bold text-gray-500 uppercase tracking-wider">{t('settings.historyItems')}</div>
+                                    <button
+                                        onClick={async () => {
+                                            if (confirm(t('common.confirmDeleteAll'))) {
+                                                await clearAllHistory();
+                                                showToast(t('common.cleared'), 'success');
+                                            }
+                                        }}
+                                        className="text-xs font-bold text-red-500 hover:text-red-600 transition-colors flex items-center gap-1"
+                                    >
+                                        <Trash2 size={14} />
+                                        {t('common.clearAll')}
+                                    </button>
+                                </div>
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 max-h-64 overflow-y-auto pr-2">
+                                    {itemHistory.map(item => (
+                                        <div key={item.id} className="flex items-center justify-between p-3 bg-white dark:bg-gray-800 rounded-xl border border-gray-100 dark:border-gray-700 group">
+                                            <div className="flex flex-col overflow-hidden">
+                                                <span className="font-medium text-gray-900 dark:text-white truncate">{item.text}</span>
+                                                <span className="text-[10px] text-gray-400 dark:text-gray-500">
+                                                    {t('common.used', { count: item.usageCount })}
+                                                </span>
+                                            </div>
+                                            <div className="flex items-center gap-1">
+                                                <button onClick={() => handleEditHistoryItem(item)} className="p-2 text-gray-400 hover:text-blue-500 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-lg transition-all" title={t('common.edit')}>
+                                                    <Edit3 size={14} />
+                                                </button>
+                                                <button
+                                                    onClick={async () => {
+                                                        await deleteFromHistory(item.id);
+                                                        showToast(t('toasts.itemDeleted'), 'info');
+                                                    }}
+                                                    className="p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-all"
+                                                    title={t('common.delete')}
+                                                >
+                                                    <Trash2 size={14} />
+                                                </button>
+                                            </div>
+                                        </div>
+                                    ))}
+                                    {editingHistoryItem && (
+                                        <div className="fixed inset-0 z-[200] flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm animate-in fade-in duration-200">
+                                            <div className="bg-white dark:bg-gray-800 w-full max-w-md rounded-3xl shadow-2xl p-6 space-y-4 animate-in zoom-in-95 duration-200">
+                                                <div className="flex items-center justify-between mb-4">
+                                                    <h4 className="text-lg font-bold text-gray-900 dark:text-white">{t('common.edit')}</h4>
+                                                    <button onClick={() => setEditingHistoryItem(null)} className="p-2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 rounded-full transition-colors">
+                                                        <X size={20} />
+                                                    </button>
+                                                </div>
+                                                <div className="space-y-1">
+                                                    <label className="text-xs font-bold text-gray-500 uppercase tracking-wider pl-1">{t('common.name')}</label>
+                                                    <input
+                                                        type="text"
+                                                        value={editHistoryText}
+                                                        onChange={(e) => setEditHistoryText(e.target.value)}
+                                                        className="w-full p-3 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 focus:ring-2 focus:ring-blue-500 outline-none text-sm"
+                                                    />
+                                                </div>
+                                                <div className="flex gap-3 pt-4">
+                                                    <button onClick={() => setEditingHistoryItem(null)} className="flex-1 py-3 px-4 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-xl font-bold hover:bg-gray-200 dark:hover:bg-gray-600 transition-all">
+                                                        {t('common.cancel')}
+                                                    </button>
+                                                    <button onClick={handleSaveHistoryItem} disabled={!editHistoryText.trim()} className="flex-1 py-3 px-4 bg-blue-600 text-white rounded-xl font-bold hover:bg-blue-700 transition-all active:scale-[0.98] disabled:opacity-50">
+                                                        {t('common.save')}
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    )}
+                                    {itemHistory.length === 0 && (
+                                        <div className="col-span-full text-center py-8 text-gray-500 dark:text-gray-400 text-sm italic">
+                                            {t('settings.noHistory')}
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
+                        )}
+                    </div>
+                </div>
+            </div>
+
+            {/* CARD 3: App Settings */}
+            <div className="bg-white dark:bg-gray-800 rounded-3xl shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden text-left">
+                <div className="p-6 space-y-6">
+                    <div className="flex items-center gap-4">
+                        <div className="p-2.5 bg-orange-100 dark:bg-orange-900/40 text-orange-600 dark:text-orange-400 rounded-2xl shadow-sm">
+                            <Globe size={20} />
+                        </div>
+                        <div className="text-left">
+                            <h2 className="text-lg font-bold text-gray-900 dark:text-white tracking-tight">{t('settings.appSettings.title')}</h2>
+                            <p className="text-xs font-medium text-gray-500 dark:text-gray-400">{t('settings.appSettings.subtitle')}</p>
+                        </div>
+                    </div>
+
+                    <hr className="border-gray-100 dark:border-gray-700/60" />
+
+                    {/* Language */}
+                    <div className="space-y-3">
+                        <label className="text-sm font-semibold text-gray-600 dark:text-gray-400 flex items-center gap-2 px-1">
+                            <Globe size={16} className="text-gray-400 dark:text-gray-500" />
                             {t('settings.language')}
-                        </h3>
+                        </label>
                         <div className="grid grid-cols-2 gap-4">
                             {[
                                 { code: 'sv', label: 'Svenska' },
@@ -153,10 +764,10 @@ export const SettingsView: React.FC = () => {
                                     <button
                                         key={lang.code}
                                         onClick={() => i18n.changeLanguage(lang.code)}
-                                        className={`p-4 rounded-2xl border-2 transition-all flex items-center justify-center font-semibold ${isSelected
+                                        className={`p-3 rounded-2xl border-2 transition-all flex items-center justify-center font-bold text-sm ${isSelected
                                             ? 'bg-blue-50 border-blue-500 text-blue-600 dark:bg-blue-900/30 dark:border-blue-500 dark:text-blue-400 shadow-[0_0_15px_rgba(59,130,246,0.1)]'
                                             : 'border-gray-100 dark:border-gray-700 text-gray-500 dark:text-gray-400 hover:border-blue-200 dark:hover:border-blue-800'
-                                            }`}
+                                        }`}
                                     >
                                         {lang.label}
                                     </button>
@@ -165,244 +776,149 @@ export const SettingsView: React.FC = () => {
                         </div>
                     </div>
 
+                    {/* Theme */}
                     <div className="space-y-4">
-                        <h3 className="text-base font-semibold text-gray-900 dark:text-white tracking-tight flex items-center gap-2 pb-2 border-b border-gray-100 dark:border-gray-700/60">
-                            <Sliders size={18} className="text-blue-500" />
-                            {t('settings.display', 'Skärm')}
-                        </h3>
-                        <div className="bg-white dark:bg-gray-800 rounded-2xl overflow-hidden border border-gray-100 dark:border-gray-700">
-                             <div className="p-4 flex items-center justify-between">
-                                <div className="flex items-center gap-4">
-                                    <div className={`p-2.5 rounded-xl transition-colors ${isLocked ? 'bg-yellow-100 dark:bg-yellow-900/30 text-yellow-600 dark:text-yellow-400' : 'bg-gray-100 dark:bg-gray-700 text-gray-400'}`}>
-                                        {isLocked ? <Eye size={22} /> : <EyeOff size={22} />}
-                                    </div>
-                                    <div>
-                                        <div className="font-bold text-gray-900 dark:text-white">{t('settings.wakeLock')}</div>
-                                        <div className="text-xs font-medium text-gray-500 dark:text-gray-400">{t('settings.wakeLockDesc')}</div>
-                                    </div>
-                                </div>
-                                <button
-                                    onClick={() => isLocked ? releaseWakeLock() : requestWakeLock()}
-                                    disabled={!isSupported}
-                                    className={`relative inline-flex h-7 w-12 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 ${
-                                        isLocked ? 'bg-blue-600' : 'bg-gray-200 dark:bg-gray-700'
-                                    } ${!isSupported ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}
-                                >
-                                    <span
-                                        className={`${
-                                            isLocked ? 'translate-x-6' : 'translate-x-1'
-                                        } inline-block h-5 w-5 transform rounded-full bg-white transition-transform`}
-                                    />
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div className="space-y-4">
-                        <h3 className="text-base font-semibold text-gray-900 dark:text-white tracking-tight flex items-center gap-2 pb-2 border-b border-gray-100 dark:border-gray-700/60">
-                            <Settings size={18} className="text-blue-500" />
-                            {t('lists.settings.title')}
-                        </h3>
                         <div className="space-y-3">
-                            <label className="text-sm font-medium text-gray-600 dark:text-gray-400 flex items-center gap-2 px-1">
-                                <SortAsc size={16} className="text-gray-400 dark:text-gray-500" />
-                                {t('lists.settings.sort')}
+                            <label className="text-sm font-semibold text-gray-600 dark:text-gray-400 flex items-center gap-2 px-1">
+                                <Settings size={16} className="text-gray-400 dark:text-gray-500" />
+                                {t('settings.theme')}
                             </label>
-                            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                                {(['manual', 'alphabetical', 'completed'] as const).map((mode) => (
+                            <div className="grid grid-cols-3 gap-3">
+                                {(['light', 'dark', 'system'] as const).map((mode) => (
                                     <button
                                         key={mode}
-                                        onClick={() => {
-                                            if (list) {
-                                                updateListSettings(list.id, {
-                                                    threeStageMode: list.settings?.threeStageMode ?? false,
-                                                    defaultSort: mode,
-                                                    calendarStartTime: list.settings?.calendarStartTime,
-                                                    calendarEndTime: list.settings?.calendarEndTime,
-                                                    pinned: list.settings?.pinned
-                                                });
-                                            }
-                                        }}
-                                        className={`flex flex-col items-center justify-center gap-2 p-4 rounded-2xl border-2 transition-all ${sortBy === mode
+                                        onClick={() => setTheme(mode)}
+                                        className={`p-3 rounded-2xl border-2 transition-all flex items-center justify-center font-bold text-sm ${theme === mode
                                             ? 'bg-blue-50 border-blue-500 text-blue-600 dark:bg-blue-900/30 dark:border-blue-500 dark:text-blue-400 shadow-[0_0_15px_rgba(59,130,246,0.1)]'
                                             : 'border-gray-100 dark:border-gray-700 text-gray-500 dark:text-gray-400 hover:border-blue-200 dark:hover:border-blue-800'
-                                            }`}
+                                        }`}
                                     >
-                                        <span className="text-sm font-bold">{t(`lists.sort.${mode}`)}</span>
+                                        {t(`settings.theme.${mode}`)}
                                     </button>
                                 ))}
                             </div>
                         </div>
 
-                        <div className="pt-4 mt-2">
-                            <button
-                                onClick={() => setCalendarAccordionOpen(!calendarAccordionOpen)}
-                                className="flex items-center justify-between w-full p-4 rounded-2xl bg-gray-50 dark:bg-gray-900/50 hover:bg-gray-100 dark:hover:bg-gray-900 transition-all border border-transparent hover:border-gray-200 dark:hover:border-gray-700 group"
-                            >
+                        {/* Wake lock */}
+                        <div className="bg-gray-50 dark:bg-gray-900/40 rounded-2xl overflow-hidden border border-gray-100 dark:border-gray-700/60">
+                            <div className="p-4 flex items-center justify-between">
                                 <div className="flex items-center gap-4">
-                                    <div className="p-2.5 bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400 rounded-xl group-hover:scale-110 transition-transform">
-                                        <Calendar size={22} />
+                                    <div className={`p-2.5 rounded-xl transition-colors ${isLocked ? 'bg-yellow-100 dark:bg-yellow-900/30 text-yellow-600 dark:text-yellow-400' : 'bg-gray-100 dark:bg-gray-700 text-gray-400'}`}>
+                                        {isLocked ? <Eye size={20} /> : <EyeOff size={20} />}
                                     </div>
-                                    <div className="text-left">
-                                        <div className="font-bold text-gray-900 dark:text-white">{t('lists.settings.calendar.title')}</div>
-                                        <div className="text-xs font-medium text-gray-500 dark:text-gray-400">{t('lists.settings.calendar.description')}</div>
-                                    </div>
-                                </div>
-                                <ChevronDown className={`text-gray-400 transition-transform duration-300 ${calendarAccordionOpen ? 'rotate-180' : ''}`} size={20} />
-                            </button>
-
-                            {calendarAccordionOpen && (
-                                <div className="mt-4 space-y-6 p-6 rounded-2xl bg-gray-50 dark:bg-gray-900/50 border border-gray-200 dark:border-gray-700 animate-in slide-in-from-top-4 duration-300">
-                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                                        <div className="space-y-2">
-                                            <label className="text-xs font-bold text-gray-500 uppercase tracking-wider">{t('lists.settings.calendar.startTime')}</label>
-                                            <input
-                                                type="datetime-local"
-                                                value={calendarStartTime}
-                                                onChange={(e) => setCalendarStartTime(e.target.value)}
-                                                className="w-full p-3 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 focus:ring-2 focus:ring-blue-500 outline-none text-sm font-medium"
-                                            />
-                                        </div>
-                                        <div className="space-y-2">
-                                            <label className="text-xs font-bold text-gray-500 uppercase tracking-wider">{t('lists.settings.calendar.endTime')}</label>
-                                            <input
-                                                type="datetime-local"
-                                                value={calendarEndTime}
-                                                onChange={(e) => setCalendarEndTime(e.target.value)}
-                                                className="w-full p-3 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 focus:ring-2 focus:ring-blue-500 outline-none text-sm font-medium"
-                                            />
-                                        </div>
-                                    </div>
-                                    <button
-                                        onClick={generateGoogleCalendarLink}
-                                        className="w-full py-4 px-6 bg-blue-600 text-white rounded-2xl font-bold hover:bg-blue-700 shadow-lg shadow-blue-500/25 transition-all active:scale-[0.98] flex items-center justify-center gap-3"
-                                    >
-                                        <Calendar size={20} />
-                                        {t('lists.settings.calendar.addToCalendar')}
-                                    </button>
-                                </div>
-                            )}
-                        </div>
-                    </div>
-
-                    <div className="space-y-4">
-                        <h3 className="text-base font-semibold text-gray-900 dark:text-white tracking-tight flex items-center gap-2 pb-2 border-b border-gray-100 dark:border-gray-700/60">
-                            <Database size={18} className="text-blue-500" />
-                            {t('settings.dataManagement', 'Data Management')}
-                        </h3>
-                        
-                        <div className="bg-white dark:bg-gray-800 rounded-2xl overflow-hidden border border-gray-100 dark:border-gray-700 hover:border-blue-200 dark:hover:border-gray-600 transition-all">
-                            <button
-                                onClick={() => setImportAccordionOpen(!importAccordionOpen)}
-                                className="w-full p-4 flex items-center justify-between group"
-                            >
-                                <div className="flex items-center gap-4">
-                                    <div className="p-2.5 bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 rounded-xl group-hover:scale-110 transition-transform">
-                                        <CloudUpload size={22} />
-                                    </div>
-                                    <div className="text-left">
-                                        <div className="font-bold text-gray-900 dark:text-white">{t('settings.importTitle', 'Import List')}</div>
-                                        <div className="text-xs font-medium text-gray-500 dark:text-gray-400">{t('settings.importDesc', 'Add items from JSON file or text')}</div>
-                                    </div>
-                                </div>
-                                <ChevronDown size={20} className={`text-gray-400 transition-transform duration-300 ${importAccordionOpen ? 'rotate-180' : ''}`} />
-                            </button>
-
-                            <div className={`transition-all duration-300 ease-in-out px-4 overflow-hidden ${importAccordionOpen ? 'max-h-[800px] pb-4 opacity-100' : 'max-h-0 opacity-0'}`}>
-                                <div className="pt-2 space-y-4">
-                                    <div className="p-4 bg-gray-50 dark:bg-gray-900/50 rounded-xl border border-gray-100 dark:border-gray-700 text-xs font-mono space-y-2 relative group-json">
-                                        <div className="text-gray-500 uppercase tracking-wider font-bold mb-1 flex items-center justify-between">
-                                            <div className="flex items-center gap-2">
-                                                <FileJson size={14} />
-                                                {t('settings.jsonFormat', 'Expected JSON Format:')}
-                                            </div>
-                                            <button
-                                                onClick={() => {
-                                                    const example = `[\n  { "text": "Milk" },\n  { "text": "Eggs" }\n]`;
-                                                    navigator.clipboard.writeText(example);
-                                                    showToast(t('common.copied', 'Copied to clipboard'), 'success');
-                                                }}
-                                                className="p-1.5 text-gray-400 hover:text-blue-500 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-lg transition-all"
-                                                title={t('common.copy', 'Copy')}
-                                            >
-                                                <Copy size={14} />
-                                            </button>
-                                        </div>
-                                        <div className="text-gray-600 dark:text-gray-400 pl-2 border-l-2 border-gray-200 dark:border-gray-700">
-                                            [<br/>
-                                            &nbsp;&nbsp;{'{ "text": "Milk" }'},<br/>
-                                            &nbsp;&nbsp;{'{ "text": "Eggs" }'}<br/>
-                                            ]
-                                        </div>
-                                    </div>
-
-                                    <div className="relative">
-                                        <textarea
-                                            value={jsonText}
-                                            onChange={(e) => setJsonText(e.target.value)}
-                                            placeholder={t('settings.pasteJson', 'Paste JSON here...')}
-                                            className="w-full h-32 p-3 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900/50 focus:ring-2 focus:ring-blue-500 outline-none text-sm font-mono resize-none"
-                                        />
-                                    </div>
-
-                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                                        <button
-                                            onClick={() => handleImportJson(jsonText)}
-                                            disabled={!jsonText.trim()}
-                                            className={`flex items-center justify-center gap-2 p-3 rounded-xl font-bold transition-all ${
-                                                jsonText.trim()
-                                                    ? 'bg-blue-600 hover:bg-blue-700 text-white shadow-lg shadow-blue-500/20 active:scale-[0.98]' 
-                                                    : 'bg-gray-100 dark:bg-gray-800 text-gray-400 cursor-not-allowed'
-                                            }`}
-                                        >
-                                            <FileJson size={18} />
-                                            <span>{t('settings.importText', 'Import Text')}</span>
-                                        </button>
-
-                                        <label className="flex items-center justify-center gap-2 p-3 bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-xl font-bold cursor-pointer transition-all active:scale-[0.98]">
-                                            <CloudUpload size={18} />
-                                            <span>{t('settings.selectFile', 'Upload File')}</span>
-                                            <input 
-                                                type="file" 
-                                                accept=".json" 
-                                                className="hidden" 
-                                                onChange={handleFileUpload} 
-                                            />
-                                        </label>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div className="pt-4">
-                        <div className="space-y-4">
-                            <h3 className="text-base font-semibold text-gray-900 dark:text-white tracking-tight flex items-center gap-2 pb-2 border-b border-gray-100 dark:border-gray-700/60">
-                                <User size={18} className="text-blue-500" />
-                                {t('settings.account', 'Konto')}
-                            </h3>
-                            <div className="flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-900/50 rounded-2xl border border-transparent group">
-                                <div className="flex items-center gap-4">
-                                    <div className="w-12 h-12 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center font-bold text-blue-600 dark:text-blue-400">
-                                        {(user?.displayName || user?.email || '?')[0].toUpperCase()}
-                                    </div>
-                                    <div>
-                                        <div className="font-bold text-gray-900 dark:text-white truncate max-w-[120px]">{user?.displayName || user?.email}</div>
-                                        <div className="text-xs font-medium text-gray-500 dark:text-gray-400 truncate max-w-[120px]">{user?.email}</div>
+                                    <div className="text-left flex-1 min-w-0">
+                                        <div className="font-bold text-sm text-gray-900 dark:text-white truncate">{t('settings.wakeLock')}</div>
+                                        <div className="text-xs font-medium text-gray-500 dark:text-gray-400 truncate">{t('settings.wakeLockDesc')}</div>
                                     </div>
                                 </div>
                                 <button
-                                    onClick={() => logout()}
-                                    className="p-3 text-red-600 hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-900/30 rounded-xl transition-all active:scale-95"
-                                    title={t('settings.logout', 'Logga ut')}
+                                    onClick={() => isLocked ? releaseWakeLock() : requestWakeLock()}
+                                    disabled={!isSupported}
+                                    className={`relative inline-flex h-7 w-12 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 flex-shrink-0 ${isLocked ? 'bg-blue-600' : 'bg-gray-200 dark:bg-gray-700'} ${!isSupported ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}
                                 >
-                                    <LogOut size={22} />
+                                    <span className={`${isLocked ? 'translate-x-6' : 'translate-x-1'} inline-block h-5 w-5 transform rounded-full bg-white transition-transform`} />
                                 </button>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
+
+            {/* CARD 4: Data Management */}
+            <div className="bg-white dark:bg-gray-800 rounded-3xl shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden text-left">
+                <div className="p-6 space-y-6">
+                    <div className="flex items-center gap-4">
+                        <div className="p-2.5 bg-green-100 dark:bg-green-900/40 text-green-600 dark:text-green-400 rounded-2xl shadow-sm">
+                            <Database size={20} />
+                        </div>
+                        <div className="text-left">
+                            <h2 className="text-lg font-bold text-gray-900 dark:text-white tracking-tight">{t('settings.dataManagement')}</h2>
+                            <p className="text-xs font-medium text-gray-500 dark:text-gray-400">{t('settings.dataManagementSubtitle')}</p>
+                        </div>
+                    </div>
+
+                    <hr className="border-gray-100 dark:border-gray-700/60" />
+
+                    {/* Import Accordion */}
+                    <div className="space-y-2">
+                        <button
+                            onClick={() => setImportAccordionOpen(!importAccordionOpen)}
+                            className="flex items-center justify-between w-full p-4 rounded-2xl bg-gray-50 dark:bg-gray-900/40 hover:bg-gray-100/80 dark:hover:bg-gray-900 transition-all border border-gray-100 dark:border-gray-700/60 group"
+                        >
+                            <div className="flex items-center gap-4">
+                                <div className="p-2.5 bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 rounded-xl group-hover:scale-110 transition-transform">
+                                    <Database size={20} />
+                                </div>
+                                <div className="text-left">
+                                    <div className="font-bold text-sm text-gray-900 dark:text-white">{t('settings.importTitle')}</div>
+                                    <div className="text-xs font-medium text-gray-500 dark:text-gray-400">{t('settings.importDesc')}</div>
+                                </div>
+                            </div>
+                            <ChevronDown className={`text-gray-400 transition-transform duration-300 ${importAccordionOpen ? 'rotate-180' : ''}`} size={20} />
+                        </button>
+                        {importAccordionOpen && (
+                            <div className="mt-3 p-5 rounded-2xl bg-gray-50 dark:bg-gray-900/40 border border-gray-100 dark:border-gray-700/60 animate-in slide-in-from-top-4 duration-300 space-y-4">
+                                <div className="flex flex-col gap-4">
+                                    <div className="flex items-center justify-center w-full">
+                                        <label className="flex flex-col items-center justify-center w-full h-32 border-2 border-gray-300 border-dashed rounded-2xl cursor-pointer bg-gray-55 dark:bg-gray-850 hover:bg-gray-100/60 dark:hover:bg-gray-900/60 transition-all">
+                                            <div className="flex flex-col items-center justify-center pt-5 pb-6">
+                                                <Database className="w-8 h-8 mb-3 text-gray-400" />
+                                                <p className="mb-2 text-sm text-gray-500 dark:text-gray-400 text-center">
+                                                    <span className="font-semibold">{t('settings.selectFile')}</span>
+                                                </p>
+                                                <p className="text-xs text-gray-400">JSON</p>
+                                            </div>
+                                            <input type="file" className="hidden" accept=".json" onChange={handleFileUpload} />
+                                        </label>
+                                    </div>
+                                    <div className="relative text-left">
+                                        <textarea
+                                            value={jsonText}
+                                            onChange={(e) => setJsonText(e.target.value)}
+                                            placeholder={t('settings.jsonPlaceholder')}
+                                            className="w-full p-4 rounded-2xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 focus:ring-2 focus:ring-blue-500 outline-none text-sm font-mono min-h-[150px]"
+                                        />
+                                        <button
+                                            onClick={() => handleImportJson(jsonText)}
+                                            disabled={!jsonText.trim()}
+                                            className="absolute bottom-3 right-3 px-4 py-2 bg-blue-600 text-white rounded-xl font-bold hover:bg-blue-700 transition-all active:scale-[0.98] disabled:opacity-50 text-xs"
+                                        >
+                                            {t('common.import')}
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+                    </div>
+                </div>
+            </div>
+
+            {/* Account */}
+            <div className="bg-white dark:bg-gray-800 rounded-3xl shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden">
+                <div className="p-6 flex items-center justify-between">
+                    <div className="flex items-center gap-4">
+                        <div className="p-3 bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400 rounded-2xl">
+                            <User size={22} />
+                        </div>
+                        <div className="text-left">
+                            <div className="font-bold text-gray-900 dark:text-white truncate max-w-[200px] sm:max-w-sm">
+                                {user?.email || t('common.guest')}
+                            </div>
+                            <div className="text-xs font-medium text-gray-500 dark:text-gray-400">
+                                {t('settings.accountStatus')}
+                            </div>
+                        </div>
+                    </div>
+                    <button
+                        onClick={logout}
+                        className="flex items-center gap-2 px-4 py-2 text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-xl font-bold transition-all active:scale-[0.98]"
+                    >
+                        <LogOut size={18} />
+                        {t('common.logout')}
+                    </button>
+                </div>
+            </div>
+
         </div>
     );
 };

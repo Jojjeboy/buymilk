@@ -3,7 +3,7 @@
 This document tracks planned and proposed improvements for the **BuyMilk** application. Use the checkboxes below to track your progress as they are implemented.
 
 ## 🚀 Smart & Productivity Features
-- [ ] **Aisle/Category Auto-Grouping**: Group items automatically by category (e.g., Dairy, Produce, Bakery) based on database templates, so shopping trips are optimized by store aisle.
+- [x] **Aisle/Category Auto-Grouping**: Group items automatically by category (e.g., Dairy, Produce, Bakery) based on database templates, so shopping trips are optimized by store aisle.
 - [ ] **Smart Frequency Predictions**: Analyze purchase history to suggest recurring items when they are likely needed (e.g., "Time to buy milk?").
 - [ ] **Voice-to-Text Input**: Use the Web Speech API to allow hands-free adding of items using voice commands.
 - [ ] **Recipe Ingredient Import**: Add a parser to import ingredients from recipe URLs or pasted recipe text.
@@ -19,7 +19,7 @@ This document tracks planned and proposed improvements for the **BuyMilk** appli
 - [ ] **Purchase History Charts**: Expand the statistics page to show monthly spending trends.
 
 ## 🎨 UI/UX & Accessibility
-- [ ] **Dark Mode / System Theme Sync**: Expand the settings options to allow syncing automatically with the system's light/dark mode.
+- [x] **Dark Mode / System Theme Sync**: Expand the settings options to allow syncing automatically with the system's light/dark mode.
 - [ ] **Custom Category Colors & Icons**: Allow users to customize category tags with distinct colors and icons.
 - [ ] **Quick Swipe Actions**: Implement left/right swipe gestures on mobile to quickly delete or edit items.
 

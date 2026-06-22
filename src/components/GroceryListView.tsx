@@ -11,11 +11,12 @@ import { v4 as uuidv4 } from 'uuid';
 import { Confetti } from './Confetti';
 import { useTranslation } from 'react-i18next';
 import { InlineAutocompleteInput } from './InlineAutocompleteInput';
+import { matchesCategoryKeywords } from '../utils/keywordMatch';
 
 
 export const GroceryListView: React.FC = React.memo(function GroceryListView() {
     const { t } = useTranslation();
-    const { lists, defaultListId, updateListItems, deleteItem, updateListAccess, loading, itemHistory, addToHistory } = useApp();
+    const { lists, defaultListId, updateListItems, deleteItem, updateListAccess, loading, itemHistory, addToHistory, categories } = useApp();
     const { showToast } = useToast();
     const [newItemText, setNewItemText] = useState('');
     const [showConfetti, setShowConfetti] = useState(false);
@@ -119,7 +120,16 @@ export const GroceryListView: React.FC = React.memo(function GroceryListView() {
                     setSuggestions([]);
                     setShowSuggestions(false);
 
-                    const newItem: Item = { id: uuidv4(), text: textToAdd, completed: false };
+                    // Dynamic category lookup with word-boundary matching
+                    const matchedCategory = categories.find(cat => 
+                        matchesCategoryKeywords(textToAdd, cat.keywords)
+                    );
+                    const newItem: Item = { 
+                        id: uuidv4(), 
+                        text: textToAdd, 
+                        completed: false, 
+                        ...(matchedCategory?.id ? { sectionId: matchedCategory.id } : {})
+                    };
                     await updateListItems(list.id, [...list.items, newItem]);
                     await addToHistory(textToAdd);
                 }
@@ -194,21 +204,94 @@ export const GroceryListView: React.FC = React.memo(function GroceryListView() {
 
                 return (
                     <>
-                        <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
-                            <SortableContext items={activeItems.map(i => i.id)} strategy={verticalListSortingStrategy}>
-                                <div className="space-y-2">
-                                    {activeItems.map((item) => (
-                                        <SortableItem
-                                            key={item.id}
-                                            item={{ ...item, isPending: item.isPending || list.isPending }}
-                                            onToggle={handleToggle}
-                                            onDelete={handleDelete}
-                                            onEdit={handleEdit}
-                                        />
-                                    ))}
-                                </div>
-                            </SortableContext>
-                        </DndContext>
+                        {list.settings?.autoGrouping ? (
+                            <div className="space-y-6">
+                                {categories.map(cat => {
+                                    const itemsInCategory = activeItems.filter(i => {
+                                        if (i.sectionId === cat.id) return true;
+                                        if (!i.sectionId) {
+                                            return matchesCategoryKeywords(i.text, cat.keywords);
+                                        }
+                                        return false;
+                                    });
+                                    if (itemsInCategory.length === 0) return null;
+                                    return (
+                                        <div key={cat.id} className="space-y-2">
+                                             <h3 className="text-xs font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider pl-1">
+                                                 {(cat.name.startsWith('aisles.') || cat.name.startsWith('categories.')) ? t(cat.name) : cat.name}
+                                             </h3>
+                                            <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+                                                <SortableContext items={itemsInCategory.map(i => i.id)} strategy={verticalListSortingStrategy}>
+                                                    <div className="space-y-2">
+                                                        {itemsInCategory.map((item) => (
+                                                            <SortableItem
+                                                                key={item.id}
+                                                                item={{ ...item, isPending: item.isPending || list.isPending }}
+                                                                onToggle={handleToggle}
+                                                                onDelete={handleDelete}
+                                                                onEdit={handleEdit}
+                                                            />
+                                                        ))}
+                                                    </div>
+                                                </SortableContext>
+                                            </DndContext>
+                                        </div>
+                                    );
+                                })}
+                                {(() => {
+                                    const otherItems = activeItems.filter(i => {
+                                        if (!i.sectionId) {
+                                            const hasMatch = categories.some(cat => 
+                                                matchesCategoryKeywords(i.text, cat.keywords)
+                                            );
+                                            if (hasMatch) return false;
+                                        } else {
+                                            if (categories.some(cat => cat.id === i.sectionId)) return false;
+                                        }
+                                        return true;
+                                    });
+                                    if (otherItems.length === 0) return null;
+                                    return (
+                                        <div className="space-y-2">
+                                            <h3 className="text-xs font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider pl-1">
+                                                {t('aisles.other')}
+                                            </h3>
+                                            <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+                                                <SortableContext items={otherItems.map(i => i.id)} strategy={verticalListSortingStrategy}>
+                                                    <div className="space-y-2">
+                                                        {otherItems.map((item) => (
+                                                            <SortableItem
+                                                                key={item.id}
+                                                                item={{ ...item, isPending: item.isPending || list.isPending }}
+                                                                onToggle={handleToggle}
+                                                                onDelete={handleDelete}
+                                                                onEdit={handleEdit}
+                                                            />
+                                                        ))}
+                                                    </div>
+                                                </SortableContext>
+                                            </DndContext>
+                                        </div>
+                                    );
+                                })()}
+                            </div>
+                        ) : (
+                            <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+                                <SortableContext items={activeItems.map(i => i.id)} strategy={verticalListSortingStrategy}>
+                                    <div className="space-y-2">
+                                        {activeItems.map((item) => (
+                                            <SortableItem
+                                                key={item.id}
+                                                item={{ ...item, isPending: item.isPending || list.isPending }}
+                                                onToggle={handleToggle}
+                                                onDelete={handleDelete}
+                                                onEdit={handleEdit}
+                                            />
+                                        ))}
+                                    </div>
+                                </SortableContext>
+                            </DndContext>
+                        )}
 
                         {activeItems.length === 0 && (
                             <div className="flex flex-col items-center justify-center py-20 opacity-50">
@@ -318,6 +401,7 @@ export const GroceryListView: React.FC = React.memo(function GroceryListView() {
                     </div>,
                 document.body
             )}
+
         </div>
     );
 });

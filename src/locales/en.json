@@ -34,6 +34,28 @@
         "recent": "Recent",
         "importJSON": "Import JSON"
     },
+    "aisles": {
+        "produce": "Produce",
+        "dairy": "Dairy & Eggs",
+        "bakery": "Bakery",
+        "meat": "Meat & Seafood",
+        "frozen": "Frozen Foods",
+        "pantry": "Pantry",
+        "beverages": "Beverages",
+        "household": "Household",
+        "snacks": "Snacks",
+        "other": "Other",
+        "templates": "Aisle Templates",
+        "templatesDesc": "Manage auto-grouping categories",
+        "namePlaceholder": "Aisle name (e.g. Dairy)",
+        "keywordsPlaceholder": "Keywords (comma separated)",
+        "existing": "Existing Aisles",
+        "noKeywords": "No keywords",
+        "editTitle": "Edit Aisle",
+        "name": "Name",
+        "keywords": "Keywords",
+        "dragToReorder": "Drag to reorder"
+    },
     "lists": {
         "newPlaceholder": "New List...",
         "add": "Add",
@@ -87,6 +109,10 @@
             "archive": {
                 "title": "Archived",
                 "description": "Lock the list and hide it from the home view."
+            },
+            "autoGrouping": {
+                "title": "Auto-group by aisle",
+                "description": "Automatically group items by store aisle"
             }
         },
         "archivedBadge": "Archived",
@@ -125,14 +151,22 @@
         "done": "Done",
         "name": "Name",
         "edit": "Edit",
+        "add": "Add",
+        "import": "Import",
         "prev": "Prev",
         "next": "Next",
         "copy": "Copy",
-        "copied": "Copied to clipboard"
+        "copied": "Copied to clipboard",
+        "clearAll": "Clear all",
+        "confirmDeleteAll": "Are you sure you want to clear all history?",
+        "cleared": "History cleared",
+        "guest": "Guest",
+        "logout": "Log out",
+        "used": "Used {{count}} times"
     },
     "settings": {
         "title": "Settings",
-        "subtitle": "Manage your app preferences",
+        "subtitle": "Manage your app preferences and account",
         "language": "Language",
         "theme": "Theme",
         "light": "Light",
@@ -143,9 +177,11 @@
         "reloadUpdate": "Reload & Update",
         "reloadUpdateDesc": "Force app update",
         "dataManagement": "Data Management",
+        "dataManagementSubtitle": "Import or export backups",
         "importTitle": "Import List",
         "importDesc": "Add items from JSON file",
         "jsonFormat": "Expected JSON Format:",
+        "jsonPlaceholder": "Or paste a JSON array here...",
         "selectFile": "Select JSON File",
         "importSuccess": "Added {{count}} items",
         "importNoItems": "No valid items found",
@@ -156,7 +192,25 @@
         "importDataDesc": "Restore from a backup file",
         "note": "Note",
         "importWarning": "Importing data will overwrite your current lists and notes. Make sure to back up your current data first.",
-        "importConfirm": "This will overwrite your current data. Are you sure?"
+        "importConfirm": "This will overwrite your current data. Are you sure?",
+        "databases": {
+            "title": "Categories & Items",
+            "subtitle": "Manage store aisles, keywords and autocomplete"
+        },
+        "appSettings": {
+            "title": "App Settings",
+            "subtitle": "Customize display, language and color theme"
+        },
+        "productHistoryTitle": "Manage known products",
+        "productHistoryDesc": "Remove products from the suggestion list",
+        "historyItems": "Saved products",
+        "noHistory": "No product history found",
+        "accountStatus": "Account settings",
+        "theme": {
+            "light": "Light",
+            "dark": "Dark",
+            "system": "Auto"
+        }
     },
     "toasts": {
         "listDeleted": "List \"{{name}}\" deleted",

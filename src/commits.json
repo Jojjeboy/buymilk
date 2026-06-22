@@ -1,5 +1,10 @@
 [
   {
+    "hash": "ce43e80b77d0d0beb2c6cbecfa6c74a3dac4e1eb",
+    "date": "2026-06-22 15:54:52 +0200",
+    "message": "mc"
+  },
+  {
     "hash": "43e40f1744f4a0a67401a010dda9a277393b4cc0",
     "date": "2026-06-22 13:52:33 +0200",
     "message": "improvements"
@@ -93,10 +98,5 @@
     "hash": "08c98fb2255d2b490a835302cca816af4602f360",
     "date": "2026-02-04 13:52:11 +0100",
     "message": "fix: make shadow text darker and fix missing handler"
-  },
-  {
-    "hash": "2dfe4dd3a234f1722bfe4d0a2713f83e2d773dad",
-    "date": "2026-02-04 13:49:18 +0100",
-    "message": "fix: align shadow text and allow suggesting items already in list"
   }
 ]

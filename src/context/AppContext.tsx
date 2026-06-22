@@ -2,6 +2,7 @@ import React, { createContext, useContext, useEffect, useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 
 import { List, Item, Todo, ListSettings, Section, Category, HistoryItem } from '../types';
+import { categories as defaultAisleTemplates } from '../data/categories';
 
 type Priority = 'low' | 'medium' | 'high';
 import { useToast } from './ToastContext';
@@ -13,7 +14,7 @@ import { ErrorBoundary } from '../components/ErrorBoundary';
 interface AppContextType {
     lists: List[]; // Keep lists array for now but we only use one
     defaultListId: string | undefined; // Helper to get the main list
-    theme: 'light' | 'dark';
+    theme: 'light' | 'dark' | 'system';
     
     // Core List Operations
     updateListName: (id: string, name: string) => Promise<void>;
@@ -23,6 +24,7 @@ interface AppContextType {
     
     // Theme
     toggleTheme: () => void;
+    setTheme: (theme: 'light' | 'dark' | 'system') => void;
     
     // Todos
     todos: Todo[];
@@ -54,12 +56,15 @@ interface AppContextType {
     deleteList: (id: string) => Promise<void>;
 
     // Categories
-    addCategory: (name: string) => Promise<void>;
+    addCategory: (name: string, keywords?: string[]) => Promise<void>;
+    updateCategory: (id: string, updates: Partial<Category>) => Promise<void>;
     deleteCategory: (id: string) => Promise<void>;
+    reorderCategories: (orderedIds: string[]) => Promise<void>;
 
     // History
     itemHistory: HistoryItem[];
     addToHistory: (text: string) => Promise<void>;
+    updateHistoryItem: (id: string, updates: Partial<HistoryItem>) => Promise<void>;
     deleteFromHistory: (id: string) => Promise<void>;
     clearAllHistory: () => Promise<void>;
 }
@@ -79,25 +84,54 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     const categoriesSync = useFirestoreSync<Category>('users/{uid}/categories', user?.uid);
     const historySync = useFirestoreSync<HistoryItem>('users/{uid}/history', user?.uid);
 
-    const [theme, setTheme] = useState<'light' | 'dark'>('light');
+    const [theme, setThemeState] = useState<'light' | 'dark' | 'system'>('system');
     const { showToast } = useToast();
     const { t } = useTranslation();
     const [isCreatingDefault, setIsCreatingDefault] = React.useState(false);
+    const [isSeedingCategories, setIsSeedingCategories] = React.useState(false);
 
-    // Ensure we have at least one list
+    // Seed default categories if none exist
+    useEffect(() => {
+        if (!categoriesSync.loading && categoriesSync.data.length === 0 && user?.uid && !isSeedingCategories) {
+            const seedCategories = async () => {
+                setIsSeedingCategories(true);
+                try {
+                    for (const template of defaultAisleTemplates) {
+                        await categoriesSync.addItem({
+                            id: uuidv4(),
+                            name: template.nameKey, // We'll store the key for translation
+                            order: defaultAisleTemplates.indexOf(template),
+                            keywords: template.keywords
+                        });
+                    }
+                } catch (error) {
+                    console.error("Failed to seed categories:", error);
+                } finally {
+                    setIsSeedingCategories(false);
+                }
+            };
+            seedCategories();
+        }
+    }, [categoriesSync.loading, categoriesSync.data.length, user?.uid, categoriesSync.addItem, isSeedingCategories]);
+
     useEffect(() => {
         if (!listsSync.loading && listsSync.data.length === 0 && user?.uid && !isCreatingDefault) {
             const createDefaultList = async () => {
                 setIsCreatingDefault(true);
                 try {
                     const id = uuidv4();
-                    await listsSync.addItem({
-                        id,
-                        name: t('lists.groceryList', 'Inköpslista'),
-                        categoryId: 'default', // Legacy requirement
-                        items: [],
-                        lastAccessedAt: new Date().toISOString()
-                    });
+                      await listsSync.addItem({
+                          id,
+                          name: t('lists.groceryList', 'Inköpslista'),
+                          categoryId: 'default', // Legacy requirement
+                          items: [],
+                          lastAccessedAt: new Date().toISOString(),
+                          settings: {
+                              autoGrouping: true,
+                              defaultSort: 'manual',
+                              threeStageMode: false
+                          }
+                      });
                 } finally {
                     setIsCreatingDefault(false);
                 }
@@ -107,39 +141,59 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     }, [listsSync.loading, listsSync.data.length, user?.uid, listsSync.addItem, t, isCreatingDefault]);
 
     useEffect(() => {
-        if (theme === 'dark') {
-            document.documentElement.classList.add('dark');
-        } else {
-            document.documentElement.classList.remove('dark');
+        const applyTheme = () => {
+            if (theme === 'system') {
+                const isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+                if (isDark) {
+                    document.documentElement.classList.add('dark');
+                } else {
+                    document.documentElement.classList.remove('dark');
+                }
+            } else if (theme === 'dark') {
+                document.documentElement.classList.add('dark');
+            } else {
+                document.documentElement.classList.remove('dark');
+            }
+        };
+
+        applyTheme();
+
+        if (theme === 'system') {
+            const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+            const handler = () => applyTheme();
+            mediaQuery.addEventListener('change', handler);
+            return () => mediaQuery.removeEventListener('change', handler);
         }
     }, [theme]);
 
     useEffect(() => {
-        const savedTheme = localStorage.getItem('theme') as 'light' | 'dark';
+        const savedTheme = localStorage.getItem('theme') as 'light' | 'dark' | 'system';
         if (savedTheme) {
-            setTheme(savedTheme);
-        }
+            setThemeState(savedTheme);
+        } else {
+            const manualTheme = localStorage.getItem('manual_theme');
+            if (!manualTheme) {
+                try {
+                    // Use Europe/Stockholm time
+                    const formatter = new Intl.DateTimeFormat('en-US', {
+                        timeZone: 'Europe/Stockholm',
+                        hour: 'numeric',
+                        hour12: false
+                    });
 
-        const manualTheme = localStorage.getItem('manual_theme');
-        if (!manualTheme) {
-            try {
-                // Use Europe/Stockholm time
-                const formatter = new Intl.DateTimeFormat('en-US', {
-                    timeZone: 'Europe/Stockholm',
-                    hour: 'numeric',
-                    hour12: false
-                });
+                    const hour = parseInt(formatter.format(new Date()), 10);
 
-                const hour = parseInt(formatter.format(new Date()), 10);
-
-                // Light mode between 08:00 and 18:00
-                const isDay = hour >= 8 && hour < 18;
-                setTheme(isDay ? 'light' : 'dark');
-            } catch (error) {
-                console.error("Error setting time-based theme:", error);
-                const hour = new Date().getHours();
-                const isDay = hour >= 8 && hour < 18;
-                setTheme(isDay ? 'light' : 'dark');
+                    // Light mode between 08:00 and 18:00
+                    const isDay = hour >= 8 && hour < 18;
+                    setThemeState(isDay ? 'light' : 'dark');
+                } catch (error) {
+                    console.error("Error setting time-based theme:", error);
+                    const hour = new Date().getHours();
+                    const isDay = hour >= 8 && hour < 18;
+                    setThemeState(isDay ? 'light' : 'dark');
+                }
+            } else {
+                setThemeState('system');
             }
         }
     }, []);
@@ -193,13 +247,19 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         }
     };
 
+    const setTheme = (newTheme: 'light' | 'dark' | 'system') => {
+        setThemeState(newTheme);
+        localStorage.setItem('theme', newTheme);
+        localStorage.setItem('manual_theme', 'true');
+    };
+
     const toggleTheme = () => {
-        setTheme((prev) => {
+        setThemeState((prev) => {
             const newTheme = prev === 'light' ? 'dark' : 'light';
             localStorage.setItem('theme', newTheme);
+            localStorage.setItem('manual_theme', 'true');
             return newTheme;
         });
-        localStorage.setItem('manual_theme', 'true');
     };
 
     const addTodo = async (title: string, content: string, priority: Priority) => {
@@ -262,9 +322,11 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         const list = listsSync.data.find((l: List) => l.id === listId);
         if (list) {
             const updatedSections = (list.sections || []).filter(s => s.id !== sectionId);
-            const updatedItems = list.items.map(item =>
-                item.sectionId === sectionId ? { ...item, sectionId: undefined } : item
-            );
+            const updatedItems = list.items.map(item => {
+                if (item.sectionId !== sectionId) return item;
+                const { sectionId: _removed, ...rest } = item;
+                return rest;
+            });
 
             await listsSync.updateItem(listId, {
                 sections: updatedSections,
@@ -291,16 +353,27 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         await listsSync.deleteItem(id);
     };
 
-    const addCategory = async (name: string) => {
+    const addCategory = async (name: string, keywords: string[] = []) => {
         await categoriesSync.addItem({
             id: uuidv4(),
             name,
-            order: categoriesSync.data.length
+            order: categoriesSync.data.length,
+            keywords
         });
+    };
+
+    const updateCategory = async (id: string, updates: Partial<Category>) => {
+        await categoriesSync.updateItem(id, updates);
     };
 
     const deleteCategory = async (id: string) => {
         await categoriesSync.deleteItem(id);
+    };
+
+    const reorderCategories = async (orderedIds: string[]) => {
+        await Promise.all(
+            orderedIds.map((id, index) => categoriesSync.updateItem(id, { order: index }))
+        );
     };
 
     const addToHistory = async (text: string) => {
@@ -326,6 +399,10 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         }
     };
 
+    const updateHistoryItem = async (id: string, updates: Partial<HistoryItem>) => {
+        await historySync.updateItem(id, updates);
+    };
+
     const deleteFromHistory = async (id: string) => {
         await historySync.deleteItem(id);
     };
@@ -345,6 +422,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
                 lists: listsSync.data,
                 defaultListId,
                 theme,
+                setTheme,
                 updateListName,
                 updateListSettings,
                 updateListItems,
@@ -360,14 +438,17 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
                 addSection,
                 updateSection,
                 deleteSection,
-                categories: categoriesSync.data,
+                categories: [...categoriesSync.data].sort((a, b) => (a.order ?? 0) - (b.order ?? 0)),
                 archiveList,
                 addList,
                 deleteList,
                 addCategory,
+                updateCategory,
                 deleteCategory,
+                reorderCategories,
                 itemHistory: historySync.data,
                 addToHistory,
+                updateHistoryItem,
                 deleteFromHistory,
                 clearAllHistory,
             }}

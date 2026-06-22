@@ -13,7 +13,7 @@
     "lint": "eslint .",
     "check-any": "eslint . --config eslint.strict.config.ts",
     "generate-env": "node scripts/generate-env.js",
-    "validate": "node scripts/run-validate.js"
+    "validate": "npm run build:only && npm run lint && npm run check-any && npm run test"
   },
   "dependencies": {
     "@dnd-kit/core": "^6.3.1",

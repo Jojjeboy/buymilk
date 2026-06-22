@@ -60,6 +60,7 @@ export interface Category {
   id: string;
   name: string;
   order: number;
+  keywords?: string[];
 }
 
 export interface HistoryItem {
