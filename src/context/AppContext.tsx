@@ -421,10 +421,10 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     const defaultListId = listsSync.data.length > 0 ? listsSync.data[0].id : undefined;
 
     const isSyncing = 
-        listsSync.data.some(l => (l as any).isPending) || 
-        todosSync.data.some(t => (t as any).isPending) || 
-        categoriesSync.data.some(c => (c as any).isPending) || 
-        historySync.data.some(h => (h as any).isPending);
+        listsSync.data.some(l => (l as { isPending?: boolean }).isPending) || 
+        todosSync.data.some(t => (t as { isPending?: boolean }).isPending) || 
+        categoriesSync.data.some(c => (c as { isPending?: boolean }).isPending) || 
+        historySync.data.some(h => (h as { isPending?: boolean }).isPending);
 
     return (
         <AppContext.Provider
