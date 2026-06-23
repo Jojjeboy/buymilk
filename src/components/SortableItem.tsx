@@ -7,6 +7,7 @@ import {
     SwipeableList,
     SwipeableListItem,
     SwipeAction,
+    LeadingActions,
     TrailingActions,
     Type as ListType,
 } from 'react-swipeable-list';
@@ -24,6 +25,7 @@ interface SortableItemProps {
 
 export const SortableItem: React.FC<SortableItemProps> = ({ item, onToggle, onDelete, onEdit, onCategorize, disabled, isCategorized }) => {
     const [localText, setLocalText] = React.useState(item.text);
+    const inputRef = React.useRef<HTMLInputElement>(null);
 
     React.useEffect(() => {
         setLocalText(item.text);
@@ -55,6 +57,25 @@ export const SortableItem: React.FC<SortableItemProps> = ({ item, onToggle, onDe
         transition,
     };
 
+    const leadingActions = () => (
+        <LeadingActions>
+            <SwipeAction
+                onClick={() => {
+                    inputRef.current?.focus();
+                }}
+            >
+                <div className="flex items-center justify-start px-4 bg-blue-500 text-white h-full rounded-l-lg">
+                    <div className="flex items-center gap-2">
+                        <div className="p-1 bg-white/20 rounded">
+                            <div className="w-2 h-2 bg-white rounded-full" />
+                            <div className="w-2 h-2 bg-white rounded-full ml-1" />
+                        </div>
+                    </div>
+                </div>
+            </SwipeAction>
+        </LeadingActions>
+    );
+
     const trailingActions = () => (
         <TrailingActions>
             <SwipeAction
@@ -79,9 +100,12 @@ export const SortableItem: React.FC<SortableItemProps> = ({ item, onToggle, onDe
         >
             <SwipeableList threshold={0.25} type={ListType.IOS}>
                 <SwipeableListItem
+                    leadingActions={leadingActions()}
                     trailingActions={trailingActions()}
                 >
                     <div className="w-full flex items-center gap-3 p-3 bg-white dark:bg-gray-800 rounded-lg border border-gray-100 dark:border-gray-700 shadow-sm">
+                        {/* We need to wrap the content to allow leading actions to be visible */}
+                        <div className="flex items-center gap-3 w-full">
                         <button
                             onClick={(e) => {
                                 e.stopPropagation();
@@ -110,6 +134,7 @@ export const SortableItem: React.FC<SortableItemProps> = ({ item, onToggle, onDe
                         </button>
 
                         <input
+                            ref={inputRef}
                             type="text"
                             value={localText}
                             onChange={(e) => setLocalText(e.target.value)}
@@ -171,6 +196,7 @@ export const SortableItem: React.FC<SortableItemProps> = ({ item, onToggle, onDe
                             </button>
                         )}
                     </div>
+                </div>
                 </SwipeableListItem>
             </SwipeableList>
         </div>
