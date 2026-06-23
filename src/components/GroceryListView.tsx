@@ -9,6 +9,7 @@ import { SortableItem } from './SortableItem';
 import { Plus, RotateCcw, ChevronDown, CloudUpload, Mic } from 'lucide-react';
 import { v4 as uuidv4 } from 'uuid';
 import { Confetti } from './Confetti';
+import { ImportItemsModal } from './ImportItemsModal';
 import { useTranslation } from 'react-i18next';
 import { InlineAutocompleteInput } from './InlineAutocompleteInput';
 import { matchesCategoryKeywords } from '../utils/keywordMatch';
@@ -27,6 +28,7 @@ export const GroceryListView: React.FC = React.memo(function GroceryListView() {
     const [showSuggestions, setShowSuggestions] = useState(false);
     const [completedAccordionOpen, setCompletedAccordionOpen] = useState(false);
     const [categorizingItem, setCategorizingItem] = useState<{ id: string; text: string } | null>(null);
+    const [importModalOpen, setImportModalOpen] = useState(false);
 
     const list: List | undefined = lists.find((l) => l.id === defaultListId);
 
@@ -190,7 +192,7 @@ export const GroceryListView: React.FC = React.memo(function GroceryListView() {
         }
     };
 
-    const handleAssignToCategory = async (categoryId: string) => {
+    const handleAssignToCategory = async (categoryId: string | undefined) => {
         if (!list || !categorizingItem) return;
         
         const newItems = list.items.map(item => 
@@ -222,20 +224,48 @@ export const GroceryListView: React.FC = React.memo(function GroceryListView() {
         await updateListItems(list.id, newItems);
     };
 
+    const handleImportItems = async (items: string[]) => {
+        if (!list) return;
+        
+        const newItems: Item[] = items.map(text => ({
+            id: uuidv4(),
+            text,
+            completed: false,
+        }));
+
+        await updateListItems(list.id, [...list.items, ...newItems]);
+        
+        for (const text of items) {
+            await addToHistory(text);
+        }
+    };
+
     return (
         <div className="flex flex-col min-h-[calc(100vh-8rem)] relative pb-40 md:pb-32">
+            <ImportItemsModal 
+                isOpen={importModalOpen} 
+                onClose={() => setImportModalOpen(false)} 
+                onImport={handleImportItems}
+                existingItemTexts={list?.items.map(i => i.text.toLowerCase()) || []}
+            />
             {showConfetti && <Confetti trigger={true} />}
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
-                <div className="flex items-center gap-2 flex-1 min-w-0">
-                    <div className="flex items-center gap-2 group min-w-0 flex-1">
-                        <h2 className="text-xl font-semibold truncate">{t('lists.groceryTitle')}</h2>
-                        {list.isPending && (
-                            <div className="text-blue-500 animate-in fade-in duration-300" title="Syncing list...">
-                                <CloudUpload size={20} />
-                            </div>
-                        )}
+                    <div className="flex items-center justify-between gap-2 flex-1 min-w-0">
+                        <div className="flex items-center gap-2 group min-w-0 flex-1">
+                            <h2 className="text-xl font-semibold truncate">{t('lists.groceryTitle')}</h2>
+                            {list.isPending && (
+                                <div className="text-blue-500 animate-in fade-in duration-300" title="Syncing list...">
+                                    <CloudUpload size={20} />
+                                </div>
+                            )}
+                        </div>
+                        <button 
+                            onClick={() => setImportModalOpen(true)}
+                            className="text-sm font-medium text-blue-600 dark:text-blue-400 hover:underline transition-colors"
+                        >
+                            {t('common.import', 'Import')}
+                        </button>
                     </div>
-                </div>
             </div>
 
 
@@ -272,6 +302,8 @@ export const GroceryListView: React.FC = React.memo(function GroceryListView() {
                                                                  onToggle={handleToggle}
                                                                  onDelete={handleDelete}
                                                                  onEdit={handleEdit}
+                                                                 onCategorize={handleCategorize}
+                                                                 isCategorized={true}
                                                              />
                                                         ))}
                                                     </div>
@@ -309,6 +341,7 @@ export const GroceryListView: React.FC = React.memo(function GroceryListView() {
                                                                  onDelete={handleDelete}
                                                                  onEdit={handleEdit}
                                                                  onCategorize={handleCategorize}
+                                                                 isCategorized={false}
                                                              />
                                                         ))}
                                                     </div>

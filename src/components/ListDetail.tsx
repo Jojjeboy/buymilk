@@ -5,9 +5,10 @@ import type { Item, ListSettings, List } from '../types';
 import { DndContext, closestCenter, KeyboardSensor, PointerSensor, useSensor, useSensors, type DragEndEvent, useDroppable } from '@dnd-kit/core';
 import { arrayMove, SortableContext, sortableKeyboardCoordinates, verticalListSortingStrategy } from '@dnd-kit/sortable';
 import { SortableItem } from './SortableItem';
-import { Plus, ChevronLeft, Settings, RotateCcw, ChevronDown, Trash2, Edit2, Pin } from 'lucide-react';
+import { Plus, ChevronLeft, Settings, RotateCcw, ChevronDown, Trash2, Edit2, Pin, Upload } from 'lucide-react';
 import { v4 as uuidv4 } from 'uuid';
 import { Modal } from './Modal';
+import { ImportItemsModal } from './ImportItemsModal';
 
 import { useTranslation } from 'react-i18next';
 import { matchesCategoryKeywords } from '../utils/keywordMatch';
@@ -31,6 +32,7 @@ export const ListDetail: React.FC = React.memo(function ListDetail() {
     const [isEditingTitle, setIsEditingTitle] = useState(false);
     const [editedTitle, setEditedTitle] = useState('');
     const [settingsOpen, setSettingsOpen] = useState(false);
+    const [importModalOpen, setImportModalOpen] = useState(false);
     const [calendarAccordionOpen, setCalendarAccordionOpen] = useState(false);
     const [calendarEventTitle, setCalendarEventTitle] = useState('');
     const [newSectionName, setNewSectionName] = useState('');
@@ -356,6 +358,23 @@ export const ListDetail: React.FC = React.memo(function ListDetail() {
         }
     };
 
+    const handleImportItems = async (items: string[]) => {
+        if (!list) return;
+        
+        const newItems: Item[] = items.map(text => ({
+            id: uuidv4(),
+            text,
+            completed: false,
+        }));
+
+        await updateListItems(list.id, [...list.items, ...newItems]);
+        
+        // Add to history
+        for (const text of items) {
+            await addToHistory(text);
+        }
+    };
+
     const updateSettings = async (newSettings: Partial<typeof list.settings>) => {
         if (!list) return;
         const currentSettings = list.settings || { threeStageMode: false, defaultSort: 'manual' };
@@ -485,6 +504,12 @@ export const ListDetail: React.FC = React.memo(function ListDetail() {
 
     return (
         <div className="space-y-6">
+            <ImportItemsModal 
+                isOpen={importModalOpen} 
+                onClose={() => setImportModalOpen(false)} 
+                onImport={handleImportItems}
+                existingItemTexts={list?.items.map(i => i.text.toLowerCase()) || []}
+            />
             {/* ... (header code) ... */}
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div className="flex items-center gap-2 flex-1 min-w-0">
@@ -597,6 +622,13 @@ export const ListDetail: React.FC = React.memo(function ListDetail() {
                             className="p-3 bg-blue-600 text-white rounded-xl hover:bg-blue-700 shadow-md transition-colors"
                         >
                             <Plus />
+                        </button>
+                        <button
+                            onClick={() => setImportModalOpen(true)}
+                            className="p-3 rounded-xl bg-pink-500 hover:bg-pink-600 transition-colors text-white shadow-lg animate-bounce"
+                            title={t('common.import', 'Import')}
+                        >
+                            <Upload size={20} />
                         </button>
                         <button
                             onClick={() => setSettingsOpen(true)}

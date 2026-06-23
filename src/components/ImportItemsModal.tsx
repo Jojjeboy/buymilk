@@ -1,6 +1,7 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Upload, ChevronDown, Copy, Check, X } from 'lucide-react';
+import { Upload, ChevronDown, Copy, Check, X, FileText } from 'lucide-react';
+import { parseRecipeText } from '../utils/recipeParser';
 
 interface ImportItemsModalProps {
     isOpen: boolean;
@@ -104,13 +105,23 @@ export const ImportItemsModal: React.FC<ImportItemsModalProps> = ({
     existingItemTexts,
 }) => {
     const { t } = useTranslation();
+    const [importMode, setImportMode] = useState<'json' | 'recipe'>('json');
     const [jsonText, setJsonText] = useState('');
+    const [recipeText, setRecipeText] = useState('');
+    const [previewItems, setPreviewItems] = useState<string[]>([]);
+    const [selectedItems, setSelectedItems] = useState<Set<string>>(new Set());
     const [error, setError] = useState('');
     const [showExample, setShowExample] = useState(false);
     const [isImporting, setIsImporting] = useState(false);
     const fileInputRef = useRef<HTMLInputElement>(null);
 
-    if (!isOpen) return null;
+    useEffect(() => {
+        if (importMode === 'recipe') {
+            const parsed = parseRecipeText(recipeText);
+            setPreviewItems(parsed);
+            setSelectedItems(new Set(parsed));
+        }
+    }, [recipeText, importMode]);
 
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
@@ -127,18 +138,26 @@ export const ImportItemsModal: React.FC<ImportItemsModalProps> = ({
     };
 
     const handleImport = async () => {
-        const raw = jsonText.trim();
-        if (!raw) {
-            setError(t('importItems.errorEmpty'));
-            return;
-        }
-
         let texts: string[];
-        try {
-            texts = parseJsonItems(raw);
-        } catch (errKey) {
-            setError(t(`importItems.${errKey as string}`));
-            return;
+
+        if (importMode === 'json') {
+            const raw = jsonText.trim();
+            if (!raw) {
+                setError(t('importItems.errorEmpty'));
+                return;
+            }
+            try {
+                texts = parseJsonItems(raw);
+            } catch (errKey) {
+                setError(t(`importItems.${errKey as string}`));
+                return;
+            }
+        } else {
+            if (selectedItems.size === 0) {
+                setError(t('importRecipe.errorEmpty'));
+                return;
+            }
+            texts = Array.from(selectedItems);
         }
 
         // Separate new items from duplicates
@@ -146,9 +165,9 @@ export const ImportItemsModal: React.FC<ImportItemsModalProps> = ({
         const newTexts = texts.filter((t) => !existingSet.has(t.toLowerCase()));
         const dupeCount = texts.length - newTexts.length;
 
-        if (newTexts.length === 0 && dupeCount > 0) {
-            setError(t('importItems.skippedDupes', { count: dupeCount }));
-            return;
+        if (newTexts.length === 0 && texts.length > 0 && dupeCount > 0) {
+            // If we only have duplicates, we can show a warning or just proceed with empty
+            // For JSON we had a specific error, for recipe we'll just import what's new
         }
 
         setError('');
@@ -157,10 +176,13 @@ export const ImportItemsModal: React.FC<ImportItemsModalProps> = ({
             await onImport(newTexts);
             // Reset state on success
             setJsonText('');
+            setRecipeText('');
+            setPreviewItems([]);
+            setSelectedItems(new Set());
             setShowExample(false);
             onClose();
         } catch {
-            setError(t('importItems.errorFailed'));
+            setError(importMode === 'json' ? t('importItems.errorFailed') : t('importRecipe.errorFailed') || t('common.error'));
         } finally {
             setIsImporting(false);
         }
@@ -168,10 +190,15 @@ export const ImportItemsModal: React.FC<ImportItemsModalProps> = ({
 
     const handleClose = () => {
         setJsonText('');
+        setRecipeText('');
+        setPreviewItems([]);
+        setSelectedItems(new Set());
         setError('');
         setShowExample(false);
         onClose();
     };
+
+    if (!isOpen) return null;
 
     return (
         /* Backdrop */
@@ -184,10 +211,10 @@ export const ImportItemsModal: React.FC<ImportItemsModalProps> = ({
                 <div className="flex items-center justify-between px-5 pt-5 pb-3 border-b border-gray-100 dark:border-gray-700">
                     <div className="flex items-center gap-2">
                         <div className="p-2 bg-blue-100 dark:bg-blue-900/30 rounded-lg">
-                            <Upload size={18} className="text-blue-600 dark:text-blue-400" />
+                            {importMode === 'json' ? <Upload size={18} className="text-blue-600 dark:text-blue-400" /> : <FileText size={18} className="text-blue-600 dark:text-blue-400" />}
                         </div>
                         <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
-                            {t('importItems.title')}
+                            {importMode === 'json' ? t('importItems.title') : t('importRecipe.title')}
                         </h2>
                     </div>
                     <button
@@ -200,89 +227,168 @@ export const ImportItemsModal: React.FC<ImportItemsModalProps> = ({
 
                 {/* Scrollable body */}
                 <div className="flex-1 overflow-y-auto px-5 py-4 space-y-4">
-                    <p className="text-sm text-gray-600 dark:text-gray-400">
-                        {t('importItems.description')}
-                    </p>
-
-                    {/* Example formats accordion */}
-                    <div className="rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden">
+                    {/* Mode Toggle */}
+                    <div className="flex p-1 bg-gray-100 dark:bg-gray-900 rounded-xl w-fit">
                         <button
-                            onClick={() => setShowExample(!showExample)}
-                            className="w-full flex items-center justify-between px-4 py-3 bg-gray-50 dark:bg-gray-700/50 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors text-left"
+                            onClick={() => setImportMode('json')}
+                            className={`px-3 py-1.5 text-xs font-medium rounded-lg transition-all ${
+                                importMode === 'json'
+                                    ? 'bg-white dark:bg-gray-700 text-blue-600 dark:text-blue-400 shadow-sm'
+                                    : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300'
+                            }`}
                         >
-                            <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                                {showExample ? t('importItems.hideExample') : t('importItems.showExample')}
-                            </span>
-                            <ChevronDown
-                                size={16}
-                                className={`text-gray-400 transition-transform duration-200 ${showExample ? 'rotate-180' : ''}`}
-                            />
+                            {t('importRecipe.toggleJson')}
                         </button>
+                        <button
+                            onClick={() => setImportMode('recipe')}
+                            className={`px-3 py-1.5 text-xs font-medium rounded-lg transition-all ${
+                                importMode === 'recipe'
+                                    ? 'bg-white dark:bg-gray-700 text-blue-600 dark:text-blue-400 shadow-sm'
+                                    : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300'
+                            }`}
+                        >
+                            {t('importRecipe.toggleRecipe')}
+                        </button>
+                    </div>
 
-                        {showExample && (
-                            <div className="px-4 pb-4 pt-3 space-y-3 bg-white dark:bg-gray-800 animate-in slide-in-from-top-1 duration-150">
-                                <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide">
-                                    {t('importItems.exampleLabel')}
-                                </p>
+                    {importMode === 'json' ? (
+                        <>
+                            <p className="text-sm text-gray-600 dark:text-gray-400">
+                                {t('importItems.description')}
+                            </p>
 
-                                <div>
-                                    <p className="text-xs text-gray-600 dark:text-gray-400 mb-1">
-                                        {t('importItems.simpleFormat')}
-                                    </p>
-                                    <CodeBlock code={SIMPLE_EXAMPLE} />
-                                </div>
+                            {/* Example formats accordion */}
+                            <div className="rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden">
+                                <button
+                                    onClick={() => setShowExample(!showExample)}
+                                    className="w-full flex items-center justify-between px-4 py-3 bg-gray-50 dark:bg-gray-700/50 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors text-left"
+                                >
+                                    <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                                        {showExample ? t('importItems.hideExample') : t('importItems.showExample')}
+                                    </span>
+                                    <ChevronDown
+                                        size={16}
+                                        className={`text-gray-400 transition-transform duration-200 ${showExample ? 'rotate-180' : ''}`}
+                                    />
+                                </button>
 
-                                <div>
-                                    <p className="text-xs text-gray-600 dark:text-gray-400 mb-1">
-                                        {t('importItems.objectFormat')}
-                                    </p>
-                                    <CodeBlock code={OBJECT_EXAMPLE} />
-                                </div>
+                                {showExample && (
+                                    <div className="px-4 pb-4 pt-3 space-y-3 bg-white dark:bg-gray-800 animate-in slide-in-from-top-1 duration-150">
+                                        <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide">
+                                            {t('importItems.exampleLabel')}
+                                        </p>
 
-                                <div>
-                                    <p className="text-xs text-gray-600 dark:text-gray-400 mb-1">
-                                        {t('importItems.wrappedFormat')}
-                                    </p>
-                                    <CodeBlock code={WRAPPED_EXAMPLE} />
-                                </div>
+                                        <div>
+                                            <p className="text-xs text-gray-600 dark:text-gray-400 mb-1">
+                                                {t('importItems.simpleFormat')}
+                                            </p>
+                                            <CodeBlock code={SIMPLE_EXAMPLE} />
+                                        </div>
+
+                                        <div>
+                                            <p className="text-xs text-gray-600 dark:text-gray-400 mb-1">
+                                                {t('importItems.objectFormat')}
+                                            </p>
+                                            <CodeBlock code={OBJECT_EXAMPLE} />
+                                        </div>
+
+                                        <div>
+                                            <p className="text-xs text-gray-600 dark:text-gray-400 mb-1">
+                                                {t('importItems.wrappedFormat')}
+                                            </p>
+                                            <CodeBlock code={WRAPPED_EXAMPLE} />
+                                        </div>
+                                    </div>
+                                )}
                             </div>
-                        )}
-                    </div>
 
-                    {/* Textarea */}
-                    <textarea
-                        value={jsonText}
-                        onChange={(e) => { setJsonText(e.target.value); setError(''); }}
-                        placeholder={t('importItems.placeholder')}
-                        rows={6}
-                        className={`w-full p-3 rounded-xl border text-sm font-mono bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 focus:ring-2 outline-none resize-none transition-colors ${
-                            error
-                                ? 'border-red-300 dark:border-red-600 focus:ring-red-200 dark:focus:ring-red-900'
-                                : 'border-gray-200 dark:border-gray-700 focus:ring-blue-500'
-                        }`}
-                    />
+                            {/* Textarea */}
+                            <textarea
+                                value={jsonText}
+                                onChange={(e) => { setJsonText(e.target.value); setError(''); }}
+                                placeholder={t('importItems.placeholder')}
+                                rows={6}
+                                className={`w-full p-3 rounded-xl border text-sm font-mono bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 focus:ring-2 outline-none resize-none transition-colors ${
+                                    error
+                                        ? 'border-red-300 dark:border-red-600 focus:ring-red-200 dark:focus:ring-red-900'
+                                        : 'border-gray-200 dark:border-gray-700 focus:ring-blue-500'
+                                }`}
+                            />
 
-                    {/* File upload */}
-                    <div className="flex items-center gap-3">
-                        <div className="flex-1 h-px bg-gray-200 dark:bg-gray-700" />
-                        <span className="text-xs text-gray-400">{t('importItems.orUpload')}</span>
-                        <div className="flex-1 h-px bg-gray-200 dark:bg-gray-700" />
-                    </div>
+                            {/* File upload */}
+                            <div className="flex items-center gap-3">
+                                <div className="flex-1 h-px bg-gray-200 dark:bg-gray-700" />
+                                <span className="text-xs text-gray-400">{t('importItems.orUpload')}</span>
+                                <div className="flex-1 h-px bg-gray-200 dark:bg-gray-700" />
+                            </div>
 
-                    <button
-                        onClick={() => fileInputRef.current?.click()}
-                        className="w-full flex items-center justify-center gap-2 p-3 rounded-xl border-2 border-dashed border-gray-200 dark:border-gray-700 hover:border-blue-400 dark:hover:border-blue-500 hover:bg-blue-50 dark:hover:bg-blue-900/10 text-gray-500 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-all text-sm font-medium"
-                    >
-                        <Upload size={16} />
-                        {t('importItems.selectFile')}
-                    </button>
-                    <input
-                        ref={fileInputRef}
-                        type="file"
-                        accept=".json,application/json"
-                        className="hidden"
-                        onChange={handleFileChange}
-                    />
+                            <button
+                                onClick={() => fileInputRef.current?.click()}
+                                className="w-full flex items-center justify-center gap-2 p-3 rounded-xl border-2 border-dashed border-gray-200 dark:border-gray-700 hover:border-blue-400 dark:hover:border-blue-500 hover:bg-blue-50 dark:hover:bg-blue-900/10 text-gray-500 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-all text-sm font-medium"
+                            >
+                                <Upload size={16} />
+                                {t('importItems.selectFile')}
+                            </button>
+                            <input
+                                ref={fileInputRef}
+                                type="file"
+                                accept=".json,application/json"
+                                className="hidden"
+                                onChange={handleFileChange}
+                            />
+                        </>
+                    ) : (
+                        <>
+                            <p className="text-sm text-gray-600 dark:text-gray-400">
+                                {t('importRecipe.description')}
+                            </p>
+                            <textarea
+                                value={recipeText}
+                                onChange={(e) => { setRecipeText(e.target.value); setError(''); }}
+                                placeholder={t('importRecipe.placeholder')}
+                                rows={6}
+                                className={`w-full p-3 rounded-xl border text-sm bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 focus:ring-2 outline-none resize-none transition-colors ${
+                                    error
+                                        ? 'border-red-300 dark:border-red-600 focus:ring-red-200 dark:focus:ring-red-900'
+                                        : 'border-gray-200 dark:border-gray-700 focus:ring-blue-500'
+                                }`}
+                            />
+                            {previewItems.length > 0 && (
+                                <div className="space-y-2 animate-in fade-in slide-in-from-top-2 duration-200">
+                                    <div className="flex items-center justify-between">
+                                        <h3 className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide">
+                                            {t('importRecipe.previewTitle')}
+                                        </h3>
+                                        <span className="text-[10px] text-gray-400">{selectedItems.size}/{previewItems.length} selected</span>
+                                    </div>
+                                    <p className="text-[11px] text-gray-500 dark:text-gray-400 mb-2">
+                                        {t('importRecipe.previewDesc')}
+                                    </p>
+                                    <div className="grid grid-cols-1 gap-1 max-h-40 overflow-y-auto p-1">
+                                        {previewItems.map((item, idx) => (
+                                            <label
+                                                key={`${item}-${idx}`}
+                                                className="flex items-center gap-2 p-2 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700/50 cursor-pointer transition-colors text-sm text-gray-700 dark:text-gray-300"
+                                            >
+                                                <input
+                                                    type="checkbox"
+                                                    checked={selectedItems.has(item)}
+                                                    onChange={() => {
+                                                        const next = new Set(selectedItems);
+                                                        if (next.has(item)) next.delete(item);
+                                                        else next.add(item);
+                                                        setSelectedItems(next);
+                                                    }}
+                                                    className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                                                />
+                                                <span className="truncate">{item}</span>
+                                            </label>
+                                        ))}
+                                    </div>
+                                </div>
+                            )}
+                        </>
+                    )}
 
                     {/* Error message */}
                     {error && (
@@ -303,11 +409,11 @@ export const ImportItemsModal: React.FC<ImportItemsModalProps> = ({
                     </button>
                     <button
                         onClick={handleImport}
-                        disabled={isImporting || !jsonText.trim()}
+                        disabled={isImporting || (importMode === 'json' ? !jsonText.trim() : selectedItems.size === 0)}
                         className="flex-1 px-4 py-2.5 rounded-xl bg-blue-600 text-white font-medium text-sm hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center justify-center gap-2"
                     >
-                        <Upload size={15} />
-                        {isImporting ? t('importItems.importing') : t('importItems.import')}
+                        {importMode === 'json' ? <Upload size={15} /> : <Check size={15} />}
+                        {isImporting ? t('importItems.importing') : (importMode === 'json' ? t('importItems.import') : t('importRecipe.import'))}
                     </button>
                 </div>
             </div>

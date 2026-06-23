@@ -19,9 +19,10 @@ interface SortableItemProps {
     onEdit?: (id: string, text: string) => void;
     onCategorize?: (id: string) => void;
     disabled?: boolean;
+    isCategorized?: boolean;
 }
 
-export const SortableItem: React.FC<SortableItemProps> = ({ item, onToggle, onDelete, onEdit, onCategorize, disabled }) => {
+export const SortableItem: React.FC<SortableItemProps> = ({ item, onToggle, onDelete, onEdit, onCategorize, disabled, isCategorized }) => {
     const [localText, setLocalText] = React.useState(item.text);
 
     React.useEffect(() => {
@@ -125,21 +126,25 @@ export const SortableItem: React.FC<SortableItemProps> = ({ item, onToggle, onDe
                             onTouchStart={(e) => e.stopPropagation()}
                         />
 
-                        {onCategorize && !item.completed && (
-                            <button
-                                onClick={(e) => {
-                                    e.stopPropagation();
-                                    onCategorize(item.id);
-                                }}
-                                className="flex-shrink-0 p-1 text-amber-400 hover:text-blue-500 dark:text-amber-500 dark:hover:text-blue-400 transition-colors animate-pulse hover:animate-none"
-                                aria-label="Categorize item"
-                                title="Categorize item"
-                                onMouseDown={(e) => e.stopPropagation()}
-                                onTouchStart={(e) => e.stopPropagation()}
-                            >
-                                <Tag size={16} />
-                            </button>
-                        )}
+                         {onCategorize && (
+                             <button
+                                 onClick={(e) => {
+                                     e.stopPropagation();
+                                     onCategorize(item.id);
+                                 }}
+                                 className={`flex-shrink-0 p-1 transition-colors ${
+                                     (item.sectionId || isCategorized) 
+                                         ? 'text-gray-400 hover:text-blue-500 dark:text-gray-500 dark:hover:text-blue-400' 
+                                         : 'text-amber-400 hover:text-blue-500 dark:text-amber-500 dark:hover:text-blue-400 animate-pulse hover:animate-none'
+                                 }`}
+                                 aria-label="Categorize item"
+                                 title="Categorize item"
+                                 onMouseDown={(e) => e.stopPropagation()}
+                                 onTouchStart={(e) => e.stopPropagation()}
+                             >
+                                 <Tag size={16} />
+                             </button>
+                         )}
 
                         {item.isPending && (
                             <div className="flex-shrink-0 text-blue-400 dark:text-blue-500 animate-in fade-in duration-300" title="Syncing...">

@@ -302,6 +302,17 @@
         "errorNoItems": "Inga giltiga varor hittades i JSON-filen.",
         "errorFailed": "Misslyckades med att importera varor. Försök igen."
     },
+    "importRecipe": {
+        "title": "Importera receptingredienser",
+        "description": "Klistra in ingredienslistan från ditt recept nedan. Vi försöker rensa bort mängder och måttenheter åt dig.",
+        "toggleJson": "JSON-import",
+        "toggleRecipe": "Recepttext",
+        "placeholder": "Klistra in ingredienser här (en per rad)...",
+        "previewTitle": "Granska ingredienser",
+        "previewDesc": "Avmarkera saker du redan har.",
+        "errorEmpty": "Vänligen klistra in recepttext.",
+        "import": "Importera markerade"
+    },
     "categorize": {
         "title": "Kategorisera vara",
         "addToExisting": "Lägg till i befintlig kategori",

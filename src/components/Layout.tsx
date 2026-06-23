@@ -17,7 +17,7 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
     return (
         <div className="flex min-h-screen bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100 transition-colors duration-300 overflow-x-hidden">
             {/* Desktop Sidebar */}
-            <aside className="hidden md:flex w-72 flex-shrink-0 sticky top-0 h-screen z-20">
+            <aside className="hidden md:flex w-72 flex-shrink-0 fixed top-0 left-0 h-screen z-20">
                 <Sidebar />
             </aside>
 
@@ -45,7 +45,7 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
             )}
 
             {/* Main Content Area */}
-            <div className="flex-1 flex flex-col min-h-screen min-w-0">
+            <div className="flex-1 flex flex-col min-h-screen min-w-0 md:ml-72">
                 <OfflineIndicator />
 
                 {/* Mobile Header */}

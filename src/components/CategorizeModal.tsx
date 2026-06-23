@@ -8,7 +8,7 @@ interface CategorizeModalProps {
     onClose: () => void;
     itemText: string;
     categories: Category[];
-    onAssignToCategory: (categoryId: string, itemText: string) => void;
+    onAssignToCategory: (categoryId: string | undefined, itemText: string) => void;
     onCreateCategory: (name: string, itemText: string) => void;
 }
 
@@ -53,7 +53,7 @@ export const CategorizeModal: React.FC<CategorizeModalProps> = ({
 
     if (!isOpen) return null;
 
-    const handleAssign = (categoryId: string) => {
+    const handleAssign = (categoryId: string | undefined) => {
         onAssignToCategory(categoryId, itemText);
         onClose();
     };
@@ -108,6 +108,15 @@ export const CategorizeModal: React.FC<CategorizeModalProps> = ({
                         {t('categorize.addToExisting', 'Add to existing category')}
                     </p>
                     <div className="space-y-1">
+                        <button
+                            onClick={() => handleAssign(undefined)}
+                            className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-left hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors group"
+                        >
+                            <FolderOpen size={18} className="text-gray-400 group-hover:text-blue-500 transition-colors flex-shrink-0" />
+                            <span className="text-sm font-medium text-gray-700 dark:text-gray-200 group-hover:text-gray-900 dark:group-hover:text-white transition-colors truncate">
+                                {t('categorize.other', 'Övrigt')}
+                            </span>
+                        </button>
                         {categories.map((cat) => (
                             <button
                                 key={cat.id}

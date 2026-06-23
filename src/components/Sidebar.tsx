@@ -42,7 +42,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ onNavClick }) => {
     };
 
     return (
-        <div className="flex h-full flex-col glass border-r-0">
+        <div className="flex min-h-screen h-full flex-col glass border-r-0">
             {/* Logo Area */}
             <div className="p-6">
                 <Link to="/" onClick={onNavClick} className="flex items-center gap-3 hover:opacity-80 transition-opacity">

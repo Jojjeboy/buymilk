@@ -302,6 +302,17 @@
         "errorNoItems": "No valid items found in the JSON.",
         "errorFailed": "Failed to import file."
     },
+    "importRecipe": {
+        "title": "Import Recipe Ingredients",
+        "description": "Paste your recipe's ingredient list below. We'll try to clean up quantities and measurements for you.",
+        "toggleJson": "JSON Import",
+        "toggleRecipe": "Recipe Text",
+        "placeholder": "Paste ingredients here (one per line)...",
+        "previewTitle": "Review Ingredients",
+        "previewDesc": "Deselect items you already have.",
+        "errorEmpty": "Please paste some recipe text.",
+        "import": "Import Selected"
+    },
     "categorize": {
         "title": "Categorize Item",
         "addToExisting": "Add to existing category",
