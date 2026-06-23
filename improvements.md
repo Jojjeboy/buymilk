@@ -3,10 +3,11 @@
 This document tracks planned and proposed improvements for the **BuyMilk** application. Use the checkboxes below to track your progress as they are implemented.
 
 ## 🚀 Smart & Productivity Features
+- [ ] **Backend**: Implement a backend
 - [x] **Aisle/Category Auto-Grouping**: Group items automatically by category (e.g., Dairy, Produce, Bakery) based on database templates, so shopping trips are optimized by store aisle.
 - [ ] **Smart Frequency Predictions**: Analyze purchase history to suggest recurring items when they are likely needed (e.g., "Time to buy milk?").
 - [x] **Voice-to-Text Input**: Use the Web Speech API to allow hands-free adding of items using voice commands.
-- [ ] **Recipe Ingredient Import (Text)**: Add a parser to import ingredients from pasted recipe text.
+- [x] **Recipe Ingredient Import (Text)**: Add a parser to import ingredients from pasted recipe text.
 - [ ] **Recipe Ingredient Import (URL)**: Implement a backend scraper to import ingredients from recipe URLs.
 
 ## 👥 Collaboration & Sharing
