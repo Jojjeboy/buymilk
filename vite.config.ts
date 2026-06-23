@@ -38,7 +38,7 @@ export default defineConfig({
     })
   ],
   build: {
-    chunkSizeWarningLimit: 1300,
+    chunkSizeWarningLimit: 2000,
   },
   // @ts-expect-error: Vitest types definition
   test: {

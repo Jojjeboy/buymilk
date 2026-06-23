@@ -6,12 +6,13 @@ import type { Item, List } from '../types';
 import { DndContext, closestCenter, KeyboardSensor, PointerSensor, useSensor, useSensors, type DragEndEvent } from '@dnd-kit/core';
 import { arrayMove, SortableContext, sortableKeyboardCoordinates, verticalListSortingStrategy } from '@dnd-kit/sortable';
 import { SortableItem } from './SortableItem';
-import { Plus, RotateCcw, ChevronDown, CloudUpload } from 'lucide-react';
+import { Plus, RotateCcw, ChevronDown, CloudUpload, Mic } from 'lucide-react';
 import { v4 as uuidv4 } from 'uuid';
 import { Confetti } from './Confetti';
 import { useTranslation } from 'react-i18next';
 import { InlineAutocompleteInput } from './InlineAutocompleteInput';
 import { matchesCategoryKeywords } from '../utils/keywordMatch';
+import { useVoiceInput } from '../hooks/useVoiceInput';
 import { CategorizeModal } from './CategorizeModal';
 
 
@@ -19,6 +20,7 @@ export const GroceryListView: React.FC = React.memo(function GroceryListView() {
     const { t } = useTranslation();
     const { lists, defaultListId, updateListItems, deleteItem, updateListAccess, loading, itemHistory, addToHistory, categories, addCategory } = useApp();
     const { showToast } = useToast();
+    const { isListening, transcript, startListening, stopListening, hasSupport } = useVoiceInput();
     const [newItemText, setNewItemText] = useState('');
     const [showConfetti, setShowConfetti] = useState(false);
     const [suggestions, setSuggestions] = useState<(typeof itemHistory)>([]);
@@ -68,6 +70,12 @@ export const GroceryListView: React.FC = React.memo(function GroceryListView() {
     }, [list, sortBy]);
 
     // Autocomplete Logic
+    useEffect(() => {
+        if (transcript) {
+            setNewItemText(transcript);
+        }
+    }, [transcript]);
+
     useEffect(() => {
         if (!newItemText.trim()) {
             setSuggestions([]);
@@ -432,13 +440,29 @@ export const GroceryListView: React.FC = React.memo(function GroceryListView() {
                                             </div>
                                         )}
                                     </div>
-                                    <button
-                                        type="submit"
-                                        disabled={!newItemText.trim()}
-                                        className="p-3 bg-blue-600 text-white rounded-xl hover:bg-blue-700 shadow-lg shadow-blue-500/25 transition-all active:scale-95 disabled:opacity-50 disabled:grayscale"
-                                    >
-                                        <Plus size={22} strokeWidth={2.5} />
-                                    </button>
+                                     <div className="flex gap-2">
+                                         {hasSupport && (
+                                             <button
+                                                 type="button"
+                                                 onClick={isListening ? stopListening : startListening}
+                                                 className={`p-3 rounded-xl transition-all active:scale-95 ${
+                                                     isListening 
+                                                     ? 'bg-red-500 text-white animate-pulse shadow-lg shadow-red-500/25' 
+                                                     : 'bg-gray-100 dark:bg-gray-700 text-gray-500 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
+                                                 }`}
+                                                 title={isListening ? t('lists.stopListening', 'Stop Listening') : t('lists.startListening', 'Voice Input')}
+                                             >
+                                                 <Mic size={22} strokeWidth={2.5} />
+                                             </button>
+                                         )}
+                                         <button
+                                             type="submit"
+                                             disabled={!newItemText.trim()}
+                                             className="p-3 bg-blue-600 text-white rounded-xl hover:bg-blue-700 shadow-lg shadow-blue-500/25 transition-all active:scale-95 disabled:opacity-50 disabled:grayscale"
+                                         >
+                                             <Plus size={22} strokeWidth={2.5} />
+                                         </button>
+                                     </div>
                                 </form>
                             </div>
                         </div>

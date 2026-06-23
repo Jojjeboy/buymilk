@@ -1,5 +1,15 @@
 [
   {
+    "hash": "658a9596915a67c00514c3409ebd5d566e2ba385",
+    "date": "2026-06-23 01:07:33 +0200",
+    "message": "Uncategorized"
+  },
+  {
+    "hash": "7c7141628a20644375cbbd1e0f0987b3c8dc89c2",
+    "date": "2026-06-23 00:47:05 +0200",
+    "message": "feat: category auto-grouping, drag-and-drop sorting, keyword matching"
+  },
+  {
     "hash": "ce43e80b77d0d0beb2c6cbecfa6c74a3dac4e1eb",
     "date": "2026-06-22 15:54:52 +0200",
     "message": "mc"
@@ -88,15 +98,5 @@
     "hash": "53edbb31ec4d8789b29d1cff46cc107e51c3c888",
     "date": "2026-02-04 13:58:51 +0100",
     "message": "feat: show added badge for existing items in suggestions"
-  },
-  {
-    "hash": "7f030624d6b199e40d099f5eaad3485bb06236ab",
-    "date": "2026-02-04 13:56:28 +0100",
-    "message": "fix: notify user when adding duplicate item and refactor add logic"
-  },
-  {
-    "hash": "08c98fb2255d2b490a835302cca816af4602f360",
-    "date": "2026-02-04 13:52:11 +0100",
-    "message": "fix: make shadow text darker and fix missing handler"
   }
 ]

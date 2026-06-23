@@ -1,4 +1,4 @@
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen, fireEvent, act } from '@testing-library/react';
 import { ListDetail } from './ListDetail';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { createMemoryRouter, RouterProvider } from 'react-router-dom';
@@ -127,13 +127,15 @@ describe('ListDetail', () => {
         expect(screen.getByText('Banana')).toBeDefined();
     });
 
-    it('adds a new item', () => {
+    it('adds a new item', async () => {
         renderComponent();
         const input = screen.getByPlaceholderText('lists.addItemPlaceholder');
         fireEvent.change(input, { target: { value: 'Cherry' } });
 
         const form = input.closest('form');
-        fireEvent.submit(form!);
+        await act(async () => {
+            fireEvent.submit(form!);
+        });
 
         expect(mockUpdateListItems).toHaveBeenCalledWith('list1', expect.arrayContaining([
             expect.objectContaining({ text: 'Apple' }),
@@ -142,10 +144,12 @@ describe('ListDetail', () => {
         ]));
     });
 
-    it('toggles item completion', () => {
+    it('toggles item completion', async () => {
         renderComponent();
         const toggleButtons = screen.getAllByText('Toggle');
-        fireEvent.click(toggleButtons[0]); // Apple
+        await act(async () => {
+            fireEvent.click(toggleButtons[0]); // Apple
+        });
 
         expect(mockUpdateListItems).toHaveBeenCalledWith('list1', expect.arrayContaining([
             expect.objectContaining({ id: 'i1', completed: true }), // Toggled to true
@@ -197,7 +201,9 @@ describe('ListDetail', () => {
 
         renderComponent();
         const toggleButtons = screen.getAllByText('Toggle');
-        fireEvent.click(toggleButtons[0]); // Apple: unresolved -> ongoing
+        await act(async () => {
+            fireEvent.click(toggleButtons[0]); // Apple: unresolved -> ongoing
+        });
 
         expect(mockUpdateListItems).toHaveBeenCalledWith('list1', expect.arrayContaining([
             expect.objectContaining({ id: 'i1', completed: false, state: 'ongoing' })

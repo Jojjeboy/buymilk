@@ -324,8 +324,9 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
             const updatedSections = (list.sections || []).filter(s => s.id !== sectionId);
             const updatedItems = list.items.map(item => {
                 if (item.sectionId !== sectionId) return item;
-                const { sectionId: _removed, ...rest } = item;
-                return rest;
+                const newItem = { ...item };
+                delete newItem.sectionId;
+                return newItem;
             });
 
             await listsSync.updateItem(listId, {
