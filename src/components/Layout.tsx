@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useApp } from '../context/AppContext';
 import { Link } from 'react-router-dom';
-import { Moon, Sun, Menu, X, Eye, EyeOff } from 'lucide-react';
+import { Moon, Sun, Menu, X, Eye, EyeOff, Cloud } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { Sidebar } from './Sidebar';
 import { OfflineIndicator } from './OfflineIndicator';
@@ -9,7 +9,7 @@ import { useWakeLock } from '../hooks/useWakeLock';
 
 export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     const { t } = useTranslation();
-    const { theme, toggleTheme } = useApp();
+    const { theme, toggleTheme, isSyncing } = useApp();
     const { isSupported, isLocked, requestWakeLock, releaseWakeLock } = useWakeLock();
     
     const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -60,6 +60,16 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
                             </Link>
                         </div>
                         <div className="flex items-center gap-2">
+                            <div 
+                                className={`p-2 rounded-full transition-all duration-300 ${
+                                    isSyncing 
+                                        ? 'text-blue-500 animate-pulse bg-blue-50 dark:bg-blue-900/30' 
+                                        : 'text-gray-400 bg-transparent'
+                                }`}
+                                title={isSyncing ? t('common.syncing', 'Syncing...') : t('common.synced', 'Synced')}
+                            >
+                                <Cloud size={20} />
+                            </div>
                             {isSupported && (
                                 <button
                                     onClick={() => isLocked ? releaseWakeLock() : requestWakeLock()}

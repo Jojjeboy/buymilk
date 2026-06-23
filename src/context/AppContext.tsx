@@ -34,8 +34,9 @@ interface AppContextType {
     deleteTodo: (id: string) => Promise<void>;
     
     
-    // Loading
+    // Loading & Sync
     loading: boolean;
+    isSyncing: boolean;
     
     // Access
     updateListAccess: (id: string) => Promise<void>;
@@ -419,6 +420,12 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
 
     const defaultListId = listsSync.data.length > 0 ? listsSync.data[0].id : undefined;
 
+    const isSyncing = 
+        listsSync.data.some(l => (l as any).isPending) || 
+        todosSync.data.some(t => (t as any).isPending) || 
+        categoriesSync.data.some(c => (c as any).isPending) || 
+        historySync.data.some(h => (h as any).isPending);
+
     return (
         <AppContext.Provider
             value={{
@@ -437,6 +444,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
                 toggleTodo,
                 deleteTodo,
                 loading: listsSync.loading || todosSync.loading || isCreatingDefault,
+                isSyncing,
                 updateListAccess,
                 addSection,
                 updateSection,
