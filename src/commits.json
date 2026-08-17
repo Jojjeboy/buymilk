@@ -1,5 +1,10 @@
 [
   {
+    "hash": "272d703adaa8c54b3ae0efa4a47688d2416c7fd4",
+    "date": "2026-08-17 14:02:21 +0200",
+    "message": "package stuff"
+  },
+  {
     "hash": "fc0564353245a106cb33415ec9acbe117f533659",
     "date": "2026-08-17 14:00:45 +0200",
     "message": "Removed autogrouping feature"
@@ -93,10 +98,5 @@
     "hash": "ba0532ee4d73b445251d9187af35b15d479dc657",
     "date": "2026-02-10 23:05:16 +0100",
     "message": "error fixes"
-  },
-  {
-    "hash": "f704a9bc666684009f9d02d0a1084c9b0a03f4b7",
-    "date": "2026-02-10 23:02:25 +0100",
-    "message": "feat: Introduce new views, internationalization, and commit history, and remove the linked-list implementation plan."
   }
 ]

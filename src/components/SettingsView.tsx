@@ -1,7 +1,8 @@
 import React from 'react';
 import {
     LogOut, SortAsc, Calendar, ChevronDown, Settings, Eye, EyeOff,
-    Globe, Sliders, Database, Trash2, Edit3, X, History, User
+    Globe, Sliders, Database, Trash2, Edit3, X, History, User,
+    Download, Copy, Check
 } from 'lucide-react';
 import { useWakeLock } from '../hooks/useWakeLock';
 import { useAuth } from '../context/AuthContext';
@@ -32,6 +33,10 @@ export const SettingsView: React.FC = () => {
     const { showToast } = useToast();
 
     const [importAccordionOpen, setImportAccordionOpen] = React.useState(false);
+    const [exportAccordionOpen, setExportAccordionOpen] = React.useState(false);
+    const [exportFormat, setExportFormat] = React.useState<'simple' | 'objects' | 'wrapped'>('simple');
+    const [exportScope, setExportScope] = React.useState<'all' | 'active'>('all');
+    const [copiedExport, setCopiedExport] = React.useState(false);
     const [jsonText, setJsonText] = React.useState('');
     const list = lists.find(l => l.id === defaultListId);
     const sortBy = list?.settings?.defaultSort || 'manual';
@@ -117,6 +122,52 @@ export const SettingsView: React.FC = () => {
         } catch (error) {
             console.error(error);
             showToast(t('settings.importError'), 'error');
+        }
+    };
+
+    // -----------------------------------------------------------------------
+    // Export
+    // -----------------------------------------------------------------------
+    const getExportJsonString = () => {
+        if (!list || !list.items) return '[]';
+        const itemsToExport = exportScope === 'active'
+            ? list.items.filter(i => !i.completed)
+            : list.items;
+
+        if (exportFormat === 'simple') {
+            const arr = itemsToExport.map(i => i.text);
+            return JSON.stringify(arr, null, 2);
+        } else if (exportFormat === 'objects') {
+            const arr = itemsToExport.map(i => ({ text: i.text }));
+            return JSON.stringify(arr, null, 2);
+        } else {
+            const arr = itemsToExport.map(i => i.text);
+            return JSON.stringify({ items: arr }, null, 2);
+        }
+    };
+
+    const handleDownloadExport = () => {
+        const jsonStr = getExportJsonString();
+        const blob = new Blob([jsonStr], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = `buymilk-shopping-list.json`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);
+    };
+
+    const handleCopyExport = async () => {
+        const jsonStr = getExportJsonString();
+        try {
+            await navigator.clipboard.writeText(jsonStr);
+            setCopiedExport(true);
+            showToast(t('settings.copied'), 'success');
+            setTimeout(() => setCopiedExport(false), 2000);
+        } catch (err) {
+            console.error('Failed to copy', err);
         }
     };
 
@@ -535,6 +586,101 @@ export const SettingsView: React.FC = () => {
                                             {t('common.import')}
                                         </button>
                                     </div>
+                                </div>
+                            </div>
+                        )}
+                    </div>
+
+                    {/* Export Accordion */}
+                    <div className="space-y-2">
+                        <button
+                            onClick={() => setExportAccordionOpen(!exportAccordionOpen)}
+                            className="flex items-center justify-between w-full p-4 rounded-2xl bg-gray-50 dark:bg-gray-900/40 hover:bg-gray-100/80 dark:hover:bg-gray-900 transition-all border border-gray-100 dark:border-gray-700/60 group"
+                        >
+                            <div className="flex items-center gap-4">
+                                <div className="p-2.5 bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400 rounded-xl group-hover:scale-110 transition-transform">
+                                    <Download size={20} />
+                                </div>
+                                <div className="text-left">
+                                    <div className="font-bold text-sm text-gray-900 dark:text-white">{t('settings.exportTitle')}</div>
+                                    <div className="text-xs font-medium text-gray-500 dark:text-gray-400">{t('settings.exportDesc')}</div>
+                                </div>
+                            </div>
+                            <ChevronDown className={`text-gray-400 transition-transform duration-300 ${exportAccordionOpen ? 'rotate-180' : ''}`} size={20} />
+                        </button>
+                        {exportAccordionOpen && (
+                            <div className="mt-3 p-5 rounded-2xl bg-gray-50 dark:bg-gray-900/40 border border-gray-100 dark:border-gray-700/60 animate-in slide-in-from-top-4 duration-300 space-y-4">
+                                {/* Format selection */}
+                                <div className="space-y-2">
+                                    <label className="text-xs font-bold text-gray-500 uppercase tracking-wider">{t('settings.exportFormat')}</label>
+                                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                                        {(['simple', 'objects', 'wrapped'] as const).map((fmt) => (
+                                            <button
+                                                key={fmt}
+                                                type="button"
+                                                onClick={() => setExportFormat(fmt)}
+                                                className={`p-2.5 rounded-xl border text-xs font-bold transition-all ${
+                                                    exportFormat === fmt
+                                                        ? 'bg-blue-50 border-blue-500 text-blue-600 dark:bg-blue-900/30 dark:border-blue-500 dark:text-blue-400'
+                                                        : 'border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-400 hover:border-blue-200'
+                                                }`}
+                                            >
+                                                {t(`settings.format${fmt.charAt(0).toUpperCase() + fmt.slice(1)}`)}
+                                            </button>
+                                        ))}
+                                    </div>
+                                </div>
+
+                                {/* Item scope selection */}
+                                <div className="space-y-2">
+                                    <label className="text-xs font-bold text-gray-500 uppercase tracking-wider">{t('settings.exportScope')}</label>
+                                    <div className="grid grid-cols-2 gap-2">
+                                        {(['all', 'active'] as const).map((scp) => (
+                                            <button
+                                                key={scp}
+                                                type="button"
+                                                onClick={() => setExportScope(scp)}
+                                                className={`p-2.5 rounded-xl border text-xs font-bold transition-all ${
+                                                    exportScope === scp
+                                                        ? 'bg-blue-50 border-blue-500 text-blue-600 dark:bg-blue-900/30 dark:border-blue-500 dark:text-blue-400'
+                                                        : 'border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-400 hover:border-blue-200'
+                                                }`}
+                                            >
+                                                {t(`settings.scope${scp.charAt(0).toUpperCase() + scp.slice(1)}`)}
+                                            </button>
+                                        ))}
+                                    </div>
+                                </div>
+
+                                {/* Preview */}
+                                <div className="space-y-2">
+                                    <div className="relative text-left">
+                                        <textarea
+                                            readOnly
+                                            value={getExportJsonString()}
+                                            className="w-full p-4 rounded-2xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-200 outline-none text-sm font-mono min-h-[140px] resize-none"
+                                        />
+                                    </div>
+                                </div>
+
+                                {/* Actions */}
+                                <div className="flex gap-3">
+                                    <button
+                                        type="button"
+                                        onClick={handleCopyExport}
+                                        className="flex-1 py-3 px-4 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-xl font-bold hover:bg-gray-200 dark:hover:bg-gray-600 transition-all flex items-center justify-center gap-2 text-xs"
+                                    >
+                                        {copiedExport ? <Check size={16} className="text-green-500" /> : <Copy size={16} />}
+                                        {t('settings.copyJson')}
+                                    </button>
+                                    <button
+                                        type="button"
+                                        onClick={handleDownloadExport}
+                                        className="flex-1 py-3 px-4 bg-blue-600 text-white rounded-xl font-bold hover:bg-blue-700 transition-all active:scale-[0.98] flex items-center justify-center gap-2 text-xs"
+                                    >
+                                        <Download size={16} />
+                                        {t('settings.downloadJson')}
+                                    </button>
                                 </div>
                             </div>
                         )}
