@@ -1,5 +1,10 @@
 [
   {
+    "hash": "fc0564353245a106cb33415ec9acbe117f533659",
+    "date": "2026-08-17 14:00:45 +0200",
+    "message": "Removed autogrouping feature"
+  },
+  {
     "hash": "89e606bfac96db23bd929d590a4402c77c974311",
     "date": "2026-06-23 16:13:39 +0200",
     "message": "Swipe actions"
@@ -93,10 +98,5 @@
     "hash": "f704a9bc666684009f9d02d0a1084c9b0a03f4b7",
     "date": "2026-02-10 23:02:25 +0100",
     "message": "feat: Introduce new views, internationalization, and commit history, and remove the linked-list implementation plan."
-  },
-  {
-    "hash": "498d002dc81103c527806152998c1a69eae019e3",
-    "date": "2026-02-10 22:39:20 +0100",
-    "message": "feat: introduce `GroceryListView` component with item management, drag-and-drop, sorting, and autocomplete, alongside a new `Layout` component."
   }
 ]
