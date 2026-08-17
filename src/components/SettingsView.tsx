@@ -1,106 +1,15 @@
 import React from 'react';
 import {
     LogOut, SortAsc, Calendar, ChevronDown, Settings, Eye, EyeOff,
-    Globe, Sliders, Database, Plus, Trash2, Edit3, X, History, User,
-    Layers, GripVertical
+    Globe, Sliders, Database, Trash2, Edit3, X, History, User
 } from 'lucide-react';
-import {
-    DndContext,
-    closestCenter,
-    KeyboardSensor,
-    PointerSensor,
-    useSensor,
-    useSensors,
-    DragEndEvent,
-} from '@dnd-kit/core';
-import {
-    arrayMove,
-    SortableContext,
-    sortableKeyboardCoordinates,
-    useSortable,
-    verticalListSortingStrategy,
-} from '@dnd-kit/sortable';
-import { CSS } from '@dnd-kit/utilities';
 import { useWakeLock } from '../hooks/useWakeLock';
 import { useAuth } from '../context/AuthContext';
 import { useApp } from '../context/AppContext';
 import { useToast } from '../context/ToastContext';
-import type { Category, Item, HistoryItem } from '../types';
+import type { Item, HistoryItem } from '../types';
 import { useTranslation } from 'react-i18next';
 import { v4 as uuidv4 } from 'uuid';
-
-// ---------------------------------------------------------------------------
-// Sortable aisle row
-// ---------------------------------------------------------------------------
-interface SortableAisleRowProps {
-    cat: Category;
-    onEdit: (cat: Category) => void;
-    onDelete: (id: string) => void;
-    displayName: string;
-    keywordsLabel: string;
-    editLabel: string;
-    deleteLabel: string;
-}
-
-const SortableAisleRow: React.FC<SortableAisleRowProps> = ({
-    cat,
-    onEdit,
-    onDelete,
-    displayName,
-    keywordsLabel,
-    editLabel,
-    deleteLabel,
-}) => {
-    const { attributes, listeners, setNodeRef, transform, transition, isDragging } =
-        useSortable({ id: cat.id });
-
-    const style: React.CSSProperties = {
-        transform: CSS.Transform.toString(transform),
-        transition,
-        opacity: isDragging ? 0.5 : 1,
-        zIndex: isDragging ? 10 : undefined,
-    };
-
-    return (
-        <div
-            ref={setNodeRef}
-            style={style}
-            className="flex items-center justify-between p-3 bg-white dark:bg-gray-800 rounded-xl border border-gray-100 dark:border-gray-700 group"
-        >
-            <div className="flex items-center gap-2 overflow-hidden">
-                <button
-                    {...attributes}
-                    {...listeners}
-                    className="p-1 text-gray-300 dark:text-gray-600 hover:text-gray-500 dark:hover:text-gray-400 cursor-grab active:cursor-grabbing touch-none"
-                    tabIndex={-1}
-                    aria-label="drag to reorder"
-                >
-                    <GripVertical size={16} />
-                </button>
-                <div className="flex flex-col overflow-hidden">
-                    <span className="font-bold text-gray-900 dark:text-white truncate">{displayName}</span>
-                    <span className="text-xs text-gray-500 dark:text-gray-400 truncate">{keywordsLabel}</span>
-                </div>
-            </div>
-            <div className="flex items-center gap-1 shrink-0">
-                <button
-                    onClick={() => onEdit(cat)}
-                    className="p-2 text-gray-400 hover:text-blue-500 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-lg transition-all"
-                    title={editLabel}
-                >
-                    <Edit3 size={16} />
-                </button>
-                <button
-                    onClick={() => onDelete(cat.id)}
-                    className="p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-all"
-                    title={deleteLabel}
-                >
-                    <Trash2 size={16} />
-                </button>
-            </div>
-        </div>
-    );
-};
 
 // ---------------------------------------------------------------------------
 // Main component
@@ -115,11 +24,6 @@ export const SettingsView: React.FC = () => {
         updateListItems,
         theme,
         setTheme,
-        categories,
-        addCategory,
-        updateCategory,
-        deleteCategory,
-        reorderCategories,
         itemHistory,
         updateHistoryItem,
         deleteFromHistory,
@@ -135,41 +39,10 @@ export const SettingsView: React.FC = () => {
     const { isSupported, isLocked, requestWakeLock, releaseWakeLock } = useWakeLock();
 
     const [calendarAccordionOpen, setCalendarAccordionOpen] = React.useState(false);
-    const [aisleAccordionOpen, setAisleAccordionOpen] = React.useState(false);
     const [historyAccordionOpen, setHistoryAccordionOpen] = React.useState(false);
 
     const [editingHistoryItem, setEditingHistoryItem] = React.useState<HistoryItem | null>(null);
     const [editHistoryText, setEditHistoryText] = React.useState('');
-
-    const [newAisleName, setNewAisleName] = React.useState('');
-    const [newAisleKeywords, setNewAisleKeywords] = React.useState('');
-    const [editingAisle, setEditingAisle] = React.useState<Category | null>(null);
-    const [editName, setEditName] = React.useState('');
-    const [editKeywords, setEditKeywords] = React.useState('');
-
-    // Sorted categories for the DnD list (by order field)
-    const sortedCategories = React.useMemo(
-        () => [...categories].sort((a, b) => (a.order ?? 0) - (b.order ?? 0)),
-        [categories]
-    );
-
-    // DnD sensors
-    const sensors = useSensors(
-        useSensor(PointerSensor, { activationConstraint: { distance: 5 } }),
-        useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates })
-    );
-
-    const handleAisleDragEnd = async (event: DragEndEvent) => {
-        const { active, over } = event;
-        if (!over || active.id === over.id) return;
-
-        const oldIndex = sortedCategories.findIndex(c => c.id === active.id);
-        const newIndex = sortedCategories.findIndex(c => c.id === over.id);
-        if (oldIndex === -1 || newIndex === -1) return;
-
-        const reordered = arrayMove(sortedCategories, oldIndex, newIndex);
-        await reorderCategories(reordered.map(c => c.id));
-    };
 
     // -----------------------------------------------------------------------
     // Calendar helpers
@@ -248,37 +121,6 @@ export const SettingsView: React.FC = () => {
     };
 
     // -----------------------------------------------------------------------
-    // Aisles CRUD
-    // -----------------------------------------------------------------------
-    const handleAddAisle = async () => {
-        if (!newAisleName.trim()) return;
-        const keywords = newAisleKeywords.split(',').map(k => k.trim()).filter(k => k !== '');
-        await addCategory(newAisleName.trim(), keywords);
-        setNewAisleName('');
-        setNewAisleKeywords('');
-        showToast(t('common.save'), 'success');
-    };
-
-    const handleSaveAisle = async () => {
-        if (!editingAisle || !editName.trim()) return;
-        const keywords = editKeywords.split(',').map(k => k.trim()).filter(k => k !== '');
-        await updateCategory(editingAisle.id, { name: editName.trim(), keywords });
-        setEditingAisle(null);
-        showToast(t('common.save'), 'success');
-    };
-
-    const handleDeleteAisle = async (id: string) => {
-        await deleteCategory(id);
-        showToast(t('toasts.itemDeleted'), 'info');
-    };
-
-    const handleEditAisle = (cat: Category) => {
-        setEditingAisle(cat);
-        setEditName(cat.name);
-        setEditKeywords(cat.keywords?.join(', ') || '');
-    };
-
-    // -----------------------------------------------------------------------
     // History
     // -----------------------------------------------------------------------
     const handleEditHistoryItem = (item: HistoryItem) => {
@@ -304,8 +146,6 @@ export const SettingsView: React.FC = () => {
         };
         reader.readAsText(file);
     };
-
-    const autoGroupingEnabled = list?.settings?.autoGrouping ?? false;
 
     // -----------------------------------------------------------------------
     // Render
@@ -357,8 +197,7 @@ export const SettingsView: React.FC = () => {
                                                 defaultSort: mode,
                                                 calendarStartTime: list.settings?.calendarStartTime,
                                                 calendarEndTime: list.settings?.calendarEndTime,
-                                                pinned: list.settings?.pinned,
-                                                autoGrouping: list.settings?.autoGrouping
+                                                pinned: list.settings?.pinned
                                             });
                                         }
                                     }}
@@ -370,38 +209,6 @@ export const SettingsView: React.FC = () => {
                                     <span className="text-sm">{t(`lists.sort.${mode}`)}</span>
                                 </button>
                             ))}
-                        </div>
-                    </div>
-
-                    {/* Auto-Grouping Toggle */}
-                    <div className="bg-gray-50 dark:bg-gray-900/40 rounded-2xl overflow-hidden border border-gray-100 dark:border-gray-700/60">
-                        <div className="p-4 flex items-center justify-between">
-                            <div className="flex items-center gap-4">
-                                <div className={`p-2.5 rounded-xl transition-colors ${autoGroupingEnabled ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400' : 'bg-gray-100 dark:bg-gray-700 text-gray-400'}`}>
-                                    <Layers size={22} />
-                                </div>
-                                <div className="text-left">
-                                    <div className="font-bold text-gray-900 dark:text-white">{t('lists.settings.autoGrouping.title')}</div>
-                                    <div className="text-xs font-medium text-gray-500 dark:text-gray-400">{t('lists.settings.autoGrouping.description')}</div>
-                                </div>
-                            </div>
-                            <button
-                                onClick={() => {
-                                    if (list) {
-                                        updateListSettings(list.id, {
-                                            threeStageMode: list.settings?.threeStageMode ?? false,
-                                            defaultSort: list.settings?.defaultSort || 'manual',
-                                            calendarStartTime: list.settings?.calendarStartTime,
-                                            calendarEndTime: list.settings?.calendarEndTime,
-                                            pinned: list.settings?.pinned,
-                                            autoGrouping: !autoGroupingEnabled
-                                        });
-                                    }
-                                }}
-                                className={`relative inline-flex h-7 w-12 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 ${autoGroupingEnabled ? 'bg-blue-600' : 'bg-gray-200 dark:bg-gray-700'}`}
-                            >
-                                <span className={`${autoGroupingEnabled ? 'translate-x-6' : 'translate-x-1'} inline-block h-5 w-5 transform rounded-full bg-white transition-transform`} />
-                            </button>
                         </div>
                     </div>
 
@@ -459,7 +266,7 @@ export const SettingsView: React.FC = () => {
                 </div>
             </div>
 
-            {/* CARD 2: Categories & Items */}
+            {/* CARD 2: Product History */}
             <div className="bg-white dark:bg-gray-800 rounded-3xl shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden text-left">
                 <div className="p-6 space-y-6">
                     <div className="flex items-center gap-4">
@@ -473,164 +280,6 @@ export const SettingsView: React.FC = () => {
                     </div>
 
                     <hr className="border-gray-100 dark:border-gray-700/60" />
-
-                    {/* Aisle Templates Accordion */}
-                    <div className="space-y-2">
-                        <button
-                            onClick={() => setAisleAccordionOpen(!aisleAccordionOpen)}
-                            className="flex items-center justify-between w-full p-4 rounded-2xl bg-gray-50 dark:bg-gray-900/40 hover:bg-gray-100/80 dark:hover:bg-gray-900 transition-all border border-gray-100 dark:border-gray-700/60 group"
-                        >
-                            <div className="flex items-center gap-4">
-                                <div className="p-2.5 bg-purple-100 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400 rounded-xl group-hover:scale-110 transition-transform">
-                                    <Database size={22} />
-                                </div>
-                                <div className="text-left">
-                                    <div className="font-bold text-gray-900 dark:text-white">{t('aisles.templates')}</div>
-                                    <div className="text-xs font-medium text-gray-500 dark:text-gray-400">{t('aisles.templatesDesc')}</div>
-                                </div>
-                            </div>
-                            <ChevronDown className={`text-gray-400 transition-transform duration-300 ${aisleAccordionOpen ? 'rotate-180' : ''}`} size={20} />
-                        </button>
-
-                        {aisleAccordionOpen && (
-                            <div className="mt-4 space-y-6 p-6 rounded-2xl bg-gray-50 dark:bg-gray-900/50 border border-gray-200 dark:border-gray-700 animate-in slide-in-from-top-4 duration-300">
-                                {/* Add new aisle */}
-                                <div className="space-y-3">
-                                    <div className="flex items-center gap-2 mb-2">
-                                        <Plus size={16} className="text-blue-500" />
-                                        <span className="text-sm font-bold text-gray-700 dark:text-gray-300">{t('common.add')}</span>
-                                    </div>
-                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                                        <input
-                                            type="text"
-                                            value={newAisleName}
-                                            onChange={(e) => setNewAisleName(e.target.value)}
-                                            placeholder={t('aisles.namePlaceholder')}
-                                            className="p-3 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 focus:ring-2 focus:ring-blue-500 outline-none text-sm"
-                                        />
-                                        <input
-                                            type="text"
-                                            value={newAisleKeywords}
-                                            onChange={(e) => setNewAisleKeywords(e.target.value)}
-                                            placeholder={t('aisles.keywordsPlaceholder')}
-                                            className="p-3 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 focus:ring-2 focus:ring-blue-500 outline-none text-sm"
-                                        />
-                                    </div>
-                                    <button
-                                        onClick={handleAddAisle}
-                                        disabled={!newAisleName.trim()}
-                                        className="w-full py-3 bg-blue-600 text-white rounded-xl font-bold hover:bg-blue-700 transition-all active:scale-[0.98] disabled:opacity-50"
-                                    >
-                                        {t('common.add')}
-                                    </button>
-                                </div>
-
-                                {/* Existing aisles — sortable when autogrouping is on */}
-                                <div className="pt-6 border-t border-gray-200 dark:border-gray-700 space-y-3">
-                                    <div className="flex items-center justify-between mb-3">
-                                        <div className="text-sm font-bold text-gray-500 uppercase tracking-wider">{t('aisles.existing')}</div>
-                                        {autoGroupingEnabled && (
-                                            <div className="text-xs text-gray-400 dark:text-gray-500 flex items-center gap-1">
-                                                <GripVertical size={12} />
-                                                {t('aisles.dragToReorder', 'Drag to reorder')}
-                                            </div>
-                                        )}
-                                    </div>
-                                    <div className="space-y-2">
-                                        {autoGroupingEnabled ? (
-                                            <DndContext
-                                                sensors={sensors}
-                                                collisionDetection={closestCenter}
-                                                onDragEnd={handleAisleDragEnd}
-                                            >
-                                                <SortableContext
-                                                    items={sortedCategories.map(c => c.id)}
-                                                    strategy={verticalListSortingStrategy}
-                                                >
-                                                    {sortedCategories.map(cat => (
-                                                        <SortableAisleRow
-                                                            key={cat.id}
-                                                            cat={cat}
-                                                            onEdit={handleEditAisle}
-                                                            onDelete={handleDeleteAisle}
-                                                            displayName={(cat.name.startsWith('aisles.') || cat.name.startsWith('categories.')) ? t(cat.name) : cat.name}
-                                                            keywordsLabel={cat.keywords?.join(', ') || t('aisles.noKeywords')}
-                                                            editLabel={t('common.edit')}
-                                                            deleteLabel={t('common.delete')}
-                                                        />
-                                                    ))}
-                                                </SortableContext>
-                                            </DndContext>
-                                        ) : (
-                                            sortedCategories.map(cat => (
-                                                <div key={cat.id} className="flex items-center justify-between p-3 bg-white dark:bg-gray-800 rounded-xl border border-gray-100 dark:border-gray-700 group">
-                                                    <div className="flex flex-col overflow-hidden">
-                                                        <span className="font-bold text-gray-900 dark:text-white truncate">
-                                                            {(cat.name.startsWith('aisles.') || cat.name.startsWith('categories.')) ? t(cat.name) : cat.name}
-                                                        </span>
-                                                        <span className="text-xs text-gray-500 dark:text-gray-400 truncate">
-                                                            {cat.keywords?.join(', ') || t('aisles.noKeywords')}
-                                                        </span>
-                                                    </div>
-                                                    <div className="flex items-center gap-1">
-                                                        <button onClick={() => handleEditAisle(cat)} className="p-2 text-gray-400 hover:text-blue-500 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-lg transition-all" title={t('common.edit')}>
-                                                            <Edit3 size={16} />
-                                                        </button>
-                                                        <button onClick={() => handleDeleteAisle(cat.id)} className="p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-all" title={t('common.delete')}>
-                                                            <Trash2 size={16} />
-                                                        </button>
-                                                    </div>
-                                                </div>
-                                            ))
-                                        )}
-                                    </div>
-                                </div>
-
-                                {/* Edit aisle modal */}
-                                {editingAisle && (
-                                    <div className="fixed inset-0 z-[200] flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm animate-in fade-in duration-200">
-                                        <div className="bg-white dark:bg-gray-800 w-full max-w-md rounded-3xl shadow-2xl p-6 space-y-4 animate-in zoom-in-95 duration-200">
-                                            <div className="flex items-center justify-between mb-4">
-                                                <h4 className="text-lg font-bold text-gray-900 dark:text-white">{t('aisles.editTitle')}</h4>
-                                                <button onClick={() => setEditingAisle(null)} className="p-2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 rounded-full transition-colors">
-                                                    <X size={20} />
-                                                </button>
-                                            </div>
-                                            <div className="space-y-4">
-                                                <div className="space-y-1">
-                                                    <label className="text-xs font-bold text-gray-500 uppercase tracking-wider pl-1">{t('aisles.name')}</label>
-                                                    <input
-                                                        type="text"
-                                                        value={editName}
-                                                        onChange={(e) => setEditName(e.target.value)}
-                                                        className="w-full p-3 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 focus:ring-2 focus:ring-blue-500 outline-none text-sm"
-                                                    />
-                                                </div>
-                                                <div className="space-y-1">
-                                                    <label className="text-xs font-bold text-gray-500 uppercase tracking-wider pl-1">{t('aisles.keywords')}</label>
-                                                    <input
-                                                        type="text"
-                                                        value={editKeywords}
-                                                        onChange={(e) => setEditKeywords(e.target.value)}
-                                                        placeholder={t('aisles.keywordsPlaceholder')}
-                                                        className="w-full p-3 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 focus:ring-2 focus:ring-blue-500 outline-none text-sm"
-                                                    />
-                                                </div>
-                                            </div>
-                                            <div className="flex gap-3 pt-4">
-                                                <button onClick={() => setEditingAisle(null)} className="flex-1 py-3 px-4 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-xl font-bold hover:bg-gray-200 dark:hover:bg-gray-600 transition-all">
-                                                    {t('common.cancel')}
-                                                </button>
-                                                <button onClick={handleSaveAisle} disabled={!editName.trim()} className="flex-1 py-3 px-4 bg-blue-600 text-white rounded-xl font-bold hover:bg-blue-700 transition-all active:scale-[0.98] disabled:opacity-50">
-                                                    {t('common.save')}
-                                                </button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                )}
-                            </div>
-                        )}
-                    </div>
 
                     {/* Product History Accordion */}
                     <div className="space-y-2">

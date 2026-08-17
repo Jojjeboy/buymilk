@@ -44,17 +44,7 @@
         "beverages": "Dryck",
         "household": "Hushåll",
         "snacks": "Snacks",
-        "other": "Övrigt",
-        "templates": "Hylla-mallar",
-        "templatesDesc": "Hantera kategorier för autogruppering",
-        "namePlaceholder": "Hyllnamn (t.ex. Mejeri)",
-        "keywordsPlaceholder": "Nyckelord (kommaseparerade)",
-        "existing": "Befintliga hyllor",
-        "noKeywords": "Inga nyckelord",
-        "editTitle": "Redigera hylla",
-        "name": "Namn",
-        "keywords": "Nyckelord",
-        "dragToReorder": "Dra för att ordna om"
+        "other": "Övrigt"
     },
     "lists": {
         "newPlaceholder": "Ny lista...",
@@ -109,10 +99,6 @@
             "archive": {
                 "title": "Arkiverad",
                 "description": "Lås listan och göm den från huvudvyn."
-            },
-            "autoGrouping": {
-                "title": "Autogruppera efter hylla",
-                "description": "Gruppera varor automatiskt efter butikens hyllor"
             }
         },
         "archivedBadge": "Arkiverad",
@@ -195,7 +181,7 @@
         "importConfirm": "Detta kommer att skriva över din nuvarande data. Är du säker?",
         "databases": {
             "title": "Kategorier & Varor",
-            "subtitle": "Hantera butikshyllor, söknyckelord och autokomplettering"
+            "subtitle": "Hantera autokomplettering och historik"
         },
         "appSettings": {
             "title": "Appinställningar",
@@ -313,14 +299,7 @@
         "errorEmpty": "Vänligen klistra in recepttext.",
         "import": "Importera markerade"
     },
-    "categorize": {
-        "title": "Kategorisera vara",
-        "addToExisting": "Lägg till i befintlig kategori",
-        "addKeyword": "+ nyckelord",
-        "createNew": "Skapa ny kategori",
-        "newNamePlaceholder": "Kategorinamn...",
-        "create": "Skapa"
-    },
+
     "stats": {
         "title": "Statistik",
         "subtitle": "Insikter i din produktivitet och dina vanor",

@@ -1,5 +1,35 @@
 [
   {
+    "hash": "89e606bfac96db23bd929d590a4402c77c974311",
+    "date": "2026-06-23 16:13:39 +0200",
+    "message": "Swipe actions"
+  },
+  {
+    "hash": "905bbfaf1cceee269cba55cd9b77e6b254a41fd9",
+    "date": "2026-06-23 16:06:54 +0200",
+    "message": "mc"
+  },
+  {
+    "hash": "43eff345420ca16651e240e82638f39705f93ac4",
+    "date": "2026-06-23 16:01:59 +0200",
+    "message": "mc"
+  },
+  {
+    "hash": "5f1d488f998b19ab2864b099d495746e34061363",
+    "date": "2026-06-23 16:01:31 +0200",
+    "message": "Sync Status Indicator"
+  },
+  {
+    "hash": "e54563248b00910514126dad1d15b1e5006410fd",
+    "date": "2026-06-23 14:36:28 +0200",
+    "message": "Recipe Ingredient Import"
+  },
+  {
+    "hash": "d533484f921dd5231ccfd301ca858b3a309d1b31",
+    "date": "2026-06-23 11:10:18 +0200",
+    "message": "Voice to text"
+  },
+  {
     "hash": "658a9596915a67c00514c3409ebd5d566e2ba385",
     "date": "2026-06-23 01:07:33 +0200",
     "message": "Uncategorized"
@@ -68,35 +98,5 @@
     "hash": "498d002dc81103c527806152998c1a69eae019e3",
     "date": "2026-02-10 22:39:20 +0100",
     "message": "feat: introduce `GroceryListView` component with item management, drag-and-drop, sorting, and autocomplete, alongside a new `Layout` component."
-  },
-  {
-    "hash": "c5f5cc72748b723681d6b443bf62522400f97a3c",
-    "date": "2026-02-10 22:29:41 +0100",
-    "message": "feat: Implement core grocery list view with drag-and-drop item management and autocomplete, alongside new settings, statistics, internationalization, and wake lock features."
-  },
-  {
-    "hash": "7188b4c0d4abc57aef9f3144588bd2aa76218c35",
-    "date": "2026-02-04 15:40:08 +0100",
-    "message": "feat: add copy to clipboard for json import and fix calendar translation"
-  },
-  {
-    "hash": "5a027b1b4b1eb180af71ae7863af8350a66dc886",
-    "date": "2026-02-04 15:35:28 +0100",
-    "message": "fix: render json example as string in jsx"
-  },
-  {
-    "hash": "2d8548081b7655268b3e28e265189dfd8426f655",
-    "date": "2026-02-04 15:35:07 +0100",
-    "message": "feat: add list import functionality in settings"
-  },
-  {
-    "hash": "599ca7df8c10ea921a0277a03ac9ef36c8693c27",
-    "date": "2026-02-04 14:00:52 +0100",
-    "message": "fix: use robust string normalization for item matching"
-  },
-  {
-    "hash": "53edbb31ec4d8789b29d1cff46cc107e51c3c888",
-    "date": "2026-02-04 13:58:51 +0100",
-    "message": "feat: show added badge for existing items in suggestions"
   }
 ]

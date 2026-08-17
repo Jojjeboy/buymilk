@@ -11,7 +11,6 @@ import { Modal } from './Modal';
 import { ImportItemsModal } from './ImportItemsModal';
 
 import { useTranslation } from 'react-i18next';
-import { matchesCategoryKeywords } from '../utils/keywordMatch';
 
 /**
  * Detailed view for a single list.
@@ -26,7 +25,7 @@ const DroppableSection = ({ sectionId, children }: { sectionId: string, children
 export const ListDetail: React.FC = React.memo(function ListDetail() {
     const { t } = useTranslation();
     const { listId } = useParams<{ listId: string }>();
-    const { lists, updateListItems, deleteItem, updateListName, updateListSettings, updateListAccess, archiveList, addSection, updateSection, deleteSection, itemHistory, addToHistory, categories } = useApp();
+    const { lists, updateListItems, deleteItem, updateListName, updateListSettings, updateListAccess, archiveList, addSection, updateSection, deleteSection, itemHistory, addToHistory } = useApp();
     const [newItemText, setNewItemText] = useState('');
     const [uncheckModalOpen, setUncheckModalOpen] = useState(false);
     const [isEditingTitle, setIsEditingTitle] = useState(false);
@@ -660,111 +659,7 @@ export const ListDetail: React.FC = React.memo(function ListDetail() {
                                 {(() => {
                                     const filterActive = (items: Item[]) => items.filter(i => !i.completed);
                                     const completedItems = sortedItems.filter(i => i.completed);
-                                    const activeItems = sortedItems.filter(i => !i.completed);
-                                    const autoGrouping = list?.settings?.autoGrouping;
-
-                                    // --- Auto-Grouping by Category ---
-                                    if (autoGrouping && categories.length > 0) {
-                                        return (
-                                            <>
-                                                {categories.map(cat => {
-                                                    const itemsInCategory = activeItems.filter(i => {
-                                                        if (i.sectionId === cat.id) return true;
-                                                        if (!i.sectionId) {
-                                                            return matchesCategoryKeywords(i.text, cat.keywords);
-                                                        }
-                                                        return false;
-                                                    });
-                                                    if (itemsInCategory.length === 0) return null;
-                                                    return (
-                                                        <div key={cat.id} className="space-y-2">
-                                                            <h3 className="text-xs font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider pl-1">
-                                                                {(cat.name.startsWith('aisles.') || cat.name.startsWith('categories.')) ? t(cat.name) : cat.name}
-                                                            </h3>
-                                                            <div className="space-y-2">
-                                                                {itemsInCategory.map((item) => (
-                                                                    <SortableItem
-                                                                        key={item.id}
-                                                                        item={item}
-                                                                        onToggle={list?.archived ? undefined : handleToggle}
-                                                                        onDelete={list?.archived ? undefined : handleDelete}
-                                                                        onEdit={list?.archived ? undefined : handleEdit}
-                                                                    />
-                                                                ))}
-                                                            </div>
-                                                        </div>
-                                                    );
-                                                })}
-                                                {(() => {
-                                                    const otherItems = activeItems.filter(i => {
-                                                        if (!i.sectionId) {
-                                                            const hasMatch = categories.some(cat =>
-                                                                matchesCategoryKeywords(i.text, cat.keywords)
-                                                            );
-                                                            if (hasMatch) return false;
-                                                        } else {
-                                                            if (categories.some(cat => cat.id === i.sectionId)) return false;
-                                                        }
-                                                        return true;
-                                                    });
-                                                    if (otherItems.length === 0) return null;
-                                                    return (
-                                                        <div className="space-y-2">
-                                                            <h3 className="text-xs font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider pl-1">
-                                                                {t('aisles.other')}
-                                                            </h3>
-                                                            <div className="space-y-2">
-                                                                {otherItems.map((item) => (
-                                                                    <SortableItem
-                                                                        key={item.id}
-                                                                        item={item}
-                                                                        onToggle={list?.archived ? undefined : handleToggle}
-                                                                        onDelete={list?.archived ? undefined : handleDelete}
-                                                                        onEdit={list?.archived ? undefined : handleEdit}
-                                                                    />
-                                                                ))}
-                                                            </div>
-                                                        </div>
-                                                    );
-                                                })()}
-
-                                                {activeItems.length === 0 && (
-                                                    <p className="text-center text-gray-500 mt-8">{t('lists.emptyList')}</p>
-                                                )}
-
-                                                {/* Completed Items Accordion */}
-                                                {completedItems.length > 0 && (
-                                                    <div className="mt-8 pt-4 border-t border-gray-100 dark:border-gray-800">
-                                                        <button
-                                                            onClick={() => setCompletedAccordionOpen(!completedAccordionOpen)}
-                                                            className="flex items-center gap-2 text-sm font-medium text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 transition-colors mb-4"
-                                                        >
-                                                            <ChevronDown size={16} className={`transition-transform ${completedAccordionOpen ? 'rotate-180' : ''}`} />
-                                                            {t('lists.completedItems', 'Completed Items')} ({completedItems.length})
-                                                        </button>
-
-                                                        {completedAccordionOpen && (
-                                                            <div className="space-y-2 animate-in slide-in-from-top-2 duration-200">
-                                                                {completedItems.map(item => (
-                                                                    <div key={item.id} className="opacity-60 hover:opacity-100 transition-opacity">
-                                                                        <SortableItem
-                                                                            item={item}
-                                                                            onToggle={list?.archived ? undefined : handleToggle}
-                                                                            onDelete={list?.archived ? undefined : handleDelete}
-                                                                            onEdit={list?.archived ? undefined : handleEdit}
-                                                                            disabled={true}
-                                                                        />
-                                                                    </div>
-                                                                ))}
-                                                            </div>
-                                                        )}
-                                                    </div>
-                                                )}
-                                            </>
-                                        );
-                                    }
-
-                                    // --- Original Section-based Grouping ---
+                                    // --- Section-based Grouping ---
                                     const groupedItems = groupItemsBySection(sortedItems);
                                     const sections = list?.sections || [];
                                     const hasAnySections = sections.length > 0;
@@ -866,116 +761,7 @@ export const ListDetail: React.FC = React.memo(function ListDetail() {
                 ) : (
                     <div className="space-y-6">
                         {(() => {
-                            const activeItems = sortedItems.filter(i => !i.completed);
-                            const completedItemsSorted = sortedItems.filter(i => i.completed);
-                            const autoGrouping = list?.settings?.autoGrouping;
-
-                            // --- Auto-Grouping by Category ---
-                            if (autoGrouping && categories.length > 0) {
-                                return (
-                                    <>
-                                        {categories.map(cat => {
-                                            const itemsInCategory = activeItems.filter(i => {
-                                                if (i.sectionId === cat.id) return true;
-                                                if (!i.sectionId) {
-                                                    const lowerText = i.text.toLowerCase();
-                                                    return cat.keywords?.some(keyword => lowerText.includes(keyword.toLowerCase()));
-                                                }
-                                                return false;
-                                            });
-                                            if (itemsInCategory.length === 0) return null;
-                                            return (
-                                                <div key={cat.id} className="space-y-2">
-                                                    <h3 className="text-xs font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider pl-1">
-                                                        {(cat.name.startsWith('aisles.') || cat.name.startsWith('categories.')) ? t(cat.name) : cat.name}
-                                                    </h3>
-                                                    <div className="space-y-2">
-                                                        {itemsInCategory.map((item) => (
-                                                            <SortableItem
-                                                                key={item.id}
-                                                                item={item}
-                                                                onToggle={list?.archived ? undefined : handleToggle}
-                                                                onDelete={list?.archived ? undefined : handleDelete}
-                                                                onEdit={list?.archived ? undefined : handleEdit}
-                                                                disabled={true}
-                                                            />
-                                                        ))}
-                                                    </div>
-                                                </div>
-                                            );
-                                        })}
-                                        {(() => {
-                                            const otherItems = activeItems.filter(i => {
-                                                if (!i.sectionId) {
-                                                    const lowerText = i.text.toLowerCase();
-                                                    const hasMatch = categories.some(cat =>
-                                                        cat.keywords?.some(keyword => lowerText.includes(keyword.toLowerCase()))
-                                                    );
-                                                    if (hasMatch) return false;
-                                                } else {
-                                                    if (categories.some(cat => cat.id === i.sectionId)) return false;
-                                                }
-                                                return true;
-                                            });
-                                            if (otherItems.length === 0) return null;
-                                            return (
-                                                <div className="space-y-2">
-                                                    <h3 className="text-xs font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider pl-1">
-                                                        {t('aisles.other')}
-                                                    </h3>
-                                                    <div className="space-y-2">
-                                                        {otherItems.map((item) => (
-                                                            <SortableItem
-                                                                key={item.id}
-                                                                item={item}
-                                                                onToggle={list?.archived ? undefined : handleToggle}
-                                                                onDelete={list?.archived ? undefined : handleDelete}
-                                                                onEdit={list?.archived ? undefined : handleEdit}
-                                                                disabled={true}
-                                                            />
-                                                        ))}
-                                                    </div>
-                                                </div>
-                                            );
-                                        })()}
-
-                                        {activeItems.length === 0 && (
-                                            <p className="text-center text-gray-500 mt-8">{t('lists.emptyList')}</p>
-                                        )}
-
-                                        {/* Completed Items Accordion */}
-                                        {completedItemsSorted.length > 0 && (
-                                            <div className="mt-8 pt-4 border-t border-gray-100 dark:border-gray-800">
-                                                <button
-                                                    onClick={() => setCompletedAccordionOpen(!completedAccordionOpen)}
-                                                    className="flex items-center gap-2 text-sm font-medium text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 transition-colors mb-4"
-                                                >
-                                                    <ChevronDown size={16} className={`transition-transform ${completedAccordionOpen ? 'rotate-180' : ''}`} />
-                                                    {t('lists.completedItems', 'Completed Items')} ({completedItemsSorted.length})
-                                                </button>
-
-                                                {completedAccordionOpen && (
-                                                    <div className="space-y-2 animate-in slide-in-from-top-2 duration-200">
-                                                        {completedItemsSorted.map(item => (
-                                                            <div key={item.id} className="opacity-60 hover:opacity-100 transition-opacity">
-                                                                <SortableItem
-                                                                    item={item}
-                                                                    onToggle={list?.archived ? undefined : handleToggle}
-                                                                    onDelete={list?.archived ? undefined : handleDelete}
-                                                                    onEdit={list?.archived ? undefined : handleEdit}
-                                                                    disabled={true}
-                                                                />
-                                                            </div>
-                                                        ))}
-                                                    </div>
-                                                )}
-                                            </div>
-                                        )}
-                                    </>
-                                );
-                            }
-
-                            // --- Original Section-based Grouping ---
+                            // --- Section-based Grouping (non-manual sort) -----
                             const groupedItems = groupItemsBySection(sortedItems);
                             const sections = list?.sections || [];
                             const hasAnySections = sections.length > 0;
@@ -1076,20 +862,6 @@ export const ListDetail: React.FC = React.memo(function ListDetail() {
                             className={`w-12 h-6 rounded-full transition-colors relative ${threeStageMode ? 'bg-blue-600' : 'bg-gray-200 dark:bg-gray-700'}`}
                         >
                             <div className={`absolute top-1 left-1 w-4 h-4 bg-white rounded-full transition-transform ${threeStageMode ? 'translate-x-6' : ''}`} />
-                        </button>
-                    </div>
-
-                    {/* Auto-Grouping Toggle */}
-                    <div className="flex items-center justify-between pt-4 border-t border-gray-100 dark:border-gray-800">
-                        <div className="flex flex-col">
-                            <span className="font-medium text-gray-900 dark:text-gray-100">{t('lists.settings.autoGrouping.title', 'Auto-group by aisle')}</span>
-                            <span className="text-sm text-gray-500">{t('lists.settings.autoGrouping.description', 'Automatically group items by store aisle')}</span>
-                        </div>
-                        <button
-                            onClick={() => updateSettings({ autoGrouping: !list?.settings?.autoGrouping })}
-                            className={`w-12 h-6 rounded-full transition-colors relative ${list?.settings?.autoGrouping ? 'bg-blue-600' : 'bg-gray-200 dark:bg-gray-700'}`}
-                        >
-                            <div className={`absolute top-1 left-1 w-4 h-4 bg-white rounded-full transition-transform ${list?.settings?.autoGrouping ? 'translate-x-6' : ''}`} />
                         </button>
                     </div>
 

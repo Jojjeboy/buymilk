@@ -2,7 +2,6 @@ import React, { createContext, useContext, useEffect, useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 
 import { List, Item, Todo, ListSettings, Section, Category, HistoryItem } from '../types';
-import { categories as defaultAisleTemplates } from '../data/categories';
 
 type Priority = 'low' | 'medium' | 'high';
 import { useToast } from './ToastContext';
@@ -57,7 +56,7 @@ interface AppContextType {
     deleteList: (id: string) => Promise<void>;
 
     // Categories
-    addCategory: (name: string, keywords?: string[]) => Promise<string>;
+    addCategory: (name: string) => Promise<string>;
     updateCategory: (id: string, updates: Partial<Category>) => Promise<void>;
     deleteCategory: (id: string) => Promise<void>;
     reorderCategories: (orderedIds: string[]) => Promise<void>;
@@ -89,34 +88,10 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     const { showToast } = useToast();
     const { t } = useTranslation();
     const [isCreatingDefault, setIsCreatingDefault] = React.useState(false);
-    const [isSeedingCategories, setIsSeedingCategories] = React.useState(false);
-
-    // Seed default categories if none exist
-    useEffect(() => {
-        if (!categoriesSync.loading && categoriesSync.data.length === 0 && user?.uid && !isSeedingCategories) {
-            const seedCategories = async () => {
-                setIsSeedingCategories(true);
-                try {
-                    for (const template of defaultAisleTemplates) {
-                        await categoriesSync.addItem({
-                            id: uuidv4(),
-                            name: template.nameKey, // We'll store the key for translation
-                            order: defaultAisleTemplates.indexOf(template),
-                            keywords: template.keywords
-                        });
-                    }
-                } catch (error) {
-                    console.error("Failed to seed categories:", error);
-                } finally {
-                    setIsSeedingCategories(false);
-                }
-            };
-            seedCategories();
-        }
-    }, [categoriesSync.loading, categoriesSync.data.length, user?.uid, categoriesSync.addItem, isSeedingCategories]);
 
     useEffect(() => {
         if (!listsSync.loading && listsSync.data.length === 0 && user?.uid && !isCreatingDefault) {
+
             const createDefaultList = async () => {
                 setIsCreatingDefault(true);
                 try {
@@ -128,7 +103,6 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
                           items: [],
                           lastAccessedAt: new Date().toISOString(),
                           settings: {
-                              autoGrouping: true,
                               defaultSort: 'manual',
                               threeStageMode: false
                           }
@@ -355,13 +329,12 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         await listsSync.deleteItem(id);
     };
 
-    const addCategory = async (name: string, keywords: string[] = []) => {
+    const addCategory = async (name: string) => {
         const id = uuidv4();
         await categoriesSync.addItem({
             id,
             name,
-            order: categoriesSync.data.length,
-            keywords
+            order: categoriesSync.data.length
         });
         return id;
     };

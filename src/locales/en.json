@@ -44,17 +44,7 @@
         "beverages": "Beverages",
         "household": "Household",
         "snacks": "Snacks",
-        "other": "Other",
-        "templates": "Aisle Templates",
-        "templatesDesc": "Manage auto-grouping categories",
-        "namePlaceholder": "Aisle name (e.g. Dairy)",
-        "keywordsPlaceholder": "Keywords (comma separated)",
-        "existing": "Existing Aisles",
-        "noKeywords": "No keywords",
-        "editTitle": "Edit Aisle",
-        "name": "Name",
-        "keywords": "Keywords",
-        "dragToReorder": "Drag to reorder"
+        "other": "Other"
     },
     "lists": {
         "newPlaceholder": "New List...",
@@ -109,10 +99,6 @@
             "archive": {
                 "title": "Archived",
                 "description": "Lock the list and hide it from the home view."
-            },
-            "autoGrouping": {
-                "title": "Auto-group by aisle",
-                "description": "Automatically group items by store aisle"
             }
         },
         "archivedBadge": "Archived",
@@ -195,7 +181,7 @@
         "importConfirm": "This will overwrite your current data. Are you sure?",
         "databases": {
             "title": "Categories & Items",
-            "subtitle": "Manage store aisles, keywords and autocomplete"
+            "subtitle": "Manage autocomplete and history"
         },
         "appSettings": {
             "title": "App Settings",
@@ -313,14 +299,7 @@
         "errorEmpty": "Please paste some recipe text.",
         "import": "Import Selected"
     },
-    "categorize": {
-        "title": "Categorize Item",
-        "addToExisting": "Add to existing category",
-        "addKeyword": "+ keyword",
-        "createNew": "Create new category",
-        "newNamePlaceholder": "Category name...",
-        "create": "Create"
-    },
+
     "stats": {
         "title": "Statistics",
         "subtitle": "Insights into your productivity and habits",
