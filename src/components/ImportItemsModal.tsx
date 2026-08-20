@@ -18,8 +18,8 @@ interface ImportItemsModalProps {
 }
 
 const SIMPLE_EXAMPLE = `["Milk", "Eggs", "Bread", "Butter"]`;
-const OBJECT_EXAMPLE = `[{"text": "Milk", "note": "3%"}, {"text": "Eggs"}, {"text": "Bread"}]`;
-const WRAPPED_EXAMPLE = `{"items": [{"text": "Milk", "note": "3%"}, {"text": "Eggs"}]}`;
+const OBJECT_EXAMPLE = `[{"text": "Pajdeg", "note": "1st"}, {"text": "Mjölk", "note": "1liter"}]`;
+const WRAPPED_EXAMPLE = `{"items": [{"text": "Pajdeg", "note": "1st"}, {"text": "Mjölk", "note": "1liter"}]}`;
 
 /**
  * Parses a JSON string and extracts a list of items (text and optional note).

@@ -12,7 +12,7 @@ import type { Item, HistoryItem } from '../types';
 import { useTranslation } from 'react-i18next';
 import { v4 as uuidv4 } from 'uuid';
 
-const SIMPLE_EXAMPLE = `["Milk", "Eggs", "Bread", "Butter"]`;
+const SIMPLE_EXAMPLE = `[{"text": "Pajdeg", "note": "1st"}, {"text": "Mjölk", "note": "1liter"}]`;
 
 const CodeBlock: React.FC<{ code: string }> = ({ code }) => {
     const [copied, setCopied] = React.useState(false);
@@ -67,7 +67,7 @@ export const SettingsView: React.FC = () => {
     const [importAccordionOpen, setImportAccordionOpen] = React.useState(false);
     const [exportAccordionOpen, setExportAccordionOpen] = React.useState(false);
     const [exportFormat, setExportFormat] = React.useState<'simple' | 'objects' | 'wrapped'>('simple');
-    const [exportScope, setExportScope] = React.useState<'all' | 'active'>('active');
+    const [exportScope, setExportScope] = React.useState<'active' | 'all'>('active');
     const [copiedExport, setCopiedExport] = React.useState(false);
     const [jsonText, setJsonText] = React.useState('');
     const list = lists.find(l => l.id === defaultListId);
@@ -239,18 +239,6 @@ export const SettingsView: React.FC = () => {
         await updateHistoryItem(editingHistoryItem.id, { text: editHistoryText.trim() });
         setEditingHistoryItem(null);
         showToast(t('common.save'), 'success');
-    };
-
-    const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
-        const file = event.target.files?.[0];
-        if (!file) return;
-        const reader = new FileReader();
-        reader.onload = async (e) => {
-            const content = e.target?.result as string;
-            await handleImportJson(content);
-            event.target.value = '';
-        };
-        reader.readAsText(file);
     };
 
     // -----------------------------------------------------------------------
@@ -621,19 +609,7 @@ export const SettingsView: React.FC = () => {
                                     <CodeBlock code={SIMPLE_EXAMPLE} />
                                 </div>
 
-                                <div className="flex flex-col gap-4">
-                                    <div className="flex items-center justify-center w-full">
-                                        <label className="flex flex-col items-center justify-center w-full h-32 border-2 border-gray-300 border-dashed rounded-2xl cursor-pointer bg-gray-55 dark:bg-gray-850 hover:bg-gray-100/60 dark:hover:bg-gray-900/60 transition-all">
-                                            <div className="flex flex-col items-center justify-center pt-5 pb-6">
-                                                <Database className="w-8 h-8 mb-3 text-gray-400" />
-                                                <p className="mb-2 text-sm text-gray-500 dark:text-gray-400 text-center">
-                                                    <span className="font-semibold">{t('settings.selectFile')}</span>
-                                                </p>
-                                                <p className="text-xs text-gray-400">JSON</p>
-                                            </div>
-                                            <input type="file" className="hidden" accept=".json" onChange={handleFileUpload} />
-                                        </label>
-                                    </div>
+                                <div className="space-y-3">
                                     <div className="relative text-left">
                                         <textarea
                                             value={jsonText}
@@ -698,7 +674,7 @@ export const SettingsView: React.FC = () => {
                                 <div className="space-y-2">
                                     <label className="text-xs font-bold text-gray-500 uppercase tracking-wider">{t('settings.exportScope')}</label>
                                     <div className="grid grid-cols-2 gap-2">
-                                        {(['all', 'active'] as const).map((scp) => (
+                                        {(['active', 'all'] as const).map((scp) => (
                                             <button
                                                 key={scp}
                                                 type="button"

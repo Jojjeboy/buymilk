@@ -166,7 +166,7 @@ describe('SettingsView Export & Import Functionality', () => {
         fireEvent.click(importBtn);
 
         expect(screen.getByText('settings.jsonFormat')).toBeInTheDocument();
-        expect(screen.getByText('["Milk", "Eggs", "Bread", "Butter"]')).toBeInTheDocument();
+        expect(screen.getByText('[{"text": "Pajdeg", "note": "1st"}, {"text": "Mjölk", "note": "1liter"}]')).toBeInTheDocument();
     });
 
     it('successfully imports items with notes from objects format JSON', async () => {
