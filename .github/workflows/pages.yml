@@ -2,9 +2,7 @@ name: CI/CD Pages
 
 on:
   push:
-    branches:
-      - main
-      - develop
+  pull_request:
 
 permissions:
   contents: read
