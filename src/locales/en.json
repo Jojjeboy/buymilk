@@ -205,7 +205,7 @@
         "historyItems": "Saved products",
         "noHistory": "No product history found",
         "accountStatus": "Account settings",
-        "theme": {
+        "themeModes": {
             "light": "Light",
             "dark": "Dark",
             "system": "Auto"

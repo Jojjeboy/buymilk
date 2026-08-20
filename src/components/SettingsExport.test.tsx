@@ -19,8 +19,9 @@ vi.mock('react-i18next', () => ({
     }),
 }));
 
-describe('SettingsView Export Functionality', () => {
+describe('SettingsView Export & Import Functionality', () => {
     const mockShowToast = vi.fn();
+    const mockUpdateListItems = vi.fn();
 
     beforeEach(() => {
         vi.clearAllMocks();
@@ -54,7 +55,7 @@ describe('SettingsView Export Functionality', () => {
             ],
             defaultListId: '1',
             updateListSettings: vi.fn(),
-            updateListItems: vi.fn(),
+            updateListItems: mockUpdateListItems,
             theme: 'system',
             setTheme: vi.fn(),
             itemHistory: [],
@@ -69,17 +70,17 @@ describe('SettingsView Export Functionality', () => {
         expect(screen.getByText('settings.exportTitle')).toBeInTheDocument();
     });
 
-    it('opens export section and shows simple array format by default', () => {
+    it('opens export section and shows active items only by default in simple array format', () => {
         render(<SettingsView />);
         const exportBtn = screen.getByText('settings.exportTitle');
         fireEvent.click(exportBtn);
 
         const textarea = screen.getByRole('textbox') as HTMLTextAreaElement;
         const parsed = JSON.parse(textarea.value);
-        expect(parsed).toEqual(['Milk', 'Eggs']);
+        expect(parsed).toEqual(['Milk']);
     });
 
-    it('switches export format to objects format', () => {
+    it('switches export format to objects format with active items by default', () => {
         render(<SettingsView />);
         const exportBtn = screen.getByText('settings.exportTitle');
         fireEvent.click(exportBtn);
@@ -89,10 +90,10 @@ describe('SettingsView Export Functionality', () => {
 
         const textarea = screen.getByRole('textbox') as HTMLTextAreaElement;
         const parsed = JSON.parse(textarea.value);
-        expect(parsed).toEqual([{ text: 'Milk' }, { text: 'Eggs' }]);
+        expect(parsed).toEqual([{ text: 'Milk' }]);
     });
 
-    it('switches export format to wrapped format', () => {
+    it('switches export format to wrapped format with active items by default', () => {
         render(<SettingsView />);
         const exportBtn = screen.getByText('settings.exportTitle');
         fireEvent.click(exportBtn);
@@ -102,20 +103,20 @@ describe('SettingsView Export Functionality', () => {
 
         const textarea = screen.getByRole('textbox') as HTMLTextAreaElement;
         const parsed = JSON.parse(textarea.value);
-        expect(parsed).toEqual({ items: ['Milk', 'Eggs'] });
+        expect(parsed).toEqual({ items: ['Milk'] });
     });
 
-    it('filters items by active scope', () => {
+    it('switches scope to all items', () => {
         render(<SettingsView />);
         const exportBtn = screen.getByText('settings.exportTitle');
         fireEvent.click(exportBtn);
 
-        const activeScopeBtn = screen.getByText('settings.scopeActive');
-        fireEvent.click(activeScopeBtn);
+        const allScopeBtn = screen.getByText('settings.scopeAll');
+        fireEvent.click(allScopeBtn);
 
         const textarea = screen.getByRole('textbox') as HTMLTextAreaElement;
         const parsed = JSON.parse(textarea.value);
-        expect(parsed).toEqual(['Milk']);
+        expect(parsed).toEqual(['Milk', 'Eggs']);
     });
 
     it('copies export json to clipboard when copy button is clicked', async () => {
@@ -157,5 +158,34 @@ describe('SettingsView Export Functionality', () => {
         expect(createObjectURLMock).toHaveBeenCalled();
         expect(clickMock).toHaveBeenCalled();
         clickMock.mockRestore();
+    });
+
+    it('shows simple example JSON format directly in import section', () => {
+        render(<SettingsView />);
+        const importBtn = screen.getByText('settings.importTitle');
+        fireEvent.click(importBtn);
+
+        expect(screen.getByText('settings.jsonFormat')).toBeInTheDocument();
+        expect(screen.getByText('["Milk", "Eggs", "Bread", "Butter"]')).toBeInTheDocument();
+    });
+
+    it('successfully imports items from wrapped format JSON', async () => {
+        render(<SettingsView />);
+        const importBtn = screen.getByText('settings.importTitle');
+        fireEvent.click(importBtn);
+
+        const textarea = screen.getByPlaceholderText('settings.jsonPlaceholder');
+        fireEvent.change(textarea, { target: { value: '{"items": ["Butter", "Cheese"]}' } });
+
+        const submitBtn = screen.getByRole('button', { name: 'common.import' });
+        await act(async () => {
+            fireEvent.click(submitBtn);
+        });
+
+        expect(mockUpdateListItems).toHaveBeenCalledWith('1', expect.arrayContaining([
+            expect.objectContaining({ text: 'Butter', completed: false }),
+            expect.objectContaining({ text: 'Cheese', completed: false })
+        ]));
+        expect(mockShowToast).toHaveBeenCalledWith('settings.importSuccess', 'success');
     });
 });

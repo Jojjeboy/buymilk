@@ -12,6 +12,38 @@ import type { Item, HistoryItem } from '../types';
 import { useTranslation } from 'react-i18next';
 import { v4 as uuidv4 } from 'uuid';
 
+const SIMPLE_EXAMPLE = `["Milk", "Eggs", "Bread", "Butter"]`;
+
+const CodeBlock: React.FC<{ code: string }> = ({ code }) => {
+    const [copied, setCopied] = React.useState(false);
+
+    const handleCopy = async () => {
+        try {
+            await navigator.clipboard.writeText(code);
+            setCopied(true);
+            setTimeout(() => setCopied(false), 2000);
+        } catch {
+            // ignore
+        }
+    };
+
+    return (
+        <div className="relative group">
+            <pre className="bg-gray-100 dark:bg-gray-900 text-gray-800 dark:text-gray-200 rounded-xl p-3 text-xs font-mono overflow-x-auto whitespace-pre-wrap break-all pr-10">
+                {code}
+            </pre>
+            <button
+                type="button"
+                onClick={handleCopy}
+                className="absolute top-2 right-2 p-1.5 rounded-lg text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 hover:bg-gray-200 dark:hover:bg-gray-800 transition-colors"
+                title="Copy"
+            >
+                {copied ? <Check size={14} className="text-green-500" /> : <Copy size={14} />}
+            </button>
+        </div>
+    );
+};
+
 // ---------------------------------------------------------------------------
 // Main component
 // ---------------------------------------------------------------------------
@@ -35,7 +67,7 @@ export const SettingsView: React.FC = () => {
     const [importAccordionOpen, setImportAccordionOpen] = React.useState(false);
     const [exportAccordionOpen, setExportAccordionOpen] = React.useState(false);
     const [exportFormat, setExportFormat] = React.useState<'simple' | 'objects' | 'wrapped'>('simple');
-    const [exportScope, setExportScope] = React.useState<'all' | 'active'>('all');
+    const [exportScope, setExportScope] = React.useState<'all' | 'active'>('active');
     const [copiedExport, setCopiedExport] = React.useState(false);
     const [jsonText, setJsonText] = React.useState('');
     const list = lists.find(l => l.id === defaultListId);
@@ -101,15 +133,33 @@ export const SettingsView: React.FC = () => {
     const handleImportJson = async (content: string) => {
         if (!list) return;
         try {
-            let data;
+            let data: unknown;
             try { data = JSON.parse(content); } catch { throw new Error('Invalid JSON'); }
-            if (!Array.isArray(data)) throw new Error('Format must be an array');
+
+            let arr: unknown[];
+            if (Array.isArray(data)) {
+                arr = data;
+            } else if (
+                data !== null &&
+                typeof data === 'object' &&
+                'items' in data &&
+                Array.isArray((data as { items: unknown[] }).items)
+            ) {
+                arr = (data as { items: unknown[] }).items;
+            } else {
+                throw new Error('Format must be an array or an object with an items array');
+            }
+
             const newItems: Item[] = [];
-            for (const entry of data) {
+            for (const entry of arr) {
                 let text = '';
                 if (typeof entry === 'string') text = entry;
-                else if (typeof entry === 'object' && entry !== null && entry.text) text = entry.text;
-                if (text) newItems.push({ id: uuidv4(), text: text.trim(), completed: false });
+                else if (typeof entry === 'object' && entry !== null && 'text' in entry && typeof (entry as { text: unknown }).text === 'string') {
+                    text = (entry as { text: string }).text;
+                }
+                if (text && text.trim()) {
+                    newItems.push({ id: uuidv4(), text: text.trim(), completed: false });
+                }
             }
             if (newItems.length > 0) {
                 await updateListItems(list.id, [...list.items, ...newItems]);
@@ -493,7 +543,7 @@ export const SettingsView: React.FC = () => {
                                             : 'border-gray-100 dark:border-gray-700 text-gray-500 dark:text-gray-400 hover:border-blue-200 dark:hover:border-blue-800'
                                         }`}
                                     >
-                                        {t(`settings.theme.${mode}`)}
+                                        {t(`settings.themeModes.${mode}`)}
                                     </button>
                                 ))}
                             </div>
@@ -558,6 +608,14 @@ export const SettingsView: React.FC = () => {
                         </button>
                         {importAccordionOpen && (
                             <div className="mt-3 p-5 rounded-2xl bg-gray-50 dark:bg-gray-900/40 border border-gray-100 dark:border-gray-700/60 animate-in slide-in-from-top-4 duration-300 space-y-4">
+                                {/* Example format directly visible */}
+                                <div className="space-y-1.5 text-left">
+                                    <label className="text-xs font-bold text-gray-500 uppercase tracking-wider">
+                                        {t('settings.jsonFormat')}
+                                    </label>
+                                    <CodeBlock code={SIMPLE_EXAMPLE} />
+                                </div>
+
                                 <div className="flex flex-col gap-4">
                                     <div className="flex items-center justify-center w-full">
                                         <label className="flex flex-col items-center justify-center w-full h-32 border-2 border-gray-300 border-dashed rounded-2xl cursor-pointer bg-gray-55 dark:bg-gray-850 hover:bg-gray-100/60 dark:hover:bg-gray-900/60 transition-all">

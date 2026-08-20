@@ -1,5 +1,20 @@
 [
   {
+    "hash": "dde4edd68628c6468976c6cf92e7a4ae94536858",
+    "date": "2026-08-17 14:12:19 +0200",
+    "message": "Package upgrades"
+  },
+  {
+    "hash": "49e4d95c3b5e27303ec747326e2c8b1ae939e982",
+    "date": "2026-08-17 14:10:56 +0200",
+    "message": "Placed the logout button directly underneath the account email address as a styled, full-width button."
+  },
+  {
+    "hash": "4c704fd75590fcce2625e480e1c10105cf32c7d8",
+    "date": "2026-08-17 14:09:03 +0200",
+    "message": "Added export functionality"
+  },
+  {
     "hash": "272d703adaa8c54b3ae0efa4a47688d2416c7fd4",
     "date": "2026-08-17 14:02:21 +0200",
     "message": "package stuff"
@@ -83,20 +98,5 @@
     "hash": "eff2fadd768967a9d7778e3930f33db200b8f1f5",
     "date": "2026-03-09 16:22:39 +0100",
     "message": "chore: update dependencies"
-  },
-  {
-    "hash": "59ba27ac26b97b2cc6aad20fa5089af664ad157c",
-    "date": "2026-03-09 16:18:05 +0100",
-    "message": "Import json functionality"
-  },
-  {
-    "hash": "f0e17a1e1ca12eec4a69af59f432a871363ebe8c",
-    "date": "2026-02-10 23:16:06 +0100",
-    "message": "minor fixes"
-  },
-  {
-    "hash": "ba0532ee4d73b445251d9187af35b15d479dc657",
-    "date": "2026-02-10 23:05:16 +0100",
-    "message": "error fixes"
   }
 ]

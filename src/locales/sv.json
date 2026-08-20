@@ -205,7 +205,7 @@
         "historyItems": "Sparade produkter",
         "noHistory": "Ingen produkthistorik hittades",
         "accountStatus": "Kontoinställningar",
-        "theme": {
+        "themeModes": {
             "light": "Ljust",
             "dark": "Mörkt",
             "system": "Auto"
