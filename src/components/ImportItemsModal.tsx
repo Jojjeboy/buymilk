@@ -3,29 +3,34 @@ import { useTranslation } from 'react-i18next';
 import { Upload, ChevronDown, Copy, Check, X, FileText } from 'lucide-react';
 import { parseRecipeText } from '../utils/recipeParser';
 
+export interface ParsedImportItem {
+    text: string;
+    note?: string;
+}
+
 interface ImportItemsModalProps {
     isOpen: boolean;
     onClose: () => void;
-    /** Called with validated item texts to add to the list */
-    onImport: (items: string[]) => Promise<void>;
+    /** Called with validated item texts or objects to add to the list */
+    onImport: (items: (string | ParsedImportItem)[]) => Promise<void>;
     /** Existing item texts (lowercased) to detect duplicates */
     existingItemTexts: string[];
 }
 
 const SIMPLE_EXAMPLE = `["Milk", "Eggs", "Bread", "Butter"]`;
-const OBJECT_EXAMPLE = `[{"text": "Milk"}, {"text": "Eggs"}, {"text": "Bread"}]`;
-const WRAPPED_EXAMPLE = `{"items": ["Milk", "Eggs", "Bread"]}`;
+const OBJECT_EXAMPLE = `[{"text": "Milk", "note": "3%"}, {"text": "Eggs"}, {"text": "Bread"}]`;
+const WRAPPED_EXAMPLE = `{"items": [{"text": "Milk", "note": "3%"}, {"text": "Eggs"}]}`;
 
 /**
- * Parses a JSON string and extracts a list of item texts.
+ * Parses a JSON string and extracts a list of items (text and optional note).
  * Accepts the following formats:
- *   1. ["Milk", "Eggs"]                   — array of strings
- *   2. [{"text": "Milk"}]                 — array of objects with a `text` field
- *   3. {"items": ["Milk"]}                — object with an `items` array of strings
- *   4. {"items": [{"text": "Milk"}]}      — object with an `items` array of objects
- * Returns the extracted texts or throws a descriptive error key.
+ *   1. ["Milk", "Eggs"]                           — array of strings
+ *   2. [{"text": "Milk", "note": "3%"}]          — array of objects with a `text` field and optional `note`
+ *   3. {"items": ["Milk"]}                        — object with an `items` array of strings
+ *   4. {"items": [{"text": "Milk", "note": "3%"}]} — object with an `items` array of objects
+ * Returns the extracted items or throws a descriptive error key.
  */
-function parseJsonItems(raw: string): string[] {
+export function parseJsonItems(raw: string): ParsedImportItem[] {
     let parsed: unknown;
     try {
         parsed = JSON.parse(raw);
@@ -48,25 +53,29 @@ function parseJsonItems(raw: string): string[] {
         throw 'errorInvalidFormat';
     }
 
-    const texts: string[] = [];
+    const items: ParsedImportItem[] = [];
     for (const entry of arr) {
         if (typeof entry === 'string' && entry.trim()) {
-            texts.push(entry.trim());
+            items.push({ text: entry.trim() });
         } else if (
             entry !== null &&
             typeof entry === 'object' &&
             typeof (entry as Record<string, unknown>).text === 'string' &&
             ((entry as Record<string, unknown>).text as string).trim()
         ) {
-            texts.push(((entry as Record<string, unknown>).text as string).trim());
+            const text = ((entry as Record<string, unknown>).text as string).trim();
+            const note = typeof (entry as Record<string, unknown>).note === 'string'
+                ? ((entry as Record<string, unknown>).note as string).trim() || undefined
+                : undefined;
+            items.push({ text, note });
         }
     }
 
-    if (texts.length === 0) {
+    if (items.length === 0) {
         throw 'errorNoItems';
     }
 
-    return texts;
+    return items;
 }
 
 const CodeBlock: React.FC<{ code: string }> = ({ code }) => {
@@ -138,7 +147,7 @@ export const ImportItemsModal: React.FC<ImportItemsModalProps> = ({
     };
 
     const handleImport = async () => {
-        let texts: string[];
+        let itemsToImport: (string | ParsedImportItem)[];
 
         if (importMode === 'json') {
             const raw = jsonText.trim();
@@ -147,7 +156,7 @@ export const ImportItemsModal: React.FC<ImportItemsModalProps> = ({
                 return;
             }
             try {
-                texts = parseJsonItems(raw);
+                itemsToImport = parseJsonItems(raw);
             } catch (errKey) {
                 setError(t(`importItems.${errKey as string}`));
                 return;
@@ -157,23 +166,20 @@ export const ImportItemsModal: React.FC<ImportItemsModalProps> = ({
                 setError(t('importRecipe.errorEmpty'));
                 return;
             }
-            texts = Array.from(selectedItems);
+            itemsToImport = Array.from(selectedItems);
         }
 
         // Separate new items from duplicates
         const existingSet = new Set(existingItemTexts.map((s) => s.toLowerCase()));
-        const newTexts = texts.filter((t) => !existingSet.has(t.toLowerCase()));
-        const dupeCount = texts.length - newTexts.length;
-
-        if (newTexts.length === 0 && texts.length > 0 && dupeCount > 0) {
-            // If we only have duplicates, we can show a warning or just proceed with empty
-            // For JSON we had a specific error, for recipe we'll just import what's new
-        }
+        const newItems = itemsToImport.filter((item) => {
+            const text = typeof item === 'string' ? item : item.text;
+            return !existingSet.has(text.toLowerCase());
+        });
 
         setError('');
         setIsImporting(true);
         try {
-            await onImport(newTexts);
+            await onImport(newItems);
             // Reset state on success
             setJsonText('');
             setRecipeText('');

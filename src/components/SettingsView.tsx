@@ -153,12 +153,17 @@ export const SettingsView: React.FC = () => {
             const newItems: Item[] = [];
             for (const entry of arr) {
                 let text = '';
-                if (typeof entry === 'string') text = entry;
-                else if (typeof entry === 'object' && entry !== null && 'text' in entry && typeof (entry as { text: unknown }).text === 'string') {
+                let note: string | undefined = undefined;
+                if (typeof entry === 'string') {
+                    text = entry;
+                } else if (typeof entry === 'object' && entry !== null && 'text' in entry && typeof (entry as { text: unknown }).text === 'string') {
                     text = (entry as { text: string }).text;
+                    if ('note' in entry && typeof (entry as { note: unknown }).note === 'string') {
+                        note = (entry as { note: string }).note.trim() || undefined;
+                    }
                 }
                 if (text && text.trim()) {
-                    newItems.push({ id: uuidv4(), text: text.trim(), completed: false });
+                    newItems.push({ id: uuidv4(), text: text.trim(), note, completed: false });
                 }
             }
             if (newItems.length > 0) {
@@ -188,10 +193,10 @@ export const SettingsView: React.FC = () => {
             const arr = itemsToExport.map(i => i.text);
             return JSON.stringify(arr, null, 2);
         } else if (exportFormat === 'objects') {
-            const arr = itemsToExport.map(i => ({ text: i.text }));
+            const arr = itemsToExport.map(i => i.note ? { text: i.text, note: i.note } : { text: i.text });
             return JSON.stringify(arr, null, 2);
         } else {
-            const arr = itemsToExport.map(i => i.text);
+            const arr = itemsToExport.map(i => i.note ? { text: i.text, note: i.note } : { text: i.text });
             return JSON.stringify({ items: arr }, null, 2);
         }
     };

@@ -103,7 +103,7 @@ describe('SettingsView Export & Import Functionality', () => {
 
         const textarea = screen.getByRole('textbox') as HTMLTextAreaElement;
         const parsed = JSON.parse(textarea.value);
-        expect(parsed).toEqual({ items: ['Milk'] });
+        expect(parsed).toEqual({ items: [{ text: 'Milk' }] });
     });
 
     it('switches scope to all items', () => {
@@ -169,13 +169,13 @@ describe('SettingsView Export & Import Functionality', () => {
         expect(screen.getByText('["Milk", "Eggs", "Bread", "Butter"]')).toBeInTheDocument();
     });
 
-    it('successfully imports items from wrapped format JSON', async () => {
+    it('successfully imports items with notes from objects format JSON', async () => {
         render(<SettingsView />);
         const importBtn = screen.getByText('settings.importTitle');
         fireEvent.click(importBtn);
 
         const textarea = screen.getByPlaceholderText('settings.jsonPlaceholder');
-        fireEvent.change(textarea, { target: { value: '{"items": ["Butter", "Cheese"]}' } });
+        fireEvent.change(textarea, { target: { value: '[{"text": "Oat milk", "note": "Barista"}]' } });
 
         const submitBtn = screen.getByRole('button', { name: 'common.import' });
         await act(async () => {
@@ -183,8 +183,7 @@ describe('SettingsView Export & Import Functionality', () => {
         });
 
         expect(mockUpdateListItems).toHaveBeenCalledWith('1', expect.arrayContaining([
-            expect.objectContaining({ text: 'Butter', completed: false }),
-            expect.objectContaining({ text: 'Cheese', completed: false })
+            expect.objectContaining({ text: 'Oat milk', note: 'Barista', completed: false })
         ]));
         expect(mockShowToast).toHaveBeenCalledWith('settings.importSuccess', 'success');
     });

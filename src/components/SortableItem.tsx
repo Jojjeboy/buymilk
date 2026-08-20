@@ -2,7 +2,8 @@ import React from 'react';
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import type { Item } from '../types';
-import { Trash2, GripVertical, Circle, CheckCircle2, CloudUpload, Tag } from 'lucide-react';
+import { Trash2, GripVertical, Circle, CheckCircle2, CloudUpload, Tag, FileText } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import {
     SwipeableList,
     SwipeableListItem,
@@ -18,18 +19,36 @@ interface SortableItemProps {
     onToggle?: (id: string) => void;
     onDelete?: (id: string) => void;
     onEdit?: (id: string, text: string) => void;
+    onEditNote?: (id: string, note?: string) => void;
     onCategorize?: (id: string) => void;
     disabled?: boolean;
     isCategorized?: boolean;
 }
 
-export const SortableItem: React.FC<SortableItemProps> = ({ item, onToggle, onDelete, onEdit, onCategorize, disabled, isCategorized }) => {
+export const SortableItem: React.FC<SortableItemProps> = ({
+    item,
+    onToggle,
+    onDelete,
+    onEdit,
+    onEditNote,
+    onCategorize,
+    disabled,
+    isCategorized
+}) => {
+    const { t } = useTranslation();
     const [localText, setLocalText] = React.useState(item.text);
+    const [localNote, setLocalNote] = React.useState(item.note || '');
+    const [isEditingNote, setIsEditingNote] = React.useState(false);
     const inputRef = React.useRef<HTMLInputElement>(null);
+    const noteInputRef = React.useRef<HTMLInputElement>(null);
 
     React.useEffect(() => {
         setLocalText(item.text);
     }, [item.text]);
+
+    React.useEffect(() => {
+        setLocalNote(item.note || '');
+    }, [item.note]);
 
     const handleBlur = () => {
         if (onEdit && localText !== item.text) {
@@ -40,6 +59,36 @@ export const SortableItem: React.FC<SortableItemProps> = ({ item, onToggle, onDe
     const handleKeyDown = (e: React.KeyboardEvent) => {
         if (e.key === 'Enter') {
             (e.target as HTMLInputElement).blur();
+        }
+    };
+
+    const handleNoteBlur = () => {
+        const trimmed = localNote.trim();
+        if (onEditNote && trimmed !== (item.note || '')) {
+            onEditNote(item.id, trimmed || undefined);
+        }
+        if (!trimmed) {
+            setIsEditingNote(false);
+        }
+    };
+
+    const handleNoteKeyDown = (e: React.KeyboardEvent) => {
+        if (e.key === 'Enter') {
+            (e.target as HTMLInputElement).blur();
+        } else if (e.key === 'Escape') {
+            setLocalNote(item.note || '');
+            setIsEditingNote(false);
+        }
+    };
+
+    const handleToggleNoteEdit = (e: React.MouseEvent) => {
+        e.stopPropagation();
+        if (!isEditingNote) {
+            setIsEditingNote(true);
+            setTimeout(() => noteInputRef.current?.focus(), 50);
+        } else {
+            handleNoteBlur();
+            setIsEditingNote(false);
         }
     };
 
@@ -133,23 +182,77 @@ export const SortableItem: React.FC<SortableItemProps> = ({ item, onToggle, onDe
                             })()}
                         </button>
 
-                        <input
-                            ref={inputRef}
-                            type="text"
-                            value={localText}
-                            onChange={(e) => setLocalText(e.target.value)}
-                            onBlur={handleBlur}
-                            onKeyDown={handleKeyDown}
-                            disabled={isReadOnly}
-                            aria-label="Edit item text"
-                            className={`flex-1 min-w-0 bg-transparent outline-none p-1 ${(() => {
-                                if (item.completed) return 'line-through text-gray-400';
-                                return 'text-gray-700 dark:text-gray-200';
-                            })()} ${isReadOnly ? 'cursor-not-allowed' : ''}`}
-                            // Stop propagation to prevent swipe start when interacting with input
-                            onMouseDown={(e) => e.stopPropagation()}
-                            onTouchStart={(e) => e.stopPropagation()}
-                        />
+                        <div className="flex-1 min-w-0 flex flex-col justify-center">
+                            <input
+                                ref={inputRef}
+                                type="text"
+                                value={localText}
+                                onChange={(e) => setLocalText(e.target.value)}
+                                onBlur={handleBlur}
+                                onKeyDown={handleKeyDown}
+                                disabled={isReadOnly}
+                                aria-label="Edit item text"
+                                className={`w-full bg-transparent outline-none p-0.5 text-sm ${(() => {
+                                    if (item.completed) return 'line-through text-gray-400';
+                                    return 'text-gray-700 dark:text-gray-200';
+                                })()} ${isReadOnly ? 'cursor-not-allowed' : ''}`}
+                                onMouseDown={(e) => e.stopPropagation()}
+                                onTouchStart={(e) => e.stopPropagation()}
+                            />
+                            {(isEditingNote || item.note) && (
+                                <div className="px-0.5 mt-0.5">
+                                    {isEditingNote ? (
+                                        <input
+                                            ref={noteInputRef}
+                                            type="text"
+                                            value={localNote}
+                                            onChange={(e) => setLocalNote(e.target.value)}
+                                            onBlur={handleNoteBlur}
+                                            onKeyDown={handleNoteKeyDown}
+                                            placeholder={t('lists.notePlaceholder')}
+                                            disabled={isReadOnly}
+                                            aria-label="Edit item note"
+                                            className="w-full bg-transparent outline-none text-xs text-gray-600 dark:text-gray-300 placeholder-gray-400 dark:placeholder-gray-500 border-b border-blue-400/40 dark:border-blue-500/40 py-0.5"
+                                            onMouseDown={(e) => e.stopPropagation()}
+                                            onTouchStart={(e) => e.stopPropagation()}
+                                        />
+                                    ) : (
+                                        <span
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                if (!isReadOnly) {
+                                                    setIsEditingNote(true);
+                                                    setTimeout(() => noteInputRef.current?.focus(), 50);
+                                                }
+                                            }}
+                                            className={`block text-xs truncate transition-colors ${
+                                                item.completed ? 'line-through text-gray-400/70' : 'text-gray-500 dark:text-gray-400 hover:text-blue-500 dark:hover:text-blue-400 cursor-pointer'
+                                            }`}
+                                            title={item.note}
+                                        >
+                                            {item.note}
+                                        </span>
+                                    )}
+                                </div>
+                            )}
+                        </div>
+
+                        {onEditNote && !isReadOnly && (
+                            <button
+                                onClick={handleToggleNoteEdit}
+                                className={`flex-shrink-0 p-1.5 rounded-lg transition-colors ${
+                                    item.note
+                                        ? 'text-blue-500 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20'
+                                        : 'text-gray-400 hover:text-blue-500 dark:text-gray-500 dark:hover:text-blue-400'
+                                }`}
+                                aria-label={item.note ? t('lists.editNote') : t('lists.addNote')}
+                                title={item.note ? t('lists.editNote') : t('lists.addNote')}
+                                onMouseDown={(e) => e.stopPropagation()}
+                                onTouchStart={(e) => e.stopPropagation()}
+                            >
+                                <FileText size={16} />
+                            </button>
+                        )}
 
                          {onCategorize && (
                              <button

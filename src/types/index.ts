@@ -1,6 +1,7 @@
 export interface Item {
   id: string;
   text: string;
+  note?: string;
   completed: boolean;
   state?: "unresolved" | "ongoing" | "completed";
   sectionId?: string;

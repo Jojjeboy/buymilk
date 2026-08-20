@@ -185,19 +185,28 @@ export const GroceryListView: React.FC = React.memo(function GroceryListView() {
         await updateListItems(list.id, newItems);
     };
 
-    const handleImportItems = async (items: string[]) => {
+    const handleEditNote = async (itemId: string, note?: string) => {
+        const newItems = list.items.map(item =>
+            item.id === itemId ? { ...item, note: note || undefined } : item
+        );
+        await updateListItems(list.id, newItems);
+    };
+
+    const handleImportItems = async (items: (string | { text: string; note?: string })[]) => {
         if (!list) return;
         
-        const newItems: Item[] = items.map(text => ({
-            id: uuidv4(),
-            text,
-            completed: false,
-        }));
+        const newItems: Item[] = items.map(entry => {
+            if (typeof entry === 'string') {
+                return { id: uuidv4(), text: entry, completed: false };
+            }
+            return { id: uuidv4(), text: entry.text, note: entry.note, completed: false };
+        });
 
         await updateListItems(list.id, [...list.items, ...newItems]);
         
-        for (const text of items) {
-            await addToHistory(text);
+        for (const entry of items) {
+            const txt = typeof entry === 'string' ? entry : entry.text;
+            await addToHistory(txt);
         }
     };
 
@@ -247,6 +256,7 @@ export const GroceryListView: React.FC = React.memo(function GroceryListView() {
                                             onToggle={handleToggle}
                                             onDelete={handleDelete}
                                             onEdit={handleEdit}
+                                            onEditNote={handleEditNote}
                                         />
                                     ))}
                                 </div>
@@ -282,6 +292,7 @@ export const GroceryListView: React.FC = React.memo(function GroceryListView() {
                                                     onToggle={handleToggle}
                                                     onDelete={handleDelete}
                                                     onEdit={handleEdit}
+                                                    onEditNote={handleEditNote}
                                                     disabled={true}
                                                 />
                                             </div>

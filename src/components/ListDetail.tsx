@@ -344,6 +344,13 @@ export const ListDetail: React.FC = React.memo(function ListDetail() {
         await updateListItems(list.id, newItems);
     };
 
+    const handleEditNote = async (itemId: string, note?: string) => {
+        const newItems = list.items.map(item =>
+            item.id === itemId ? { ...item, note: note || undefined } : item
+        );
+        await updateListItems(list.id, newItems);
+    };
+
     const confirmUncheckAll = async () => {
         const newItems = list.items.map(item => ({ ...item, completed: false, state: 'unresolved' as const }));
         await updateListItems(list.id, newItems);
@@ -357,20 +364,22 @@ export const ListDetail: React.FC = React.memo(function ListDetail() {
         }
     };
 
-    const handleImportItems = async (items: string[]) => {
+    const handleImportItems = async (items: (string | { text: string; note?: string })[]) => {
         if (!list) return;
         
-        const newItems: Item[] = items.map(text => ({
-            id: uuidv4(),
-            text,
-            completed: false,
-        }));
+        const newItems: Item[] = items.map(entry => {
+            if (typeof entry === 'string') {
+                return { id: uuidv4(), text: entry, completed: false };
+            }
+            return { id: uuidv4(), text: entry.text, note: entry.note, completed: false };
+        });
 
         await updateListItems(list.id, [...list.items, ...newItems]);
         
         // Add to history
-        for (const text of items) {
-            await addToHistory(text);
+        for (const entry of items) {
+            const txt = typeof entry === 'string' ? entry : entry.text;
+            await addToHistory(txt);
         }
     };
 
@@ -682,6 +691,7 @@ export const ListDetail: React.FC = React.memo(function ListDetail() {
                                                                 onToggle={list?.archived ? undefined : handleToggle}
                                                                 onDelete={list?.archived ? undefined : handleDelete}
                                                                 onEdit={list?.archived ? undefined : handleEdit}
+                                                                onEditNote={list?.archived ? undefined : handleEditNote}
                                                             />
                                                         ))}
                                                     </div>
@@ -708,6 +718,7 @@ export const ListDetail: React.FC = React.memo(function ListDetail() {
                                                                     onToggle={list?.archived ? undefined : handleToggle}
                                                                     onDelete={list?.archived ? undefined : handleDelete}
                                                                     onEdit={list?.archived ? undefined : handleEdit}
+                                                                    onEditNote={list?.archived ? undefined : handleEditNote}
                                                                 />
                                                             ))}
                                                             {sectionItems.length === 0 && (
@@ -744,6 +755,7 @@ export const ListDetail: React.FC = React.memo(function ListDetail() {
                                                                         onToggle={list?.archived ? undefined : handleToggle}
                                                                         onDelete={list?.archived ? undefined : handleDelete}
                                                                         onEdit={list?.archived ? undefined : handleEdit}
+                                                                        onEditNote={list?.archived ? undefined : handleEditNote}
                                                                         disabled={true}
                                                                     />
                                                                 </div>
@@ -784,6 +796,7 @@ export const ListDetail: React.FC = React.memo(function ListDetail() {
                                                         onToggle={list?.archived ? undefined : handleToggle}
                                                         onDelete={list?.archived ? undefined : handleDelete}
                                                         onEdit={list?.archived ? undefined : handleEdit}
+                                                        onEditNote={list?.archived ? undefined : handleEditNote}
                                                         disabled={true}
                                                     />
                                                 ))}
@@ -811,6 +824,7 @@ export const ListDetail: React.FC = React.memo(function ListDetail() {
                                                             onToggle={list?.archived ? undefined : handleToggle}
                                                             onDelete={list?.archived ? undefined : handleDelete}
                                                             onEdit={list?.archived ? undefined : handleEdit}
+                                                            onEditNote={list?.archived ? undefined : handleEditNote}
                                                             disabled={true}
                                                         />
                                                     ))}
