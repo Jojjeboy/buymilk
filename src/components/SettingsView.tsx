@@ -12,7 +12,7 @@ import type { Item, HistoryItem } from '../types';
 import { useTranslation } from 'react-i18next';
 import { v4 as uuidv4 } from 'uuid';
 
-const SIMPLE_EXAMPLE = `[{"text": "Pajdeg", "note": "1st"}, {"text": "Mjölk", "note": "1liter"}]`;
+const SIMPLE_EXAMPLE = `[{"text": "Pajdeg", "note": "1st", "checkIfExistAtHome": true}, {"text": "Mjölk", "note": "1liter"}]`;
 
 const CodeBlock: React.FC<{ code: string }> = ({ code }) => {
     const [copied, setCopied] = React.useState(false);
@@ -70,6 +70,7 @@ export const SettingsView: React.FC = () => {
     const [exportScope, setExportScope] = React.useState<'active' | 'all'>('active');
     const [copiedExport, setCopiedExport] = React.useState(false);
     const [jsonText, setJsonText] = React.useState('');
+    const [importError, setImportError] = React.useState('');
     const list = lists.find(l => l.id === defaultListId);
     const sortBy = list?.settings?.defaultSort || 'manual';
 
@@ -154,29 +155,43 @@ export const SettingsView: React.FC = () => {
             for (const entry of arr) {
                 let text = '';
                 let note: string | undefined = undefined;
+                let checkIfExistAtHome: boolean | undefined = undefined;
                 if (typeof entry === 'string') {
-                    text = entry;
+                    const trimmed = entry.trim();
+                    const isCheck = trimmed.startsWith('?');
+                    text = isCheck ? trimmed.replace(/^\?+\s*/, '') : trimmed;
+                    if (isCheck) checkIfExistAtHome = true;
                 } else if (typeof entry === 'object' && entry !== null && 'text' in entry && typeof (entry as { text: unknown }).text === 'string') {
-                    text = (entry as { text: string }).text;
+                    const rawText = (entry as { text: string }).text.trim();
+                    const isCheck = rawText.startsWith('?');
+                    text = isCheck ? rawText.replace(/^\?+\s*/, '') : rawText;
                     if ('note' in entry && typeof (entry as { note: unknown }).note === 'string') {
                         note = (entry as { note: string }).note.trim() || undefined;
                     }
+                    const entryObj = entry as Record<string, unknown>;
+                    if (typeof entryObj.checkIfExistAtHome === 'boolean') {
+                        checkIfExistAtHome = entryObj.checkIfExistAtHome || undefined;
+                    } else if (isCheck) {
+                        checkIfExistAtHome = true;
+                    }
                 }
                 if (text && text.trim()) {
-                    newItems.push({ id: uuidv4(), text: text.trim(), note, completed: false });
+                    newItems.push({ id: uuidv4(), text: text.trim(), note, checkIfExistAtHome, completed: false });
                 }
             }
             if (newItems.length > 0) {
                 await updateListItems(list.id, [...list.items, ...newItems]);
                 showToast(t('settings.importSuccess', { count: newItems.length }), 'success');
                 setJsonText('');
+                setImportError('');
                 setImportAccordionOpen(false);
             } else {
-                showToast(t('settings.importNoItems'), 'error');
+                setImportError(t('settings.importNoItems'));
             }
         } catch (error) {
             console.error(error);
-            showToast(t('settings.importError'), 'error');
+            const msg = error instanceof Error ? error.message : t('settings.importError');
+            setImportError(msg);
         }
     };
 
@@ -189,14 +204,21 @@ export const SettingsView: React.FC = () => {
             ? list.items.filter(i => !i.completed)
             : list.items;
 
+        const formatItem = (i: Item) => {
+            const obj: { text: string; note?: string; checkIfExistAtHome?: boolean } = { text: i.text };
+            if (i.note) obj.note = i.note;
+            if (i.checkIfExistAtHome) obj.checkIfExistAtHome = true;
+            return obj;
+        };
+
         if (exportFormat === 'simple') {
             const arr = itemsToExport.map(i => i.text);
             return JSON.stringify(arr, null, 2);
         } else if (exportFormat === 'objects') {
-            const arr = itemsToExport.map(i => i.note ? { text: i.text, note: i.note } : { text: i.text });
+            const arr = itemsToExport.map(formatItem);
             return JSON.stringify(arr, null, 2);
         } else {
-            const arr = itemsToExport.map(i => i.note ? { text: i.text, note: i.note } : { text: i.text });
+            const arr = itemsToExport.map(formatItem);
             return JSON.stringify({ items: arr }, null, 2);
         }
     };
@@ -613,9 +635,13 @@ export const SettingsView: React.FC = () => {
                                     <div className="relative text-left">
                                         <textarea
                                             value={jsonText}
-                                            onChange={(e) => setJsonText(e.target.value)}
+                                            onChange={(e) => { setJsonText(e.target.value); setImportError(''); }}
                                             placeholder={t('settings.jsonPlaceholder')}
-                                            className="w-full p-4 rounded-2xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 focus:ring-2 focus:ring-blue-500 outline-none text-sm font-mono min-h-[150px]"
+                                            className={`w-full p-4 rounded-2xl border bg-white dark:bg-gray-800 focus:ring-2 outline-none text-sm font-mono min-h-[150px] transition-colors ${
+                                                importError
+                                                    ? 'border-red-300 dark:border-red-600 focus:ring-red-200 dark:focus:ring-red-900'
+                                                    : 'border-gray-200 dark:border-gray-700 focus:ring-blue-500'
+                                            }`}
                                         />
                                         <button
                                             onClick={() => handleImportJson(jsonText)}
@@ -625,6 +651,16 @@ export const SettingsView: React.FC = () => {
                                             {t('common.import')}
                                         </button>
                                     </div>
+
+                                    {/* Error box */}
+                                    {importError && (
+                                        <div className="flex items-start gap-2.5 p-3 rounded-xl bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-800/60 animate-in fade-in duration-150">
+                                            <div className="flex-shrink-0 mt-0.5 text-red-500">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                                            </div>
+                                            <p className="text-xs font-medium text-red-700 dark:text-red-300 whitespace-pre-wrap break-all">{importError}</p>
+                                        </div>
+                                    )}
                                 </div>
                             </div>
                         )}

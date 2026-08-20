@@ -6,6 +6,7 @@ import { parseRecipeText } from '../utils/recipeParser';
 export interface ParsedImportItem {
     text: string;
     note?: string;
+    checkIfExistAtHome?: boolean;
 }
 
 interface ImportItemsModalProps {
@@ -18,16 +19,16 @@ interface ImportItemsModalProps {
 }
 
 const SIMPLE_EXAMPLE = `["Milk", "Eggs", "Bread", "Butter"]`;
-const OBJECT_EXAMPLE = `[{"text": "Pajdeg", "note": "1st"}, {"text": "Mjölk", "note": "1liter"}]`;
-const WRAPPED_EXAMPLE = `{"items": [{"text": "Pajdeg", "note": "1st"}, {"text": "Mjölk", "note": "1liter"}]}`;
+const OBJECT_EXAMPLE = `[{"text": "Pajdeg", "note": "1st", "checkIfExistAtHome": true}, {"text": "Mjölk", "note": "1liter"}]`;
+const WRAPPED_EXAMPLE = `{"items": [{"text": "Pajdeg", "note": "1st", "checkIfExistAtHome": true}, {"text": "Mjölk", "note": "1liter"}]}`;
 
 /**
- * Parses a JSON string and extracts a list of items (text and optional note).
+ * Parses a JSON string and extracts a list of items (text, optional note, optional checkIfExistAtHome).
  * Accepts the following formats:
- *   1. ["Milk", "Eggs"]                           — array of strings
- *   2. [{"text": "Milk", "note": "3%"}]          — array of objects with a `text` field and optional `note`
- *   3. {"items": ["Milk"]}                        — object with an `items` array of strings
- *   4. {"items": [{"text": "Milk", "note": "3%"}]} — object with an `items` array of objects
+ *   1. ["Milk", "Eggs"]                                                  — array of strings (supports ? prefix)
+ *   2. [{"text": "Pajdeg", "note": "1st", "checkIfExistAtHome": true}]         — array of objects
+ *   3. {"items": ["Milk"]}                                               — object with an `items` array of strings
+ *   4. {"items": [{"text": "Pajdeg", "checkIfExistAtHome": true}]}              — object with an `items` array of objects
  * Returns the extracted items or throws a descriptive error key.
  */
 export function parseJsonItems(raw: string): ParsedImportItem[] {
@@ -56,18 +57,26 @@ export function parseJsonItems(raw: string): ParsedImportItem[] {
     const items: ParsedImportItem[] = [];
     for (const entry of arr) {
         if (typeof entry === 'string' && entry.trim()) {
-            items.push({ text: entry.trim() });
+            const trimmed = entry.trim();
+            const isCheck = trimmed.startsWith('?');
+            const text = isCheck ? trimmed.replace(/^\?+\s*/, '') : trimmed;
+            items.push({ text, checkIfExistAtHome: isCheck ? true : undefined });
         } else if (
             entry !== null &&
             typeof entry === 'object' &&
             typeof (entry as Record<string, unknown>).text === 'string' &&
             ((entry as Record<string, unknown>).text as string).trim()
         ) {
-            const text = ((entry as Record<string, unknown>).text as string).trim();
+            const rawText = ((entry as Record<string, unknown>).text as string).trim();
+            const isCheck = rawText.startsWith('?');
+            const text = isCheck ? rawText.replace(/^\?+\s*/, '') : rawText;
             const note = typeof (entry as Record<string, unknown>).note === 'string'
                 ? ((entry as Record<string, unknown>).note as string).trim() || undefined
                 : undefined;
-            items.push({ text, note });
+            const checkIfExistAtHome = typeof (entry as Record<string, unknown>).checkIfExistAtHome === 'boolean'
+                ? ((entry as Record<string, unknown>).checkIfExistAtHome as boolean) || undefined
+                : (isCheck ? true : undefined);
+            items.push({ text, note, checkIfExistAtHome });
         }
     }
 

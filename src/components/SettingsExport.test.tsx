@@ -166,7 +166,7 @@ describe('SettingsView Export & Import Functionality', () => {
         fireEvent.click(importBtn);
 
         expect(screen.getByText('settings.jsonFormat')).toBeInTheDocument();
-        expect(screen.getByText('[{"text": "Pajdeg", "note": "1st"}, {"text": "Mjölk", "note": "1liter"}]')).toBeInTheDocument();
+        expect(screen.getByText('[{"text": "Pajdeg", "note": "1st", "checkIfExistAtHome": true}, {"text": "Mjölk", "note": "1liter"}]')).toBeInTheDocument();
     });
 
     it('successfully imports items with notes from objects format JSON', async () => {
@@ -184,6 +184,26 @@ describe('SettingsView Export & Import Functionality', () => {
 
         expect(mockUpdateListItems).toHaveBeenCalledWith('1', expect.arrayContaining([
             expect.objectContaining({ text: 'Oat milk', note: 'Barista', completed: false })
+        ]));
+        expect(mockShowToast).toHaveBeenCalledWith('settings.importSuccess', 'success');
+    });
+
+    it('successfully imports items with checkIfExistAtHome from JSON', async () => {
+        render(<SettingsView />);
+        const importBtn = screen.getByText('settings.importTitle');
+        fireEvent.click(importBtn);
+
+        const textarea = screen.getByPlaceholderText('settings.jsonPlaceholder');
+        fireEvent.change(textarea, { target: { value: '[{"text": "Kanel", "note": "1 påse", "checkIfExistAtHome": true}, "?Socker"]' } });
+
+        const submitBtn = screen.getByRole('button', { name: 'common.import' });
+        await act(async () => {
+            fireEvent.click(submitBtn);
+        });
+
+        expect(mockUpdateListItems).toHaveBeenCalledWith('1', expect.arrayContaining([
+            expect.objectContaining({ text: 'Kanel', note: '1 påse', checkIfExistAtHome: true, completed: false }),
+            expect.objectContaining({ text: 'Socker', checkIfExistAtHome: true, completed: false })
         ]));
         expect(mockShowToast).toHaveBeenCalledWith('settings.importSuccess', 'success');
     });

@@ -20,6 +20,24 @@ interface UseFirestoreSyncResult<T> {
 }
 
 /**
+ * Recursively removes undefined values from an object/array so Firestore
+ * doesn't reject the write. Firestore supports null but not undefined.
+ */
+function stripUndefined<T>(value: T): T {
+    if (Array.isArray(value)) {
+        return value.map(stripUndefined) as unknown as T;
+    }
+    if (value !== null && typeof value === 'object') {
+        return Object.fromEntries(
+            Object.entries(value)
+                .filter(([, v]) => v !== undefined)
+                .map(([k, v]) => [k, stripUndefined(v)])
+        ) as T;
+    }
+    return value;
+}
+
+/**
  * Custom hook for syncing a Firestore collection with React state
  * @param collectionPath - Path to the Firestore collection (e.g., 'users/{uid}/categories')
  * @param userId - The authenticated user's ID
@@ -81,7 +99,7 @@ export function useFirestoreSync<T extends { id: string }>(
         const path = collectionPath.replace('{uid}', userId);
         const docRef = doc(db, path, item.id);
         try {
-            await setDoc(docRef, item);
+            await setDoc(docRef, stripUndefined(item));
         } catch (err: unknown) {
             if (err && typeof err === 'object' && 'code' in err && err.code === 'resource-exhausted') {
                 console.error('Firebase Quota Exceeded during addItem');
@@ -95,7 +113,7 @@ export function useFirestoreSync<T extends { id: string }>(
         const path = collectionPath.replace('{uid}', userId);
         const docRef = doc(db, path, id);
         try {
-            await setDoc(docRef, updates, { merge: true });
+            await setDoc(docRef, stripUndefined(updates), { merge: true });
         } catch (err: unknown) {
             if (err && typeof err === 'object' && 'code' in err && err.code === 'resource-exhausted') {
                 console.error('Firebase Quota Exceeded during updateItem');

@@ -2,7 +2,7 @@ import React from 'react';
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import type { Item } from '../types';
-import { Trash2, GripVertical, Circle, CheckCircle2, CloudUpload, Tag, FileText } from 'lucide-react';
+import { Trash2, GripVertical, Circle, CheckCircle2, CloudUpload, Tag, FileText, Home, HelpCircle, Check, ShoppingCart } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import {
     SwipeableList,
@@ -20,6 +20,7 @@ interface SortableItemProps {
     onDelete?: (id: string) => void;
     onEdit?: (id: string, text: string) => void;
     onEditNote?: (id: string, note?: string) => void;
+    onTogglecheckIfExistAtHome?: (id: string) => void;
     onCategorize?: (id: string) => void;
     disabled?: boolean;
     isCategorized?: boolean;
@@ -31,6 +32,7 @@ export const SortableItem: React.FC<SortableItemProps> = ({
     onDelete,
     onEdit,
     onEditNote,
+    onTogglecheckIfExistAtHome,
     onCategorize,
     disabled,
     isCategorized
@@ -110,15 +112,17 @@ export const SortableItem: React.FC<SortableItemProps> = ({
         <LeadingActions>
             <SwipeAction
                 onClick={() => {
-                    inputRef.current?.focus();
+                    if (onTogglecheckIfExistAtHome) {
+                        onTogglecheckIfExistAtHome(item.id);
+                    } else {
+                        inputRef.current?.focus();
+                    }
                 }}
             >
-                <div className="flex items-center justify-start px-4 bg-blue-500 text-white h-full rounded-l-lg">
-                    <div className="flex items-center gap-2">
-                        <div className="p-1 bg-white/20 rounded">
-                            <div className="w-2 h-2 bg-white rounded-full" />
-                            <div className="w-2 h-2 bg-white rounded-full ml-1" />
-                        </div>
+                <div className="flex items-center justify-start px-4 bg-amber-500 text-white h-full rounded-l-lg">
+                    <div className="flex items-center gap-1.5">
+                        <Home size={18} />
+                        <HelpCircle size={16} />
                     </div>
                 </div>
             </SwipeAction>
@@ -152,7 +156,11 @@ export const SortableItem: React.FC<SortableItemProps> = ({
                     leadingActions={leadingActions()}
                     trailingActions={trailingActions()}
                 >
-                    <div className="w-full flex items-center gap-3 p-3 bg-white dark:bg-gray-800 rounded-lg border border-gray-100 dark:border-gray-700 shadow-sm">
+                    <div className={`w-full flex items-center gap-3 p-3 rounded-lg border shadow-sm transition-colors ${
+                        item.checkIfExistAtHome && !item.completed
+                            ? 'bg-amber-50/80 dark:bg-amber-950/20 border-amber-200 dark:border-amber-700/60'
+                            : 'bg-white dark:bg-gray-800 border-gray-100 dark:border-gray-700'
+                    }`}>
                         {/* We need to wrap the content to allow leading actions to be visible */}
                         <div className="flex items-center gap-3 w-full">
                         <button
@@ -235,7 +243,65 @@ export const SortableItem: React.FC<SortableItemProps> = ({
                                     )}
                                 </div>
                             )}
+
+                            {/* Check at home — action buttons */}
+                            {item.checkIfExistAtHome && !item.completed && (
+                                <div className="flex items-center gap-1.5 mt-1.5 px-0.5">
+                                        {onToggle && (
+                                            <button
+                                                type="button"
+                                                onClick={(e) => {
+                                                    e.stopPropagation();
+                                                    onToggle(item.id);
+                                                }}
+                                                className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold bg-green-100 dark:bg-green-900/40 text-green-700 dark:text-green-300 hover:bg-green-200 dark:hover:bg-green-900/60 transition-colors"
+                                                title={t('lists.inStockAtHome')}
+                                                onMouseDown={(e) => e.stopPropagation()}
+                                                onTouchStart={(e) => e.stopPropagation()}
+                                            >
+                                                <Check size={11} />
+                                                <span>{t('lists.inStockAtHome')}</span>
+                                            </button>
+                                        )}
+                                        {onTogglecheckIfExistAtHome && (
+                                            <button
+                                                type="button"
+                                                onClick={(e) => {
+                                                    e.stopPropagation();
+                                                    onTogglecheckIfExistAtHome(item.id);
+                                                }}
+                                                className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-300 hover:bg-blue-200 dark:hover:bg-blue-900/60 transition-colors"
+                                                title={t('lists.buyInStore')}
+                                                onMouseDown={(e) => e.stopPropagation()}
+                                                onTouchStart={(e) => e.stopPropagation()}
+                                            >
+                                                <ShoppingCart size={11} />
+                                                <span>{t('lists.buyInStore')}</span>
+                                            </button>
+                                        )}
+                                </div>
+                            )}
                         </div>
+
+                        {onTogglecheckIfExistAtHome && !isReadOnly && (
+                            <button
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    onTogglecheckIfExistAtHome(item.id);
+                                }}
+                                className={`flex-shrink-0 p-1.5 rounded-lg transition-colors ${
+                                    item.checkIfExistAtHome
+                                        ? 'text-amber-600 dark:text-amber-400 bg-amber-100 dark:bg-amber-900/30'
+                                        : 'text-gray-400 hover:text-amber-500 dark:text-gray-500 dark:hover:text-amber-400'
+                                }`}
+                                aria-label={t('lists.checkIfExistAtHome')}
+                                title={t('lists.checkIfExistAtHome')}
+                                onMouseDown={(e) => e.stopPropagation()}
+                                onTouchStart={(e) => e.stopPropagation()}
+                            >
+                                <Home size={16} />
+                            </button>
+                        )}
 
                         {onEditNote && !isReadOnly && (
                             <button
@@ -286,18 +352,7 @@ export const SortableItem: React.FC<SortableItemProps> = ({
                             </div>
                         )}
 
-                        {onDelete && (
-                            <button
-                                onClick={() => onDelete(item.id)}
-                                className="p-2 text-gray-400 hover:text-red-500 transition-colors opacity-100 sm:opacity-0 sm:group-hover:opacity-100 focus:opacity-100"
-                                aria-label="Delete item"
-                                // Stop propagation to prevent swipe start when clicking button
-                                onMouseDown={(e) => e.stopPropagation()}
-                                onTouchStart={(e) => e.stopPropagation()}
-                            >
-                                <Trash2 size={18} />
-                            </button>
-                        )}
+
                     </div>
                 </div>
                 </SwipeableListItem>

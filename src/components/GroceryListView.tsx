@@ -6,15 +6,14 @@ import type { Item, List } from '../types';
 import { DndContext, closestCenter, KeyboardSensor, PointerSensor, useSensor, useSensors, type DragEndEvent } from '@dnd-kit/core';
 import { arrayMove, SortableContext, sortableKeyboardCoordinates, verticalListSortingStrategy } from '@dnd-kit/sortable';
 import { SortableItem } from './SortableItem';
-import { Plus, RotateCcw, ChevronDown, CloudUpload, Mic } from 'lucide-react';
+import { Plus, RotateCcw, ChevronDown, CloudUpload, Mic, Upload, Trash2 } from 'lucide-react';
 import { v4 as uuidv4 } from 'uuid';
 import { Confetti } from './Confetti';
 import { ImportItemsModal } from './ImportItemsModal';
+import { Modal } from './Modal';
 import { useTranslation } from 'react-i18next';
 import { InlineAutocompleteInput } from './InlineAutocompleteInput';
 import { useVoiceInput } from '../hooks/useVoiceInput';
-
-
 
 export const GroceryListView: React.FC = React.memo(function GroceryListView() {
     const { t } = useTranslation();
@@ -27,6 +26,7 @@ export const GroceryListView: React.FC = React.memo(function GroceryListView() {
     const [showSuggestions, setShowSuggestions] = useState(false);
     const [importModalOpen, setImportModalOpen] = useState(false);
     const [completedAccordionOpen, setCompletedAccordionOpen] = useState(false);
+    const [clearCompletedModalOpen, setClearCompletedModalOpen] = useState(false);
 
     const list: List | undefined = lists.find((l) => l.id === defaultListId);
 
@@ -105,10 +105,14 @@ export const GroceryListView: React.FC = React.memo(function GroceryListView() {
 
     const handleAddItem = async (e?: React.FormEvent, textOverride?: string) => {
         if (e) e.preventDefault();
-        const textToAdd = (textOverride || newItemText).trim();
+        const rawText = (textOverride || newItemText).trim();
         
-        if (list && textToAdd) {
+        if (list && rawText) {
             try {
+                const isCheckHome = rawText.startsWith('?');
+                const textToAdd = isCheckHome ? rawText.replace(/^\?+\s*/, '').trim() : rawText;
+                if (!textToAdd) return;
+
                 // Check if item exists (completed) -> Restore it
                 const normalize = (s: string) => s.trim().toLowerCase().normalize("NFC");
                 const existingItem = list.items.find(i => normalize(i.text) === normalize(textToAdd));
@@ -119,10 +123,23 @@ export const GroceryListView: React.FC = React.memo(function GroceryListView() {
                         setNewItemText('');
                         setSuggestions([]);
                         setShowSuggestions(false);
-                        await handleToggle(existingItem.id);
+                        const newItems = list.items.map(i =>
+                            i.id === existingItem.id ? { ...i, completed: false, checkIfExistAtHome: isCheckHome ? true : i.checkIfExistAtHome } : i
+                        );
+                        await updateListItems(list.id, newItems);
                     } else {
-                        // Item exists and is active - notify user
-                        showToast(t('lists.itemExists', 'Item is already in the list'), 'info');
+                        if (isCheckHome && !existingItem.checkIfExistAtHome) {
+                            const newItems = list.items.map(i =>
+                                i.id === existingItem.id ? { ...i, checkIfExistAtHome: true } : i
+                            );
+                            await updateListItems(list.id, newItems);
+                            setNewItemText('');
+                            setSuggestions([]);
+                            setShowSuggestions(false);
+                        } else {
+                            // Item exists and is active - notify user
+                            showToast(t('lists.itemExists', 'Item is already in the list'), 'info');
+                        }
                     }
                 } else {
                     // Clear input immediately for "Optimistic" feel
@@ -133,7 +150,8 @@ export const GroceryListView: React.FC = React.memo(function GroceryListView() {
                     const newItem: Item = { 
                         id: uuidv4(), 
                         text: textToAdd, 
-                        completed: false, 
+                        completed: false,
+                        checkIfExistAtHome: isCheckHome ? true : undefined,
                     };
                     await updateListItems(list.id, [...list.items, newItem]);
                     await addToHistory(textToAdd);
@@ -178,6 +196,12 @@ export const GroceryListView: React.FC = React.memo(function GroceryListView() {
         await deleteItem(list.id, itemId);
     };
 
+    const confirmClearCompleted = async () => {
+        const newItems = list.items.filter(item => !item.completed);
+        await updateListItems(list.id, newItems);
+        setClearCompletedModalOpen(false);
+    };
+
     const handleEdit = async (itemId: string, text: string) => {
         const newItems = list.items.map(item =>
             item.id === itemId ? { ...item, text } : item
@@ -192,21 +216,33 @@ export const GroceryListView: React.FC = React.memo(function GroceryListView() {
         await updateListItems(list.id, newItems);
     };
 
-    const handleImportItems = async (items: (string | { text: string; note?: string })[]) => {
+    const handleTogglecheckIfExistAtHome = async (itemId: string) => {
+        const newItems = list.items.map(item =>
+            item.id === itemId ? { ...item, checkIfExistAtHome: !item.checkIfExistAtHome } : item
+        );
+        await updateListItems(list.id, newItems);
+    };
+
+    const handleImportItems = async (items: (string | { text: string; note?: string; checkIfExistAtHome?: boolean })[]) => {
         if (!list) return;
         
         const newItems: Item[] = items.map(entry => {
             if (typeof entry === 'string') {
-                return { id: uuidv4(), text: entry, completed: false };
+                const isCheckHome = entry.trim().startsWith('?');
+                const cleanText = isCheckHome ? entry.trim().replace(/^\?+\s*/, '') : entry.trim();
+                return { id: uuidv4(), text: cleanText, checkIfExistAtHome: isCheckHome ? true : undefined, completed: false };
             }
-            return { id: uuidv4(), text: entry.text, note: entry.note, completed: false };
+            const isCheckHome = entry.checkIfExistAtHome || entry.text.trim().startsWith('?');
+            const cleanText = isCheckHome ? entry.text.trim().replace(/^\?+\s*/, '') : entry.text.trim();
+            return { id: uuidv4(), text: cleanText, note: entry.note, checkIfExistAtHome: isCheckHome ? true : undefined, completed: false };
         });
 
         await updateListItems(list.id, [...list.items, ...newItems]);
         
         for (const entry of items) {
-            const txt = typeof entry === 'string' ? entry : entry.text;
-            await addToHistory(txt);
+            const raw = typeof entry === 'string' ? entry : entry.text;
+            const txt = raw.replace(/^\?+\s*/, '').trim();
+            if (txt) await addToHistory(txt);
         }
     };
 
@@ -231,12 +267,38 @@ export const GroceryListView: React.FC = React.memo(function GroceryListView() {
                         </div>
                         <button 
                             onClick={() => setImportModalOpen(true)}
-                            className="text-sm font-medium text-blue-600 dark:text-blue-400 hover:underline transition-colors"
+                            className="p-1.5 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors"
+                            title={t('categories.importJSON', 'Importera JSON')}
+                            aria-label={t('categories.importJSON', 'Importera JSON')}
                         >
-                            {t('common.import', 'Import')}
+                            <Upload size={18} />
                         </button>
                     </div>
+                <div className="flex items-center gap-2 self-end sm:self-auto">
+                    <span className="text-xs font-semibold px-2.5 py-1 bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 rounded-full border border-gray-200 dark:border-gray-700">
+                        {list.items.filter(i => !i.completed).length} {t('lists.itemsCount')}
+                    </span>
+                    {list.items.some(i => i.completed) && (
+                        <button
+                            onClick={() => setClearCompletedModalOpen(true)}
+                            className="flex items-center gap-1 text-xs font-semibold px-2.5 py-1 bg-red-50 dark:bg-red-950/30 text-red-600 dark:text-red-400 rounded-full border border-red-200 dark:border-red-900/50 hover:bg-red-100 dark:hover:bg-red-900/50 transition-colors"
+                        >
+                            <Trash2 size={12} />
+                            {t('lists.clearCompleted')}
+                        </button>
+                    )}
+                </div>
             </div>
+
+            <Modal
+                isOpen={clearCompletedModalOpen}
+                onClose={() => setClearCompletedModalOpen(false)}
+                onConfirm={confirmClearCompleted}
+                title={t('lists.clearCompletedTitle')}
+                message={t('lists.clearCompletedMessage')}
+                confirmText={t('common.delete')}
+                isDestructive={true}
+            />
 
 
             {/* Active Items */}
@@ -257,6 +319,7 @@ export const GroceryListView: React.FC = React.memo(function GroceryListView() {
                                             onDelete={handleDelete}
                                             onEdit={handleEdit}
                                             onEditNote={handleEditNote}
+                                            onTogglecheckIfExistAtHome={handleTogglecheckIfExistAtHome}
                                         />
                                     ))}
                                 </div>
@@ -293,6 +356,7 @@ export const GroceryListView: React.FC = React.memo(function GroceryListView() {
                                                     onDelete={handleDelete}
                                                     onEdit={handleEdit}
                                                     onEditNote={handleEditNote}
+                                                    onTogglecheckIfExistAtHome={handleTogglecheckIfExistAtHome}
                                                     disabled={true}
                                                 />
                                             </div>

@@ -213,27 +213,36 @@ export const ListDetail: React.FC = React.memo(function ListDetail() {
      */
     const handleAddItem = async (e?: React.FormEvent, textOverride?: string) => {
         if (e) e.preventDefault();
-        const textToAdd = textOverride || newItemText.trim();
+        const rawText = (textOverride || newItemText).trim();
+        if (!rawText || !list) return;
+
+        const isCheckHome = rawText.startsWith('?');
+        const textToAdd = isCheckHome ? rawText.replace(/^\?+\s*/, '').trim() : rawText;
+        if (!textToAdd) return;
         
-        if (textToAdd) {
-            // Check if item exists (completed) -> Restore it
-            const existingItem = list.items.find(i => i.text.toLowerCase() === textToAdd.toLowerCase());
-            
-            if (existingItem) {
-                if (existingItem.completed) {
-                    await handleToggle(existingItem.id);
-                }
-                // If it's already active, maybe just clear input or highlight? 
-                // Currently just adds duplicates if normalized text is different, strictly checking normalized here.
-            } else {
-                const newItem = { id: uuidv4(), text: textToAdd, completed: false };
-                await updateListItems(list.id, [...list.items, newItem]);
-                await addToHistory(textToAdd);
+        // Check if item exists (completed) -> Restore it
+        const existingItem = list.items.find(i => i.text.toLowerCase() === textToAdd.toLowerCase());
+        
+        if (existingItem) {
+            if (existingItem.completed) {
+                const newItems = list.items.map(i =>
+                    i.id === existingItem.id ? { ...i, completed: false, checkIfExistAtHome: isCheckHome ? true : i.checkIfExistAtHome } : i
+                );
+                await updateListItems(list.id, newItems);
+            } else if (isCheckHome && !existingItem.checkIfExistAtHome) {
+                const newItems = list.items.map(i =>
+                    i.id === existingItem.id ? { ...i, checkIfExistAtHome: true } : i
+                );
+                await updateListItems(list.id, newItems);
             }
-            setNewItemText('');
-            setSuggestions([]);
-            setShowSuggestions(false);
+        } else {
+            const newItem: Item = { id: uuidv4(), text: textToAdd, completed: false, checkIfExistAtHome: isCheckHome ? true : undefined };
+            await updateListItems(list.id, [...list.items, newItem]);
+            await addToHistory(textToAdd);
         }
+        setNewItemText('');
+        setSuggestions([]);
+        setShowSuggestions(false);
     };
 
     const handleSuggestionClick = (text: string) => {
@@ -298,22 +307,21 @@ export const ListDetail: React.FC = React.memo(function ListDetail() {
             if (item.id !== itemId) return item;
 
             // Logic for state cycling
-            let newState: 'unresolved' | 'ongoing' | 'completed';
-            let newCompleted: boolean;
+            let newCompleted = item.completed;
+            let newState = item.state;
 
-            if (threeStageMode) {
-                // Cycle: unresolved -> ongoing -> completed -> unresolved
-                if (item.completed) {
-                    // Was completed, go to unresolved
-                    newState = 'unresolved';
+            if (list.settings?.threeStageMode) {
+                // 3-Stage cycle: unresolved -> ongoing -> completed -> unresolved
+                const currentState = item.state || (item.completed ? 'completed' : 'unresolved');
+                
+                if (currentState === 'unresolved') {
+                    newState = 'ongoing';
                     newCompleted = false;
-                } else if (item.state === 'ongoing') {
-                    // Was ongoing, go to completed
+                } else if (currentState === 'ongoing') {
                     newState = 'completed';
                     newCompleted = true;
                 } else {
-                    // Was unresolved, go to ongoing
-                    newState = 'ongoing';
+                    newState = 'unresolved';
                     newCompleted = false;
                 }
             } else {
@@ -351,6 +359,13 @@ export const ListDetail: React.FC = React.memo(function ListDetail() {
         await updateListItems(list.id, newItems);
     };
 
+    const handleTogglecheckIfExistAtHome = async (itemId: string) => {
+        const newItems = list.items.map(item =>
+            item.id === itemId ? { ...item, checkIfExistAtHome: !item.checkIfExistAtHome } : item
+        );
+        await updateListItems(list.id, newItems);
+    };
+
     const confirmUncheckAll = async () => {
         const newItems = list.items.map(item => ({ ...item, completed: false, state: 'unresolved' as const }));
         await updateListItems(list.id, newItems);
@@ -364,22 +379,27 @@ export const ListDetail: React.FC = React.memo(function ListDetail() {
         }
     };
 
-    const handleImportItems = async (items: (string | { text: string; note?: string })[]) => {
+    const handleImportItems = async (items: (string | { text: string; note?: string; checkIfExistAtHome?: boolean })[]) => {
         if (!list) return;
         
         const newItems: Item[] = items.map(entry => {
             if (typeof entry === 'string') {
-                return { id: uuidv4(), text: entry, completed: false };
+                const isCheckHome = entry.trim().startsWith('?');
+                const cleanText = isCheckHome ? entry.trim().replace(/^\?+\s*/, '') : entry.trim();
+                return { id: uuidv4(), text: cleanText, checkIfExistAtHome: isCheckHome ? true : undefined, completed: false };
             }
-            return { id: uuidv4(), text: entry.text, note: entry.note, completed: false };
+            const isCheckHome = entry.checkIfExistAtHome || entry.text.trim().startsWith('?');
+            const cleanText = isCheckHome ? entry.text.trim().replace(/^\?+\s*/, '') : entry.text.trim();
+            return { id: uuidv4(), text: cleanText, note: entry.note, checkIfExistAtHome: isCheckHome ? true : undefined, completed: false };
         });
 
         await updateListItems(list.id, [...list.items, ...newItems]);
         
         // Add to history
         for (const entry of items) {
-            const txt = typeof entry === 'string' ? entry : entry.text;
-            await addToHistory(txt);
+            const raw = typeof entry === 'string' ? entry : entry.text;
+            const txt = raw.replace(/^\?+\s*/, '').trim();
+            if (txt) await addToHistory(txt);
         }
     };
 
@@ -692,6 +712,7 @@ export const ListDetail: React.FC = React.memo(function ListDetail() {
                                                                 onDelete={list?.archived ? undefined : handleDelete}
                                                                 onEdit={list?.archived ? undefined : handleEdit}
                                                                 onEditNote={list?.archived ? undefined : handleEditNote}
+                                                                onTogglecheckIfExistAtHome={list?.archived ? undefined : handleTogglecheckIfExistAtHome}
                                                             />
                                                         ))}
                                                     </div>
@@ -719,6 +740,7 @@ export const ListDetail: React.FC = React.memo(function ListDetail() {
                                                                     onDelete={list?.archived ? undefined : handleDelete}
                                                                     onEdit={list?.archived ? undefined : handleEdit}
                                                                     onEditNote={list?.archived ? undefined : handleEditNote}
+                                                                    onTogglecheckIfExistAtHome={list?.archived ? undefined : handleTogglecheckIfExistAtHome}
                                                                 />
                                                             ))}
                                                             {sectionItems.length === 0 && (
@@ -756,6 +778,7 @@ export const ListDetail: React.FC = React.memo(function ListDetail() {
                                                                         onDelete={list?.archived ? undefined : handleDelete}
                                                                         onEdit={list?.archived ? undefined : handleEdit}
                                                                         onEditNote={list?.archived ? undefined : handleEditNote}
+                                                                        onTogglecheckIfExistAtHome={list?.archived ? undefined : handleTogglecheckIfExistAtHome}
                                                                         disabled={true}
                                                                     />
                                                                 </div>
@@ -797,6 +820,7 @@ export const ListDetail: React.FC = React.memo(function ListDetail() {
                                                         onDelete={list?.archived ? undefined : handleDelete}
                                                         onEdit={list?.archived ? undefined : handleEdit}
                                                         onEditNote={list?.archived ? undefined : handleEditNote}
+                                                        onTogglecheckIfExistAtHome={list?.archived ? undefined : handleTogglecheckIfExistAtHome}
                                                         disabled={true}
                                                     />
                                                 ))}
@@ -825,6 +849,7 @@ export const ListDetail: React.FC = React.memo(function ListDetail() {
                                                             onDelete={list?.archived ? undefined : handleDelete}
                                                             onEdit={list?.archived ? undefined : handleEdit}
                                                             onEditNote={list?.archived ? undefined : handleEditNote}
+                                                            onTogglecheckIfExistAtHome={list?.archived ? undefined : handleTogglecheckIfExistAtHome}
                                                             disabled={true}
                                                         />
                                                     ))}
