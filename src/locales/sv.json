@@ -2,6 +2,7 @@
   "nav": {
     "home": "Hem",
     "todos": "Att göra",
+    "meals": "Måltider",
     "mealplan": "Måltidsplan",
     "settings": "Inställningar"
   },
@@ -220,10 +221,18 @@
     }
   },
   "toasts": {
-    "listDeleted": "Listan \"{{name}}\" borttagen",
-    "itemDeleted": "Objekt borttaget",
-    "dataImported": "Data importerad",
-    "importFailed": "Misslyckades med att importera data"
+    "itemAdded": "Tillagd i listan",
+    "itemDeleted": "Borttagen från listan",
+    "itemUpdated": "Uppdaterad",
+    "error": "Ett fel uppstod"
+  },
+  "views": {
+    "meals": "Måltider",
+    "mealsDescription": "Dina sparade favorit-måltider",
+    "noMeals": "Inga sparade måltider än"
+  },
+  "placeholders": {
+    "newMeal": "Lägg till ny måltid..."
   },
   "history": {
     "title": "Aktivitet",

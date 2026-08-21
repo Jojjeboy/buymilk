@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 
-import { List, Item, Todo, ListSettings, Section, Category, HistoryItem, MealPlan } from '../types';
+import { List, Item, Todo, ListSettings, Section, Category, HistoryItem, MealPlan, Meal } from '../types';
 
 type Priority = 'low' | 'medium' | 'high';
 import { useToast } from './ToastContext';
@@ -70,6 +70,12 @@ interface AppContextType {
     updateHistoryItem: (id: string, updates: Partial<HistoryItem>) => Promise<void>;
     deleteFromHistory: (id: string) => Promise<void>;
     clearAllHistory: () => Promise<void>;
+
+    // Meals
+    meals: Meal[];
+    addMeal: (name: string) => Promise<void>;
+    updateMeal: (id: string, updates: Partial<Meal>) => Promise<void>;
+    deleteMeal: (id: string) => Promise<void>;
 }
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
@@ -87,6 +93,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     const categoriesSync = useFirestoreSync<Category>('users/{uid}/categories', user?.uid);
     const historySync = useFirestoreSync<HistoryItem>('users/{uid}/history', user?.uid);
     const mealPlansSync = useFirestoreSync<MealPlan>('users/{uid}/mealplans', user?.uid);
+    const mealsSync = useFirestoreSync<Meal>('users/{uid}/meals', user?.uid);
 
     const [theme, setThemeState] = useState<'light' | 'dark' | 'system'>('system');
     const { showToast } = useToast();
@@ -403,6 +410,22 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         await Promise.all(deletePromises);
     };
 
+    const addMeal = async (name: string) => {
+        await mealsSync.addItem({
+            id: uuidv4(),
+            name,
+            createdAt: new Date().toISOString()
+        });
+    };
+
+    const updateMeal = async (id: string, updates: Partial<Meal>) => {
+        await mealsSync.updateItem(id, updates);
+    };
+
+    const deleteMeal = async (id: string) => {
+        await mealsSync.deleteItem(id);
+    };
+
     const defaultListId = listsSync.data.length > 0 ? listsSync.data[0].id : undefined;
 
     const isSyncing = 
@@ -451,6 +474,10 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
                 updateHistoryItem,
                 deleteFromHistory,
                 clearAllHistory,
+                meals: mealsSync.data,
+                addMeal,
+                updateMeal,
+                deleteMeal,
             }}
         >
             <ErrorBoundary>

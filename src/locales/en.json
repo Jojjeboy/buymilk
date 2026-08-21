@@ -1,7 +1,8 @@
 {
   "nav": {
     "home": "Home",
-    "todos": "To-do",
+    "todos": "To-dos",
+    "meals": "Meals",
     "mealplan": "Meal Plan",
     "settings": "Settings"
   },
@@ -220,10 +221,18 @@
     }
   },
   "toasts": {
-    "listDeleted": "List \"{{name}}\" deleted",
-    "itemDeleted": "Item deleted",
-    "dataImported": "Data imported successfully",
-    "importFailed": "Failed to import data"
+    "itemAdded": "Added to list",
+    "itemDeleted": "Removed from list",
+    "itemUpdated": "Updated",
+    "error": "An error occurred"
+  },
+  "views": {
+    "meals": "Meals",
+    "mealsDescription": "Your saved favorite meals",
+    "noMeals": "No saved meals yet"
+  },
+  "placeholders": {
+    "newMeal": "Add new meal..."
   },
   "history": {
     "title": "Activity",

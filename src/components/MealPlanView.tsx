@@ -3,6 +3,7 @@ import { useApp } from '../context/AppContext';
 import { useToast } from '../context/ToastContext';
 import { Modal } from './Modal';
 import { DayPlan, PlannedMeal, MealType } from '../types';
+import { InlineAutocompleteInput } from './InlineAutocompleteInput';
 import { v4 as uuidv4 } from 'uuid';
 import { ChevronLeft, ChevronRight, Utensils, CalendarDays, Download } from 'lucide-react';
 
@@ -41,49 +42,37 @@ const MealInput: React.FC<{
     initialValue: string;
     placeholder: string;
     onSave: (value: string) => void;
+    suggestions: Array<{ id: string; text: string }>;
     autoFocus?: boolean;
-}> = ({ initialValue, placeholder, onSave, autoFocus }) => {
+}> = ({ initialValue, placeholder, onSave, suggestions, autoFocus }) => {
     const [value, setValue] = useState(initialValue);
-    const inputRef = React.useRef<HTMLInputElement>(null);
 
     React.useEffect(() => {
         setValue(initialValue);
     }, [initialValue]);
 
-    React.useEffect(() => {
-        if (autoFocus && inputRef.current) {
-            inputRef.current.focus();
-        }
-    }, [autoFocus]);
-
-    const handleBlur = () => {
+    const handleSave = () => {
         if (value !== initialValue) {
             onSave(value);
         }
     };
 
-    const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-        if (e.key === 'Enter') {
-            e.currentTarget.blur();
-        }
-    };
-
     return (
-        <input 
-            ref={inputRef}
-            type="text"
+        <InlineAutocompleteInput
             value={value}
-            onChange={(e) => setValue(e.target.value)}
-            onBlur={handleBlur}
-            onKeyDown={handleKeyDown}
+            onChange={setValue}
+            onSubmit={handleSave}
+            onBlur={handleSave}
+            suggestions={suggestions}
             placeholder={placeholder}
+            autoFocus={autoFocus}
             className="w-full px-3 py-2 rounded-md border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 focus:ring-2 focus:ring-blue-500 outline-none transition-all"
         />
     );
 };
 
 export const MealPlanView: React.FC = () => {
-    const { mealPlans, addMealPlan, updateMealPlan } = useApp();
+    const { mealPlans, addMealPlan, updateMealPlan, meals, addMeal } = useApp();
     const { showToast } = useToast();
     const [isExportOpen, setIsExportOpen] = useState(false);
     const [startDate, setStartDate] = useState(() => {
@@ -178,6 +167,15 @@ export const MealPlanView: React.FC = () => {
         }
 
         await updateMealPlan(plan.id, { days: updatedDays });
+
+        // Auto-save to meals library if it doesn't exist
+        const trimmedText = text.trim();
+        if (trimmedText) {
+            const exists = meals.some(m => m.name.toLowerCase() === trimmedText.toLowerCase());
+            if (!exists) {
+                await addMeal(trimmedText);
+            }
+        }
     };
 
     const getMealText = (date: Date, type: MealType) => {
@@ -280,22 +278,24 @@ export const MealPlanView: React.FC = () => {
                                      <label className="text-xs text-gray-500 dark:text-gray-400 flex items-center gap-1">
                                          <Utensils className="w-3 h-3" /> Lunch
                                      </label>
-                                     <MealInput 
-                                         initialValue={getMealText(date, 'lunch')}
-                                         onSave={(val) => handleMealChange(date, 'lunch', val)}
-                                         placeholder="Vad ska ätas?"
-                                     />
+                                      <MealInput 
+                                          initialValue={getMealText(date, 'lunch')}
+                                          onSave={(val) => handleMealChange(date, 'lunch', val)}
+                                          suggestions={meals.map(m => ({ id: m.id, text: m.name }))}
+                                          placeholder="Vad ska ätas?"
+                                      />
                                  </div>
 
                                 <div className="flex flex-col gap-1">
                                     <label className="text-xs text-gray-500 dark:text-gray-400 flex items-center gap-1">
                                         <Utensils className="w-3 h-3" /> Middag
                                     </label>
-                                    <MealInput 
-                                        initialValue={getMealText(date, 'dinner')}
-                                        onSave={(val) => handleMealChange(date, 'dinner', val)}
-                                        placeholder="Vad ska ätas?"
-                                    />
+                                      <MealInput 
+                                          initialValue={getMealText(date, 'dinner')}
+                                          onSave={(val) => handleMealChange(date, 'dinner', val)}
+                                          suggestions={meals.map(m => ({ id: m.id, text: m.name }))}
+                                          placeholder="Vad ska ätas?"
+                                      />
                                 </div>
                             </div>
                         </React.Fragment>

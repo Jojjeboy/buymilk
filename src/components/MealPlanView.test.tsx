@@ -13,6 +13,7 @@ describe('MealPlanView', () => {
     const mockShowToast = vi.fn();
     const mockAddMealPlan = vi.fn();
     const mockUpdateMealPlan = vi.fn();
+    const mockAddMeal = vi.fn();
 
     beforeEach(() => {
         vi.clearAllMocks();
@@ -50,6 +51,8 @@ describe('MealPlanView', () => {
                     ]
                 }
             ],
+            meals: [],
+            addMeal: mockAddMeal,
             addMealPlan: mockAddMealPlan,
             updateMealPlan: mockUpdateMealPlan,
         } as unknown as ReturnType<typeof useApp>);

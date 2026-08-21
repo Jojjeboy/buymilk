@@ -105,8 +105,14 @@ export interface Category {
 }
 
 export interface HistoryItem {
-  id: string;
-  text: string;
-  lastUsed: string;
-  usageCount: number;
+    id: string;
+    text: string;
+    lastUsed: string;
+    usageCount: number;
+}
+
+export interface Meal {
+    id: string;
+    name: string;
+    createdAt: string;
 }

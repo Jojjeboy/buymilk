@@ -4,6 +4,7 @@ interface InlineAutocompleteInputProps {
     value: string;
     onChange: (value: string) => void;
     onSubmit: () => void;
+    onBlur?: () => void;
     suggestions: Array<{ id: string; text: string }>;
     placeholder?: string;
     className?: string; // Class for the input element
@@ -15,6 +16,7 @@ export const InlineAutocompleteInput: React.FC<InlineAutocompleteInputProps> = (
     value,
     onChange,
     onSubmit,
+    onBlur,
     suggestions,
     placeholder = '',
     className = '',
@@ -88,6 +90,7 @@ export const InlineAutocompleteInput: React.FC<InlineAutocompleteInputProps> = (
                 value={value}
                 onChange={(e) => onChange(e.target.value)}
                 onKeyDown={handleKeyDown}
+                onBlur={onBlur}
                 placeholder={placeholder}
                 autoFocus={autoFocus}
                 className={`relative z-10 bg-transparent ${className}`}
