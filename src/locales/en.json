@@ -157,7 +157,8 @@
     "cleared": "History cleared",
     "guest": "Guest",
     "logout": "Log out",
-    "used": "Used {{count}} times"
+    "used": "Used {{count}} times",
+    "syncing": "Syncing changes..."
   },
   "settings": {
     "title": "Settings",

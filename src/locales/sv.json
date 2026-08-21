@@ -157,7 +157,8 @@
     "cleared": "Historik rensad",
     "guest": "Gäst",
     "logout": "Logga ut",
-    "used": "Använd {{count}} gånger"
+    "used": "Använd {{count}} gånger",
+    "syncing": "Synkar ändringar..."
   },
   "settings": {
     "title": "Inställningar",

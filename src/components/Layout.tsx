@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
 import { useApp } from '../context/AppContext';
 import { Link } from 'react-router-dom';
-import { Moon, Sun, Menu, X, Eye, EyeOff, Cloud } from 'lucide-react';
+import { Moon, Sun, Menu, X, Eye, EyeOff } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { Sidebar } from './Sidebar';
 import { OfflineIndicator } from './OfflineIndicator';
+import { SyncIndicator } from './SyncIndicator';
 import { useWakeLock } from '../hooks/useWakeLock';
 
 export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -44,11 +45,12 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
                 </div>
             )}
 
-            {/* Main Content Area */}
-            <div className="flex-1 flex flex-col min-h-screen min-w-0 md:ml-72">
-                <OfflineIndicator />
+                {/* Main Content Area */}
+                <div className="flex-1 flex flex-col min-h-screen min-w-0 md:ml-72">
+                    <OfflineIndicator />
+                    <SyncIndicator />
 
-                {/* Mobile Header */}
+                    {/* Mobile Header */}
                 <header className="md:hidden sticky top-0 z-10 glass p-4 flex flex-col gap-4">
                     <div className="flex justify-between items-center">
                         <div className="flex items-center gap-6">
@@ -60,16 +62,6 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
                             </Link>
                         </div>
                         <div className="flex items-center gap-2">
-                            <div 
-                                className={`p-2 rounded-full transition-all duration-300 ${
-                                    isSyncing 
-                                        ? 'text-blue-500 animate-pulse bg-blue-50 dark:bg-blue-900/30' 
-                                        : 'text-gray-400 bg-transparent'
-                                }`}
-                                title={isSyncing ? t('common.syncing', 'Syncing...') : t('common.synced', 'Synced')}
-                            >
-                                <Cloud size={20} />
-                            </div>
                             {isSupported && (
                                 <button
                                     onClick={() => isLocked ? releaseWakeLock() : requestWakeLock()}

@@ -5,7 +5,7 @@ import { Modal } from './Modal';
 import { DayPlan, PlannedMeal, MealType } from '../types';
 import { InlineAutocompleteInput } from './InlineAutocompleteInput';
 import { v4 as uuidv4 } from 'uuid';
-import { ChevronLeft, ChevronRight, Utensils, CalendarDays, Download } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Utensils, CalendarDays, Download, Heart } from 'lucide-react';
 
 // Helpers
 const getISOWeek = (date: Date) => {
@@ -43,8 +43,10 @@ const MealInput: React.FC<{
     placeholder: string;
     onSave: (value: string) => void;
     suggestions: Array<{ id: string; text: string }>;
+    isSaved: boolean;
+    onSaveToLibrary: (value: string) => void;
     autoFocus?: boolean;
-}> = ({ initialValue, placeholder, onSave, suggestions, autoFocus }) => {
+}> = ({ initialValue, placeholder, onSave, suggestions, isSaved, onSaveToLibrary, autoFocus }) => {
     const [value, setValue] = useState(initialValue);
 
     React.useEffect(() => {
@@ -58,16 +60,30 @@ const MealInput: React.FC<{
     };
 
     return (
-        <InlineAutocompleteInput
-            value={value}
-            onChange={setValue}
-            onSubmit={handleSave}
-            onBlur={handleSave}
-            suggestions={suggestions}
-            placeholder={placeholder}
-            autoFocus={autoFocus}
-            className="w-full px-3 py-2 rounded-md border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 focus:ring-2 focus:ring-blue-500 outline-none transition-all"
-        />
+        <div className="flex items-center gap-2">
+            <InlineAutocompleteInput
+                value={value}
+                onChange={setValue}
+                onSubmit={handleSave}
+                onBlur={handleSave}
+                suggestions={suggestions}
+                placeholder={placeholder}
+                autoFocus={autoFocus}
+                className="flex-1 px-3 py-2 rounded-md border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 focus:ring-2 focus:ring-blue-500 outline-none transition-all"
+            />
+            <button
+                onClick={() => onSaveToLibrary(value)}
+                disabled={!value.trim() || isSaved}
+                className={`p-2 rounded-md transition-all ${
+                    isSaved 
+                    ? 'text-red-500 bg-red-50 dark:bg-red-900/20' 
+                    : 'text-gray-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 disabled:opacity-50 disabled:hover:text-gray-400 disabled:hover:bg-transparent'
+                }`}
+                title={isSaved ? 'Redan sparad' : 'Spara som favorit'}
+            >
+                <Heart className={`w-5 h-5 ${isSaved ? 'fill-current' : ''}`} />
+            </button>
+        </div>
     );
 };
 
@@ -167,14 +183,16 @@ export const MealPlanView: React.FC = () => {
         }
 
         await updateMealPlan(plan.id, { days: updatedDays });
+    };
 
-        // Auto-save to meals library if it doesn't exist
+    const handleSaveToLibrary = async (text: string) => {
         const trimmedText = text.trim();
-        if (trimmedText) {
-            const exists = meals.some(m => m.name.toLowerCase() === trimmedText.toLowerCase());
-            if (!exists) {
-                await addMeal(trimmedText);
-            }
+        if (!trimmedText) return;
+
+        const exists = meals.some(m => m.name.toLowerCase() === trimmedText.toLowerCase());
+        if (!exists) {
+            await addMeal(trimmedText);
+            showToast('Måltid sparad till favoriter', 'success');
         }
     };
 
@@ -208,7 +226,7 @@ export const MealPlanView: React.FC = () => {
     }, [isExportOpen, displayDays, mealPlans]);
 
     return (
-        <div className="max-w-4xl mx-auto space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500 pb-20 px-4">
+        <div className="max-w-6xl mx-auto space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500 pb-20 px-4">
             {/* Header */}
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
                 <div>
@@ -282,6 +300,8 @@ export const MealPlanView: React.FC = () => {
                                           initialValue={getMealText(date, 'lunch')}
                                           onSave={(val) => handleMealChange(date, 'lunch', val)}
                                           suggestions={meals.map(m => ({ id: m.id, text: m.name }))}
+                                          isSaved={meals.some(m => m.name.toLowerCase() === getMealText(date, 'lunch').toLowerCase())}
+                                          onSaveToLibrary={handleSaveToLibrary}
                                           placeholder="Vad ska ätas?"
                                       />
                                  </div>
@@ -294,6 +314,8 @@ export const MealPlanView: React.FC = () => {
                                           initialValue={getMealText(date, 'dinner')}
                                           onSave={(val) => handleMealChange(date, 'dinner', val)}
                                           suggestions={meals.map(m => ({ id: m.id, text: m.name }))}
+                                          isSaved={meals.some(m => m.name.toLowerCase() === getMealText(date, 'dinner').toLowerCase())}
+                                          onSaveToLibrary={handleSaveToLibrary}
                                           placeholder="Vad ska ätas?"
                                       />
                                 </div>

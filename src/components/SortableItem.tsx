@@ -208,8 +208,8 @@ export const SortableItem: React.FC<SortableItemProps> = ({
                                         onMouseDown={(e) => e.stopPropagation()}
                                         onTouchStart={(e) => e.stopPropagation()}
                                     />
-                                    {(isEditingNote || item.note) && (
-                                        <div className="px-0.5 mt-0.5">
+                                     {!item.completed && (isEditingNote || item.note) && (
+                                         <div className="px-0.5 mt-0.5">
                                             {isEditingNote ? (
                                                 <input
                                                     ref={noteInputRef}
@@ -287,9 +287,9 @@ export const SortableItem: React.FC<SortableItemProps> = ({
                                     )}
                                 </div>
 
-                                <div className="flex items-center gap-1 sm:gap-3">
-                                    {onTogglecheckIfExistAtHome && !isReadOnly && (
-                                        <button
+                                 <div className="flex items-center gap-1 sm:gap-3">
+                                     {onTogglecheckIfExistAtHome && !isReadOnly && !item.completed && (
+                                         <button
                                             onClick={(e) => {
                                                 e.stopPropagation();
                                                 onTogglecheckIfExistAtHome(item.id);
@@ -308,8 +308,8 @@ export const SortableItem: React.FC<SortableItemProps> = ({
                                         </button>
                                     )}
 
-                                    {onEditNote && !isReadOnly && (
-                                        <button
+                                     {onEditNote && !isReadOnly && !item.completed && (
+                                         <button
                                             onClick={handleToggleNoteEdit}
                                             className={`flex-shrink-0 p-1.5 rounded-lg transition-colors ${
                                                 item.note
