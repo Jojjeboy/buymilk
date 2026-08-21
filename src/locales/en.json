@@ -2,6 +2,7 @@
   "nav": {
     "home": "Home",
     "todos": "To-do",
+    "mealplan": "Meal Plan",
     "settings": "Settings"
   },
   "app": {

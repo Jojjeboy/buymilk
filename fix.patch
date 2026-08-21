@@ -1,0 +1,26 @@
+--- src/components/MealPlanView.tsx
++++ src/components/MealPlanView.tsx
+@@ -165,8 +165,22 @@
+             } else {
+                 day.meals.push({ type, plannedMeal: mealData });
+             }
+-
+-            await updateMealPlan(plan.id, { days: updatedDays });
+         } else {
++            // Day doesn't exist in the plan yet, so add it
++            const mealData: PlannedMeal = {
++                id: uuidv4(),
++                customTitle: text
++            };
++            updatedDays.push({
++                date: dateStr,
++                meals: [{ type, plannedMeal: mealData }]
++            });
++            // Sort by date to maintain order
++            updatedDays.sort((a, b) => a.date.localeCompare(b.date));
++        }
++        
++        await updateMealPlan(plan.id, { days: updatedDays });
+     };
+ 
+     const getMealText = (date: Date, type: MealType) => {

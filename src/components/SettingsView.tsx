@@ -10,7 +10,8 @@ import { useApp } from '../context/AppContext';
 import { useToast } from '../context/ToastContext';
 import type { Item, HistoryItem } from '../types';
 import { useTranslation } from 'react-i18next';
-import { v4 as uuidv4 } from 'uuid';
+import { parseJsonItems, convertToItems } from '../utils/importUtils';
+import { Modal } from './Modal';
 
 const SIMPLE_EXAMPLE = `[{"text": "Pajdeg", "note": "1st", "checkIfExistAtHome": true}, {"text": "Mjölk", "note": "1liter"}]`;
 
@@ -71,6 +72,7 @@ export const SettingsView: React.FC = () => {
     const [copiedExport, setCopiedExport] = React.useState(false);
     const [jsonText, setJsonText] = React.useState('');
     const [importError, setImportError] = React.useState('');
+    const [clearAllItemsModalOpen, setClearAllItemsModalOpen] = React.useState(false);
     const list = lists.find(l => l.id === defaultListId);
     const sortBy = list?.settings?.defaultSort || 'manual';
 
@@ -134,65 +136,28 @@ export const SettingsView: React.FC = () => {
     const handleImportJson = async (content: string) => {
         if (!list) return;
         try {
-            let data: unknown;
-            try { data = JSON.parse(content); } catch { throw new Error('Invalid JSON'); }
+            const parsedItems = parseJsonItems(content);
+            const newItems = convertToItems(parsedItems);
 
-            let arr: unknown[];
-            if (Array.isArray(data)) {
-                arr = data;
-            } else if (
-                data !== null &&
-                typeof data === 'object' &&
-                'items' in data &&
-                Array.isArray((data as { items: unknown[] }).items)
-            ) {
-                arr = (data as { items: unknown[] }).items;
-            } else {
-                throw new Error('Format must be an array or an object with an items array');
-            }
-
-            const newItems: Item[] = [];
-            for (const entry of arr) {
-                let text = '';
-                let note: string | undefined = undefined;
-                let checkIfExistAtHome: boolean | undefined = undefined;
-                if (typeof entry === 'string') {
-                    const trimmed = entry.trim();
-                    const isCheck = trimmed.startsWith('?');
-                    text = isCheck ? trimmed.replace(/^\?+\s*/, '') : trimmed;
-                    if (isCheck) checkIfExistAtHome = true;
-                } else if (typeof entry === 'object' && entry !== null && 'text' in entry && typeof (entry as { text: unknown }).text === 'string') {
-                    const rawText = (entry as { text: string }).text.trim();
-                    const isCheck = rawText.startsWith('?');
-                    text = isCheck ? rawText.replace(/^\?+\s*/, '') : rawText;
-                    if ('note' in entry && typeof (entry as { note: unknown }).note === 'string') {
-                        note = (entry as { note: string }).note.trim() || undefined;
-                    }
-                    const entryObj = entry as Record<string, unknown>;
-                    if (typeof entryObj.checkIfExistAtHome === 'boolean') {
-                        checkIfExistAtHome = entryObj.checkIfExistAtHome || undefined;
-                    } else if (isCheck) {
-                        checkIfExistAtHome = true;
-                    }
-                }
-                if (text && text.trim()) {
-                    newItems.push({ id: uuidv4(), text: text.trim(), note, checkIfExistAtHome, completed: false });
-                }
-            }
             if (newItems.length > 0) {
                 await updateListItems(list.id, [...list.items, ...newItems]);
                 showToast(t('settings.importSuccess', { count: newItems.length }), 'success');
                 setJsonText('');
                 setImportError('');
                 setImportAccordionOpen(false);
-            } else {
-                setImportError(t('settings.importNoItems'));
             }
         } catch (error) {
             console.error(error);
-            const msg = error instanceof Error ? error.message : t('settings.importError');
+            const msg = typeof error === 'string' ? t(`importItems.${error}`) : (error instanceof Error ? error.message : t('settings.importError'));
             setImportError(msg);
         }
+    };
+
+    const handleClearAllItems = async () => {
+        if (!list) return;
+        await updateListItems(list.id, []);
+        showToast(t('common.cleared'), 'success');
+        setClearAllItemsModalOpen(false);
     };
 
     // -----------------------------------------------------------------------
@@ -592,14 +557,23 @@ export const SettingsView: React.FC = () => {
             {/* CARD 4: Data Management */}
             <div className="bg-white dark:bg-gray-800 rounded-3xl shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden text-left">
                 <div className="p-6 space-y-6">
-                    <div className="flex items-center gap-4">
-                        <div className="p-2.5 bg-green-100 dark:bg-green-900/40 text-green-600 dark:text-green-400 rounded-2xl shadow-sm">
-                            <Database size={20} />
+                    <div className="flex items-center justify-between gap-4">
+                        <div className="flex items-center gap-4">
+                            <div className="p-2.5 bg-green-100 dark:bg-green-900/40 text-green-600 dark:text-green-400 rounded-2xl shadow-sm">
+                                <Database size={20} />
+                            </div>
+                            <div className="text-left">
+                                <h2 className="text-lg font-bold text-gray-900 dark:text-white tracking-tight">{t('settings.dataManagement')}</h2>
+                                <p className="text-xs font-medium text-gray-500 dark:text-gray-400">{t('settings.dataManagementSubtitle')}</p>
+                            </div>
                         </div>
-                        <div className="text-left">
-                            <h2 className="text-lg font-bold text-gray-900 dark:text-white tracking-tight">{t('settings.dataManagement')}</h2>
-                            <p className="text-xs font-medium text-gray-500 dark:text-gray-400">{t('settings.dataManagementSubtitle')}</p>
-                        </div>
+                        <button
+                            onClick={() => setClearAllItemsModalOpen(true)}
+                            className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold text-red-500 hover:text-red-600 bg-red-50 dark:bg-red-900/20 hover:bg-red-100 dark:hover:bg-red-900/30 rounded-xl border border-red-200 dark:border-red-800/50 transition-all active:scale-95"
+                        >
+                            <Trash2 size={14} />
+                            {t('common.clearAll')}
+                        </button>
                     </div>
 
                     <hr className="border-gray-100 dark:border-gray-700/60" />
@@ -762,6 +736,16 @@ export const SettingsView: React.FC = () => {
                     </div>
                 </div>
             </div>
+
+            <Modal
+                isOpen={clearAllItemsModalOpen}
+                onClose={() => setClearAllItemsModalOpen(false)}
+                onConfirm={handleClearAllItems}
+                title={t('common.confirmDeleteAll')}
+                message={t('settings.clearAllItemsMessage', 'Are you sure you want to clear all items from your shopping list? This action cannot be undone.')}
+                confirmText={t('common.delete')}
+                isDestructive={true}
+            />
 
             {/* Account */}
             <div className="bg-white dark:bg-gray-800 rounded-3xl shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden text-left">

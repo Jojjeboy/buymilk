@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 
-import { List, Item, Todo, ListSettings, Section, Category, HistoryItem } from '../types';
+import { List, Item, Todo, ListSettings, Section, Category, HistoryItem, MealPlan } from '../types';
 
 type Priority = 'low' | 'medium' | 'high';
 import { useToast } from './ToastContext';
@@ -11,6 +11,9 @@ import { useFirestoreSync } from '../hooks/useFirestoreSync';
 import { ErrorBoundary } from '../components/ErrorBoundary';
 
 interface AppContextType {
+    mealPlans: MealPlan[];
+    addMealPlan: (plan: MealPlan) => Promise<void>;
+    updateMealPlan: (id: string, updates: Partial<MealPlan>) => Promise<void>;
     lists: List[]; // Keep lists array for now but we only use one
     defaultListId: string | undefined; // Helper to get the main list
     theme: 'light' | 'dark' | 'system';
@@ -83,6 +86,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     const todosSync = useFirestoreSync<Todo>('users/{uid}/notes', user?.uid);
     const categoriesSync = useFirestoreSync<Category>('users/{uid}/categories', user?.uid);
     const historySync = useFirestoreSync<HistoryItem>('users/{uid}/history', user?.uid);
+    const mealPlansSync = useFirestoreSync<MealPlan>('users/{uid}/mealplans', user?.uid);
 
     const [theme, setThemeState] = useState<'light' | 'dark' | 'system'>('system');
     const { showToast } = useToast();
@@ -311,6 +315,14 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         }
     };
 
+    const addMealPlan = async (plan: MealPlan) => {
+        await mealPlansSync.addItem(plan);
+    };
+
+    const updateMealPlan = async (id: string, updates: Partial<MealPlan>) => {
+        await mealPlansSync.updateItem(id, updates);
+    };
+
     const archiveList = async (id: string, archived: boolean = true) => {
         await listsSync.updateItem(id, { archived });
     };
@@ -397,11 +409,15 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         listsSync.data.some(l => (l as { isPending?: boolean }).isPending) || 
         todosSync.data.some(t => (t as { isPending?: boolean }).isPending) || 
         categoriesSync.data.some(c => (c as { isPending?: boolean }).isPending) || 
-        historySync.data.some(h => (h as { isPending?: boolean }).isPending);
+        historySync.data.some(h => (h as { isPending?: boolean }).isPending) ||
+        mealPlansSync.data.some(m => (m as { isPending?: boolean }).isPending);
 
     return (
         <AppContext.Provider
             value={{
+                mealPlans: mealPlansSync.data,
+                addMealPlan,
+                updateMealPlan,
                 lists: listsSync.data,
                 defaultListId,
                 theme,

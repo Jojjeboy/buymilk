@@ -162,199 +162,204 @@ export const SortableItem: React.FC<SortableItemProps> = ({
                             : 'bg-white dark:bg-gray-800 border-gray-100 dark:border-gray-700'
                     }`}>
                         {/* We need to wrap the content to allow leading actions to be visible */}
-                        <div className="flex items-center gap-3 w-full">
-                        <button
-                            onClick={(e) => {
-                                e.stopPropagation();
-                                if (onToggle) onToggle(item.id);
-                            }}
-                            className={`flex-shrink-0 transition-colors ${isInteractionDisabled ? 'opacity-50 cursor-not-allowed' : ''}`}
-                            aria-label={item.completed ? "Mark as incomplete" : "Mark as complete"}
-                            onMouseDown={(e) => e.stopPropagation()}
-                            onTouchStart={(e) => e.stopPropagation()}
-                        >
-                            {/* Render different icons based on state */}
-                            {(() => {
-                                if (item.completed) {
-                                    return (
-                                        <div className="text-blue-500 hover:text-blue-600">
-                                            <CheckCircle2 size={24} />
-                                        </div>
-                                    );
-                                }
-                                return (
-                                    <div className="text-gray-300 hover:text-gray-400">
-                                        <Circle size={24} />
-                                    </div>
-                                );
-                            })()}
-                        </button>
+                        <div className="flex flex-col sm:flex-row gap-3 w-full">
+                            <div className="flex items-center gap-3 w-full">
+                                <button
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        if (onToggle) onToggle(item.id);
+                                    }}
+                                    className={`flex-shrink-0 transition-colors ${isInteractionDisabled ? 'opacity-50 cursor-not-allowed' : ''}`}
+                                    aria-label={item.completed ? "Mark as incomplete" : "Mark as complete"}
+                                    onMouseDown={(e) => e.stopPropagation()}
+                                    onTouchStart={(e) => e.stopPropagation()}
+                                >
+                                    {/* Render different icons based on state */}
+                                    {(() => {
+                                        if (item.completed) {
+                                            return (
+                                                <div className="text-blue-500 hover:text-blue-600">
+                                                    <CheckCircle2 size={24} />
+                                                </div>
+                                            );
+                                        }
+                                        return (
+                                            <div className="text-gray-300 hover:text-gray-400">
+                                                <Circle size={24} />
+                                            </div>
+                                        );
+                                    })()}
+                                </button>
 
-                        <div className="flex-1 min-w-0 flex flex-col justify-center">
-                            <input
-                                ref={inputRef}
-                                type="text"
-                                value={localText}
-                                onChange={(e) => setLocalText(e.target.value)}
-                                onBlur={handleBlur}
-                                onKeyDown={handleKeyDown}
-                                disabled={isReadOnly}
-                                aria-label="Edit item text"
-                                className={`w-full bg-transparent outline-none p-0.5 text-sm ${(() => {
-                                    if (item.completed) return 'line-through text-gray-400';
-                                    return 'text-gray-700 dark:text-gray-200';
-                                })()} ${isReadOnly ? 'cursor-not-allowed' : ''}`}
-                                onMouseDown={(e) => e.stopPropagation()}
-                                onTouchStart={(e) => e.stopPropagation()}
-                            />
-                            {(isEditingNote || item.note) && (
-                                <div className="px-0.5 mt-0.5">
-                                    {isEditingNote ? (
-                                        <input
-                                            ref={noteInputRef}
-                                            type="text"
-                                            value={localNote}
-                                            onChange={(e) => setLocalNote(e.target.value)}
-                                            onBlur={handleNoteBlur}
-                                            onKeyDown={handleNoteKeyDown}
-                                            placeholder={t('lists.notePlaceholder')}
-                                            disabled={isReadOnly}
-                                            aria-label="Edit item note"
-                                            className="w-full bg-transparent outline-none text-xs text-gray-600 dark:text-gray-300 placeholder-gray-400 dark:placeholder-gray-500 border-b border-blue-400/40 dark:border-blue-500/40 py-0.5"
-                                            onMouseDown={(e) => e.stopPropagation()}
-                                            onTouchStart={(e) => e.stopPropagation()}
-                                        />
-                                    ) : (
-                                        <span
-                                            onClick={(e) => {
-                                                e.stopPropagation();
-                                                if (!isReadOnly) {
-                                                    setIsEditingNote(true);
-                                                    setTimeout(() => noteInputRef.current?.focus(), 50);
-                                                }
-                                            }}
-                                            className={`block text-xs truncate transition-colors ${
-                                                item.completed ? 'line-through text-gray-400/70' : 'text-gray-500 dark:text-gray-400 hover:text-blue-500 dark:hover:text-blue-400 cursor-pointer'
-                                            }`}
-                                            title={item.note}
-                                        >
-                                            {item.note}
-                                        </span>
+                                <div className="flex-1 min-w-0 flex flex-col justify-center">
+                                    <input
+                                        ref={inputRef}
+                                        type="text"
+                                        value={localText}
+                                        onChange={(e) => setLocalText(e.target.value)}
+                                        onBlur={handleBlur}
+                                        onKeyDown={handleKeyDown}
+                                        disabled={isReadOnly}
+                                        aria-label="Edit item text"
+                                        className={`w-full bg-transparent outline-none p-0.5 text-sm ${(() => {
+                                            if (item.completed) return 'line-through text-gray-400';
+                                            return 'text-gray-700 dark:text-gray-200';
+                                        })()} ${isReadOnly ? 'cursor-not-allowed' : ''}`}
+                                        onMouseDown={(e) => e.stopPropagation()}
+                                        onTouchStart={(e) => e.stopPropagation()}
+                                    />
+                                    {(isEditingNote || item.note) && (
+                                        <div className="px-0.5 mt-0.5">
+                                            {isEditingNote ? (
+                                                <input
+                                                    ref={noteInputRef}
+                                                    type="text"
+                                                    value={localNote}
+                                                    onChange={(e) => setLocalNote(e.target.value)}
+                                                    onBlur={handleNoteBlur}
+                                                    onKeyDown={handleNoteKeyDown}
+                                                    placeholder={t('lists.notePlaceholder')}
+                                                    disabled={isReadOnly}
+                                                    aria-label="Edit item note"
+                                                    className="w-full bg-transparent outline-none text-xs text-gray-600 dark:text-gray-300 placeholder-gray-400 dark:placeholder-gray-500 border-b border-blue-400/40 dark:border-blue-500/40 py-0.5"
+                                                    onMouseDown={(e) => e.stopPropagation()}
+                                                    onTouchStart={(e) => e.stopPropagation()}
+                                                />
+                                            ) : (
+                                                <span
+                                                    onClick={(e) => {
+                                                        e.stopPropagation();
+                                                        if (!isReadOnly) {
+                                                            setIsEditingNote(true);
+                                                            setTimeout(() => noteInputRef.current?.focus(), 50);
+                                                        }
+                                                    }}
+                                                    className={`block text-xs truncate transition-colors ${
+                                                        item.completed ? 'line-through text-gray-400/70' : 'text-gray-500 dark:text-gray-400 hover:text-blue-500 dark:hover:text-blue-400 cursor-pointer'
+                                                    }`}
+                                                    title={item.note}
+                                                >
+                                                    {item.note}
+                                                </span>
+                                            )}
+                                        </div>
                                     )}
                                 </div>
-                            )}
+                            </div>
 
-                            {/* Check at home — action buttons */}
-                            {item.checkIfExistAtHome && !item.completed && (
-                                <div className="flex items-center gap-1.5 mt-1.5 px-0.5">
-                                        {onToggle && (
-                                            <button
-                                                type="button"
-                                                onClick={(e) => {
-                                                    e.stopPropagation();
-                                                    onToggle(item.id);
-                                                }}
-                                                className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold bg-green-100 dark:bg-green-900/40 text-green-700 dark:text-green-300 hover:bg-green-200 dark:hover:bg-green-900/60 transition-colors"
-                                                title={t('lists.inStockAtHome')}
-                                                onMouseDown={(e) => e.stopPropagation()}
-                                                onTouchStart={(e) => e.stopPropagation()}
-                                            >
-                                                <Check size={11} />
-                                                <span>{t('lists.inStockAtHome')}</span>
-                                            </button>
-                                        )}
-                                        {onTogglecheckIfExistAtHome && (
-                                            <button
-                                                type="button"
-                                                onClick={(e) => {
-                                                    e.stopPropagation();
-                                                    onTogglecheckIfExistAtHome(item.id);
-                                                }}
-                                                className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-300 hover:bg-blue-200 dark:hover:bg-blue-900/60 transition-colors"
-                                                title={t('lists.buyInStore')}
-                                                onMouseDown={(e) => e.stopPropagation()}
-                                                onTouchStart={(e) => e.stopPropagation()}
-                                            >
-                                                <ShoppingCart size={11} />
-                                                <span>{t('lists.buyInStore')}</span>
-                                            </button>
-                                        )}
+                            <div className="flex items-center justify-between gap-1 sm:gap-3 w-full">
+                                <div className="flex items-center gap-1.5">
+                                    {item.checkIfExistAtHome && !item.completed && (
+                                        <>
+                                            {onToggle && (
+                                                <button
+                                                    type="button"
+                                                    onClick={(e) => {
+                                                        e.stopPropagation();
+                                                        onToggle(item.id);
+                                                    }}
+                                                    className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold bg-green-100 dark:bg-green-900/40 text-green-700 dark:text-green-300 hover:bg-green-200 dark:hover:bg-green-900/60 transition-colors"
+                                                    title={t('lists.inStockAtHome')}
+                                                    onMouseDown={(e) => e.stopPropagation()}
+                                                    onTouchStart={(e) => e.stopPropagation()}
+                                                >
+                                                    <Check size={11} />
+                                                    <span className="hidden xs:inline">{t('lists.inStockAtHome')}</span>
+                                                </button>
+                                            )}
+                                            {onTogglecheckIfExistAtHome && (
+                                                <button
+                                                    type="button"
+                                                    onClick={(e) => {
+                                                        e.stopPropagation();
+                                                        onTogglecheckIfExistAtHome(item.id);
+                                                    }}
+                                                    className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-300 hover:bg-blue-200 dark:hover:bg-blue-900/60 transition-colors"
+                                                    title={t('lists.buyInStore')}
+                                                    onMouseDown={(e) => e.stopPropagation()}
+                                                    onTouchStart={(e) => e.stopPropagation()}
+                                                >
+                                                    <ShoppingCart size={11} />
+                                                    <span className="hidden xs:inline">{t('lists.buyInStore')}</span>
+                                                </button>
+                                            )}
+                                        </>
+                                    )}
                                 </div>
-                            )}
+
+                                <div className="flex items-center gap-1 sm:gap-3">
+                                    {onTogglecheckIfExistAtHome && !isReadOnly && (
+                                        <button
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                onTogglecheckIfExistAtHome(item.id);
+                                            }}
+                                            className={`flex-shrink-0 p-1.5 rounded-lg transition-colors ${
+                                                item.checkIfExistAtHome
+                                                    ? 'text-amber-600 dark:text-amber-400 bg-amber-100 dark:bg-amber-900/30'
+                                                    : 'text-gray-400 hover:text-amber-500 dark:text-gray-500 dark:hover:text-amber-400'
+                                            }`}
+                                            aria-label={t('lists.checkIfExistAtHome')}
+                                            title={t('lists.checkIfExistAtHome')}
+                                            onMouseDown={(e) => e.stopPropagation()}
+                                            onTouchStart={(e) => e.stopPropagation()}
+                                        >
+                                            <Home size={16} />
+                                        </button>
+                                    )}
+
+                                    {onEditNote && !isReadOnly && (
+                                        <button
+                                            onClick={handleToggleNoteEdit}
+                                            className={`flex-shrink-0 p-1.5 rounded-lg transition-colors ${
+                                                item.note
+                                                    ? 'text-blue-500 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20'
+                                                    : 'text-gray-400 hover:text-blue-500 dark:text-gray-500 dark:hover:text-blue-400'
+                                            }`}
+                                            aria-label={item.note ? t('lists.editNote') : t('lists.addNote')}
+                                            title={item.note ? t('lists.editNote') : t('lists.addNote')}
+                                            onMouseDown={(e) => e.stopPropagation()}
+                                            onTouchStart={(e) => e.stopPropagation()}
+                                        >
+                                            <FileText size={16} />
+                                        </button>
+                                    )}
+
+                                    {onCategorize && (
+                                        <button
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                onCategorize(item.id);
+                                            }}
+                                            className={`flex-shrink-0 p-1 transition-colors ${
+                                                (item.sectionId || isCategorized) 
+                                                    ? 'text-gray-400 hover:text-blue-500 dark:text-gray-500 dark:hover:text-blue-400' 
+                                                    : 'text-amber-400 hover:text-blue-500 dark:text-amber-500 dark:hover:text-blue-400 animate-pulse hover:animate-none'
+                                            }`}
+                                            aria-label="Categorize item"
+                                            title="Categorize item"
+                                            onMouseDown={(e) => e.stopPropagation()}
+                                            onTouchStart={(e) => e.stopPropagation()}
+                                        >
+                                            <Tag size={16} />
+                                        </button>
+                                    )}
+
+                                    {item.isPending && (
+                                        <div className="flex-shrink-0 text-blue-400 dark:text-blue-500 animate-in fade-in duration-300" title="Syncing...">
+                                            <CloudUpload size={16} />
+                                        </div>
+                                    )}
+
+                                    {!disabled && (
+                                        <div {...attributes} {...listeners} className="cursor-grab active:cursor-grabbing text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 p-1 touch-none" aria-label="Drag to reorder item">
+                                            <GripVertical size={24} strokeWidth={2.5} />
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
                         </div>
-
-                        {onTogglecheckIfExistAtHome && !isReadOnly && (
-                            <button
-                                onClick={(e) => {
-                                    e.stopPropagation();
-                                    onTogglecheckIfExistAtHome(item.id);
-                                }}
-                                className={`flex-shrink-0 p-1.5 rounded-lg transition-colors ${
-                                    item.checkIfExistAtHome
-                                        ? 'text-amber-600 dark:text-amber-400 bg-amber-100 dark:bg-amber-900/30'
-                                        : 'text-gray-400 hover:text-amber-500 dark:text-gray-500 dark:hover:text-amber-400'
-                                }`}
-                                aria-label={t('lists.checkIfExistAtHome')}
-                                title={t('lists.checkIfExistAtHome')}
-                                onMouseDown={(e) => e.stopPropagation()}
-                                onTouchStart={(e) => e.stopPropagation()}
-                            >
-                                <Home size={16} />
-                            </button>
-                        )}
-
-                        {onEditNote && !isReadOnly && (
-                            <button
-                                onClick={handleToggleNoteEdit}
-                                className={`flex-shrink-0 p-1.5 rounded-lg transition-colors ${
-                                    item.note
-                                        ? 'text-blue-500 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20'
-                                        : 'text-gray-400 hover:text-blue-500 dark:text-gray-500 dark:hover:text-blue-400'
-                                }`}
-                                aria-label={item.note ? t('lists.editNote') : t('lists.addNote')}
-                                title={item.note ? t('lists.editNote') : t('lists.addNote')}
-                                onMouseDown={(e) => e.stopPropagation()}
-                                onTouchStart={(e) => e.stopPropagation()}
-                            >
-                                <FileText size={16} />
-                            </button>
-                        )}
-
-                         {onCategorize && (
-                             <button
-                                 onClick={(e) => {
-                                     e.stopPropagation();
-                                     onCategorize(item.id);
-                                 }}
-                                 className={`flex-shrink-0 p-1 transition-colors ${
-                                     (item.sectionId || isCategorized) 
-                                         ? 'text-gray-400 hover:text-blue-500 dark:text-gray-500 dark:hover:text-blue-400' 
-                                         : 'text-amber-400 hover:text-blue-500 dark:text-amber-500 dark:hover:text-blue-400 animate-pulse hover:animate-none'
-                                 }`}
-                                 aria-label="Categorize item"
-                                 title="Categorize item"
-                                 onMouseDown={(e) => e.stopPropagation()}
-                                 onTouchStart={(e) => e.stopPropagation()}
-                             >
-                                 <Tag size={16} />
-                             </button>
-                         )}
-
-                        {item.isPending && (
-                            <div className="flex-shrink-0 text-blue-400 dark:text-blue-500 animate-in fade-in duration-300" title="Syncing...">
-                                <CloudUpload size={16} />
-                            </div>
-                        )}
-
-                        {!disabled && (
-                            <div {...attributes} {...listeners} className="cursor-grab active:cursor-grabbing text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 p-1 touch-none" aria-label="Drag to reorder item">
-                                <GripVertical size={24} strokeWidth={2.5} />
-                            </div>
-                        )}
-
-
                     </div>
-                </div>
                 </SwipeableListItem>
             </SwipeableList>
         </div>
