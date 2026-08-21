@@ -2,7 +2,7 @@ import { createHashRouter, RouterProvider, Outlet } from 'react-router-dom'
 import { AppProvider } from './context/AppContext'
 import { Layout } from './components/Layout'
 import { GroceryListView } from './components/GroceryListView'
-
+import { MealPlanView } from './components/MealPlanView'
 import { TodoView } from './components/TodoView'
 import { ActivityLog } from './components/ActivityLog'
 import { StatisticsView } from './components/StatisticsView'
@@ -35,6 +35,10 @@ const router = createHashRouter([
             {
                 path: "/todos",
                 element: <TodoView />,
+            },
+            {
+                path: "/mealplan", 
+                element: <MealPlanView />
             },
             {
                 path: "/activity",

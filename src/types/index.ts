@@ -1,3 +1,44 @@
+export interface Recipe {
+    id: string;
+    title: string;
+    description?: string;
+    servings?: number;
+    ingredients: {
+        text: string;               // t.ex. "Krossade tomater"
+        amount?: string;            // t.ex. "2 förp" eller "500g"
+        checkIfExistAtHome?: boolean;
+    }[];
+    instructions?: string[];        // Steg-för-steg-instruktioner
+    tags?: string[];                // t.ex. ["Lättlagat", "Vegetariskt"]
+    createdAt: string;
+}
+
+// 2. Måltid/Dag i Matschemat
+export type MealType = 'lunch' | 'dinner' | 'snack';
+
+export interface PlannedMeal {
+    id: string;
+    recipeId?: string;
+    customTitle?: string;
+    notes?: string;
+}
+
+export interface DayPlan {
+    date: string;
+    meals: {
+        type: MealType;
+        plannedMeal: PlannedMeal;
+    }[];
+}
+
+// 3. Totalt Matschema
+export interface MealPlan {
+    id: string;
+    weekNumber: number;
+    year: number;
+    days: DayPlan[];
+}
+
 export interface Item {
   id: string;
   text: string;
