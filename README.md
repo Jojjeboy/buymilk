@@ -1,35 +1,45 @@
 # BuyMilk 🥛
 
-BuyMilk is a modern, intuitive grocery list application designed to make shopping efficient and organized. It features real-time synchronization, a clean user interface, and an intelligent auto-grouping system.
+BuyMilk is a modern, intuitive grocery list application designed to make shopping efficient, organized, and data-driven. It combines real-time synchronization with intelligent automation to ensure you never forget an item again.
 
 ## 🚀 Key Features
 
-- **Real-time Sync**: Keep your lists updated across all devices.
-- **Intelligent Auto-grouping**: Items are automatically sorted into aisles (categories) as you add them.
+### 🛒 Smart Grocery Lists
+
+- **Real-time Sync**: Seamlessly keep your lists updated across all devices using Firebase.
+- **Intelligent Auto-grouping**: Items are automatically sorted into aisles (categories) as you add them, reducing time spent wandering the store.
 - **Customizable Aisles**: Define your own categories and keywords to match your preferred store layout.
 - **Product History**: Smart autocomplete based on your most frequently added items.
-- **Calendar Integration**: Schedule your shopping trips with Google Calendar integration.
+- **Offline Mode**: Continue shopping without internet; the app syncs your changes automatically once you're back online.
+
+### 📥 Advanced Importing
+
+- **Recipe Parser**: Paste a recipe from the web, and BuyMilk will intelligently extract the ingredients for you.
+- **JSON Import**: Power-user support for importing items via JSON files or strings, including support for notes and "check at home" flags.
+
+### ✅ Task Management
+
+- **Dedicated Todo View**: A separate space for general tasks and reminders.
+- **Priority System**: Organize tasks with High, Medium, and Low priority levels.
+- **Detailed Notes**: Add context and details to any todo item.
+
+### 📊 Insights & Analytics
+
+- **Statistics Dashboard**: Visualize your shopping habits with completion rates and item metrics.
+- **Usage Trends**: See your most frequently purchased items through integrated charts.
+- **Activity Log**: Keep track of changes and updates made to your lists.
+
+### 🛠️ Power User Tools
+
+- **Voice Input**: Add items to your list hands-free using voice-to-text.
+- **Wake Lock**: Keep your screen awake while you're in the store so you don't have to keep unlocking your phone.
+- **Settings Export/Import**: Easily back up or move your custom aisle configurations.
+- **Visual Polish**: Enjoy a clean, responsive UI with dark mode support and confetti celebrations when you finish your shopping.
+
+## 🌍 General
+
 - **Multi-language Support**: Full support for English and Swedish.
-- **PWA Ready**: Install it as a progressive web app for a native-like experience.
-
-## 🛒 Aisle Templates & Auto-grouping
-
-One of the standout features of BuyMilk is the **Auto-grouping** system. Instead of manually assigning every item to a category, BuyMilk does the heavy lifting for you.
-
-### How it Works
-When you add an item (e.g., "Apple"), the app scans the item's text against a set of **Aisle Templates**. Each template consists of a category name and a list of associated keywords. If a match is found, the item is automatically grouped under that aisle.
-
-**Example:**
-- **Aisle**: `Produce` $\rightarrow$ **Keywords**: `apple, banana, broccoli, spinach...`
-- **Aisle**: `Dairy` $\rightarrow$ **Keywords**: `milk, cheese, butter, yogurt...`
-
-### Managing Your Aisles
-You can fully customize this behavior in the **Settings** view:
-- **Add New Aisles**: Create custom categories for specific stores or needs.
-- **Edit Keywords**: Refine which words trigger a specific category to improve accuracy.
-- **Delete Categories**: Remove aisles you no longer need.
-
-This functionality ensures that your grocery list is always organized by store section, reducing the time spent walking back and forth across the store.
+- **PWA Ready**: Install as a Progressive Web App for a native-like experience on iOS and Android.
 
 ## 🛠️ Technical Stack
 
@@ -38,14 +48,17 @@ This functionality ensures that your grocery list is always organized by store s
 - **Backend/Database**: Firebase (Firestore & Auth)
 - **Internationalization**: react-i18next
 - **Build Tool**: Vite
+- **Charts**: Recharts
 
 ## 🏁 Getting Started
 
 ### Prerequisites
+
 - Node.js (Latest LTS recommended)
 - npm or pnpm
 
 ### Installation
+
 1. Clone the repository:
    ```bash
    git clone https://github.com/Jojjeboy/buymilk.git

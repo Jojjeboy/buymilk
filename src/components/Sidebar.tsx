@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import {
     LayoutGrid,
     SquareCheck,
+    UtensilsCrossed,
     Settings,
     Activity,
     BarChart3,
@@ -26,6 +27,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ onNavClick }) => {
     const navItems = [
         { path: '/', icon: LayoutGrid, label: t('nav.home') },
         { path: '/todos', icon: SquareCheck, label: t('nav.todos') },
+        { path: '/mealplan', icon: UtensilsCrossed, label: t('nav.mealplan', 'Måltidsplan') },
         { path: '/activity', icon: Activity, label: t('history.title', 'Activity') },
         { path: '/statistics', icon: BarChart3, label: t('history.statistics', 'Statistics') },
         { path: '/history', icon: History, label: t('history.suggestionHistory', 'History') },
