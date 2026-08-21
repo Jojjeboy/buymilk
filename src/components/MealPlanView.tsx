@@ -41,12 +41,20 @@ const MealInput: React.FC<{
     initialValue: string;
     placeholder: string;
     onSave: (value: string) => void;
-}> = ({ initialValue, placeholder, onSave }) => {
+    autoFocus?: boolean;
+}> = ({ initialValue, placeholder, onSave, autoFocus }) => {
     const [value, setValue] = useState(initialValue);
+    const inputRef = React.useRef<HTMLInputElement>(null);
 
     React.useEffect(() => {
         setValue(initialValue);
     }, [initialValue]);
+
+    React.useEffect(() => {
+        if (autoFocus && inputRef.current) {
+            inputRef.current.focus();
+        }
+    }, [autoFocus]);
 
     const handleBlur = () => {
         if (value !== initialValue) {
@@ -62,6 +70,7 @@ const MealInput: React.FC<{
 
     return (
         <input 
+            ref={inputRef}
             type="text"
             value={value}
             onChange={(e) => setValue(e.target.value)}
@@ -272,11 +281,12 @@ export const MealPlanView: React.FC = () => {
                                             <label className="text-xs text-gray-500 dark:text-gray-400 flex items-center gap-1">
                                                 <Utensils className="w-3 h-3" /> Lunch
                                             </label>
-                                            <MealInput 
-                                                initialValue={getMealText(date, 'lunch')}
-                                                onSave={(val) => handleMealChange(date, 'lunch', val)}
-                                                placeholder="Vad ska ätas?"
-                                            />
+                                             <MealInput 
+                                                 initialValue={getMealText(date, 'lunch')}
+                                                 onSave={(val) => handleMealChange(date, 'lunch', val)}
+                                                 placeholder="Vad ska ätas?"
+                                                 autoFocus={!getMealText(date, 'lunch')}
+                                             />
                                         </>
                                     ) : (
                                         <button 
