@@ -165,9 +165,19 @@ export const MealPlanView: React.FC = () => {
             } else {
                 day.meals.push({ type, plannedMeal: mealData });
             }
-
-            await updateMealPlan(plan.id, { days: updatedDays });
+        } else {
+            const mealData: PlannedMeal = {
+                id: uuidv4(),
+                customTitle: text
+            };
+            updatedDays.push({
+                date: dateStr,
+                meals: [{ type, plannedMeal: mealData }]
+            });
+            updatedDays.sort((a, b) => a.date.localeCompare(b.date));
         }
+
+        await updateMealPlan(plan.id, { days: updatedDays });
     };
 
     const getMealText = (date: Date, type: MealType) => {
@@ -275,28 +285,16 @@ export const MealPlanView: React.FC = () => {
                                     <span className="text-xs text-gray-500 dark:text-gray-400">{dateString}</span>
                                 </div>
                                 
-                                <div className="flex flex-col gap-1">
-                                    {hasLunch ? (
-                                        <>
-                                            <label className="text-xs text-gray-500 dark:text-gray-400 flex items-center gap-1">
-                                                <Utensils className="w-3 h-3" /> Lunch
-                                            </label>
-                                             <MealInput 
-                                                 initialValue={getMealText(date, 'lunch')}
-                                                 onSave={(val) => handleMealChange(date, 'lunch', val)}
-                                                 placeholder="Vad ska ätas?"
-                                                 autoFocus={!getMealText(date, 'lunch')}
-                                             />
-                                        </>
-                                    ) : (
-                                        <button 
-                                            onClick={() => handleMealChange(date, 'lunch', '')}
-                                            className="text-xs text-blue-500 hover:text-blue-600 dark:text-blue-400 dark:hover:text-blue-300 font-medium text-left flex items-center gap-1 transition-colors"
-                                        >
-                                            + Lägg till lunch
-                                        </button>
-                                    )}
-                                </div>
+                                 <div className="flex flex-col gap-1">
+                                     <label className="text-xs text-gray-500 dark:text-gray-400 flex items-center gap-1">
+                                         <Utensils className="w-3 h-3" /> Lunch
+                                     </label>
+                                     <MealInput 
+                                         initialValue={getMealText(date, 'lunch')}
+                                         onSave={(val) => handleMealChange(date, 'lunch', val)}
+                                         placeholder="Vad ska ätas?"
+                                     />
+                                 </div>
 
                                 <div className="flex flex-col gap-1">
                                     <label className="text-xs text-gray-500 dark:text-gray-400 flex items-center gap-1">
