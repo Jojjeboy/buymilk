@@ -207,4 +207,76 @@ describe('SettingsView Export & Import Functionality', () => {
         ]));
         expect(mockShowToast).toHaveBeenCalledWith('settings.importSuccess', 'success');
     });
+
+    it('successfully imports the user provided complex JSON sample', async () => {
+        const userJson = JSON.stringify([
+            { "text": "Laxfilé fryst", "note": "500g (Sojalax med bakad spetskål)" },
+            { "text": "Spetskål", "note": "1st (Sojalax med bakad spetskål)" },
+            { "text": "Japansk sojasås", "note": "1 flaska (Sojalax med bakad spetskål)", "checkIfExistAtHome": true },
+            { "text": "Färdiga köttbullar", "note": "500g (Köttbullar med snabbmakaroner)" },
+            { "text": "Snabbmakaroner", "note": "1kg (Köttbullar med snabbmakaroner)", "checkIfExistAtHome": true },
+            { "text": "Ketchup", "note": "1 flaska (Köttbullar med snabbmakaroner)", "checkIfExistAtHome": true },
+            { "text": "Gurka", "note": "1st (Köttbullar med snabbmakaroner)" },
+            { "text": "Falukorv", "note": "600g (Korvstroganoff)" },
+            { "text": "Gul lök", "note": "1 nät (Korvstroganoff & Halloumistroganoff)", "checkIfExistAtHome": true },
+            { "text": "Tomatpuré", "note": "1 tub (Korvstroganoff & Halloumistroganoff)", "checkIfExistAtHome": true },
+            { "text": "Matlagningsgrädde", "note": "5dl (Korvstroganoff)" },
+            { "text": "Ris", "note": "1kg (Sojalax & Korvstroganoff)", "checkIfExistAtHome": true },
+            { "text": "Spaghetti", "note": "500g (Pasta Carbonara)", "checkIfExistAtHome": true },
+            { "text": "Bacon", "note": "400g / 3-pack (Pasta Carbonara)" },
+            { "text": "Ägg", "note": "6-pack (Pasta Carbonara)", "checkIfExistAtHome": true },
+            { "text": "Parmesanost", "note": "150g (Pasta Carbonara)" },
+            { "text": "Fiskpinnar", "note": "1 förpackning / ca 450g (Fiskpinnar med potatismos)" },
+            { "text": "Potatismos (pulver eller färdigt)", "note": "1 förpackning (Fiskpinnar med potatismos)" },
+            { "text": "Gröna ärtor frysta", "note": "1 påse / 250-500g (Fiskpinnar med potatismos)" },
+            { "text": "Halloumi", "note": "400g / 2 förpackningar (Halloumistroganoff)" },
+            { "text": "Röd paprika", "note": "1st (Halloumistroganoff)" },
+            { "text": "Krossade tomater", "note": "400g (Halloumistroganoff)", "checkIfExistAtHome": true },
+            { "text": "Bulgur", "note": "1 förpackning (Halloumistroganoff)", "checkIfExistAtHome": true },
+            { "text": "Majskolvar", "note": "4st (Elotes & kycklingquesadillas)" },
+            { "text": "Majonnäs", "note": "1 tub (Elotes & kycklingquesadillas)", "checkIfExistAtHome": true },
+            { "text": "Smetana", "note": "2dl (Elotes & kycklingquesadillas)" },
+            { "text": "Fetaost", "note": "150g (Elotes & kycklingquesadillas)" },
+            { "text": "Lime", "note": "2st (Elotes & kycklingquesadillas)" },
+            { "text": "Chilipulver eller Tajín", "note": "1 burk (Elotes & kycklingquesadillas)", "checkIfExistAtHome": true },
+            { "text": "Tortillabröd", "note": "1 förpackning / 8-pack (Elotes & kycklingquesadillas)" },
+            { "text": "Strimlad färdig kyckling", "note": "400g (Elotes & kycklingquesadillas)" },
+            { "text": "Riven ost", "note": "200g (Elotes & kycklingquesadillas)" }
+        ]);
+
+        render(<SettingsView />);
+        const importBtn = screen.getByText('settings.importTitle');
+        fireEvent.click(importBtn);
+
+        const textarea = screen.getByPlaceholderText('settings.jsonPlaceholder');
+        fireEvent.change(textarea, { target: { value: userJson } });
+
+        const submitBtn = screen.getByRole('button', { name: 'common.import' });
+        await act(async () => {
+            fireEvent.click(submitBtn);
+        });
+
+        expect(mockUpdateListItems).toHaveBeenCalledWith('1', expect.arrayContaining([
+            expect.objectContaining({ text: 'Laxfilé fryst', note: '500g (Sojalax med bakad spetskål)', completed: false }),
+            expect.objectContaining({ text: 'Japansk sojasås', checkIfExistAtHome: true, completed: false }),
+            expect.objectContaining({ text: 'Riven ost', note: '200g (Elotes & kycklingquesadillas)', completed: false })
+        ]));
+        expect(mockShowToast).toHaveBeenCalledWith('settings.importSuccess', 'success');
+    });
+
+    it('clears all items when clear all button is clicked and confirmed', async () => {
+        render(<SettingsView />);
+        const clearBtn = screen.getByText('common.clearAll');
+        fireEvent.click(clearBtn);
+
+        expect(screen.getByText('common.confirmDeleteAll')).toBeInTheDocument();
+        
+        const confirmBtn = screen.getByText('common.delete');
+        await act(async () => {
+            fireEvent.click(confirmBtn);
+        });
+
+        expect(mockUpdateListItems).toHaveBeenCalledWith('1', []);
+        expect(mockShowToast).toHaveBeenCalledWith('common.cleared', 'success');
+    });
 });

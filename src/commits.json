@@ -1,5 +1,25 @@
 [
   {
+    "hash": "08e863f3f4cb1438112ef08ff435a63fd3b9ee9e",
+    "date": "2026-08-20 14:13:42 +0200",
+    "message": "docs: add design proposal for \"check at home\" feature"
+  },
+  {
+    "hash": "aec45f6a0752a63094d74c68007864c1ae8455b7",
+    "date": "2026-08-20 13:19:34 +0200",
+    "message": "docs: update import examples and remove file upload functionality"
+  },
+  {
+    "hash": "4892f0dee848aa681fdc94ecc0d5827d1a330988",
+    "date": "2026-08-20 13:01:01 +0200",
+    "message": "feat(grocery-list): add support for item notes and enhanced import"
+  },
+  {
+    "hash": "293923130bc8423e1a7128fd8f2f9e0b9b25eeeb",
+    "date": "2026-08-20 11:18:15 +0200",
+    "message": "Implement robust JSON import functionality and update export defaults to active items only"
+  },
+  {
     "hash": "dde4edd68628c6468976c6cf92e7a4ae94536858",
     "date": "2026-08-17 14:12:19 +0200",
     "message": "Package upgrades"
@@ -78,25 +98,5 @@
     "hash": "462972e15e7a13bee93900fdea1729f664c6eac5",
     "date": "2026-06-22 10:43:30 +0200",
     "message": "Settings cleanup"
-  },
-  {
-    "hash": "cba9954e8afcb665c515bd1dc58e4fb762a7ba22",
-    "date": "2026-03-10 10:24:49 +0100",
-    "message": "lint fix"
-  },
-  {
-    "hash": "461e2e3face92f3a8e8147b568036fa60a4e2dc1",
-    "date": "2026-03-09 16:36:06 +0100",
-    "message": "feat: Implement a new `useFirestoreSync` hook for real-time data management with Firestore, including CRUD operations, and introduce new components for grocery lists, todo items, search results, and sortable items."
-  },
-  {
-    "hash": "1926903a58000ad9caedf8ba3cf649b0fce9b86a",
-    "date": "2026-03-09 16:26:50 +0100",
-    "message": "chore: Add dependency override for `serialize-javascript` in `package.json`."
-  },
-  {
-    "hash": "eff2fadd768967a9d7778e3930f33db200b8f1f5",
-    "date": "2026-03-09 16:22:39 +0100",
-    "message": "chore: update dependencies"
   }
 ]
