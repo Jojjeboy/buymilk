@@ -10,7 +10,7 @@ import { useWakeLock } from '../hooks/useWakeLock';
 
 export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     const { t } = useTranslation();
-    const { theme, toggleTheme, isSyncing } = useApp();
+    const { theme, toggleTheme } = useApp();
     const { isSupported, isLocked, requestWakeLock, releaseWakeLock } = useWakeLock();
     
     const [isMenuOpen, setIsMenuOpen] = useState(false);

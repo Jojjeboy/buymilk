@@ -21,7 +21,7 @@ export const MealsView: React.FC = () => {
             await addMeal(name);
             setNewMealName('');
             showToast(t('toasts.itemAdded', 'Måltid tillagd'), 'success');
-        } catch (error) {
+        } catch {
             showToast(t('toasts.error', 'Ett fel uppstod'), 'error');
         }
     };
@@ -39,7 +39,7 @@ export const MealsView: React.FC = () => {
             await updateMeal(id, { name });
             setEditingId(null);
             showToast(t('toasts.itemUpdated', 'Måltid uppdaterad'), 'success');
-        } catch (error) {
+        } catch {
             showToast(t('toasts.error', 'Ett fel uppstod'), 'error');
         }
     };
@@ -48,7 +48,7 @@ export const MealsView: React.FC = () => {
         try {
             await deleteMeal(id);
             showToast(t('toasts.itemDeleted', 'Måltid borttagen'), 'info');
-        } catch (error) {
+        } catch {
             showToast(t('toasts.error', 'Ett fel uppstod'), 'error');
         }
     };
