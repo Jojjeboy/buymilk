@@ -190,14 +190,6 @@ export const MealPlanView: React.FC = () => {
         return meal?.plannedMeal.customTitle || '';
     };
 
-    const hasMeal = (date: Date, type: MealType) => {
-        const plan = getPlanForDate(date);
-        if (!plan) return false;
-        const dateStr = formatDate(date);
-        const day = plan.days.find(d => d.date === dateStr);
-        if (!day) return false;
-        return day.meals.some(m => m.type === type);
-    };
 
     let lastRenderedWeekNumber = -1;
 
