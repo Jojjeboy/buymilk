@@ -267,7 +267,6 @@ export const MealPlanView: React.FC = () => {
                     lastRenderedWeekNumber = weekNumber;
                     
                     const dateString = date.toLocaleDateString('sv-SE', { day: 'numeric', month: 'short' });
-                    const hasLunch = hasMeal(date, 'lunch');
 
                     return (
                         <React.Fragment key={date.toISOString()}>
