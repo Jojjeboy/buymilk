@@ -1,8 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { useApp } from '../context/AppContext';
+import { useToast } from '../context/ToastContext';
+import { Modal } from './Modal';
 import { DayPlan, PlannedMeal, MealType } from '../types';
 import { v4 as uuidv4 } from 'uuid';
-import { ChevronLeft, ChevronRight, Utensils, CalendarDays } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Utensils, CalendarDays, Download } from 'lucide-react';
 
 // Helpers
 const getISOWeek = (date: Date) => {
@@ -73,6 +75,8 @@ const MealInput: React.FC<{
 
 export const MealPlanView: React.FC = () => {
     const { mealPlans, addMealPlan, updateMealPlan } = useApp();
+    const { showToast } = useToast();
+    const [isExportOpen, setIsExportOpen] = useState(false);
     const [startDate, setStartDate] = useState(() => {
         const d = new Date();
         d.setHours(0, 0, 0, 0);
@@ -178,6 +182,22 @@ export const MealPlanView: React.FC = () => {
 
     let lastRenderedWeekNumber = -1;
 
+    const exportJSON = useMemo(() => {
+        if (!isExportOpen) return '';
+        const exportData = displayDays.map(date => {
+            return {
+                date: formatDate(date),
+                day: getDayName(date),
+                lunch: getMealText(date, 'lunch'),
+                dinner: getMealText(date, 'dinner')
+            };
+        });
+        return JSON.stringify({
+            exportDate: new Date().toISOString().split('T')[0],
+            mealPlan: exportData
+        }, null, 2);
+    }, [isExportOpen, displayDays, mealPlans]);
+
     return (
         <div className="max-w-4xl mx-auto space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500 pb-20 px-4">
             {/* Header */}
@@ -189,6 +209,13 @@ export const MealPlanView: React.FC = () => {
                     </p>
                 </div>
                 <div className="flex items-center gap-2">
+                    <button 
+                        onClick={() => setIsExportOpen(true)}
+                        className="p-2 rounded-lg bg-blue-100 dark:bg-blue-900/40 text-blue-600 dark:text-blue-400 hover:bg-blue-200 dark:hover:bg-blue-900/60 transition-colors mr-2"
+                        title="Exportera till JSON"
+                    >
+                        <Download className="w-5 h-5" />
+                    </button>
                     <button 
                         onClick={() => navigateDays('prev')}
                         className="p-2 rounded-lg bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
@@ -276,6 +303,24 @@ export const MealPlanView: React.FC = () => {
                     );
                 })}
             </div>
+
+            <Modal
+                isOpen={isExportOpen}
+                onClose={() => setIsExportOpen(false)}
+                title="Exportera Måltidsplan"
+                message="Här är din måltidsplan för de valda dagarna i JSON-format. Du kan enkelt kopiera detta och använda i andra appar."
+                confirmText="Kopiera till urklipp"
+                onConfirm={() => {
+                    navigator.clipboard.writeText(exportJSON);
+                    showToast('JSON kopierad till urklipp', 'success');
+                }}
+            >
+                <div className="relative">
+                    <pre className="bg-gray-50 dark:bg-gray-900 p-4 rounded-xl text-xs overflow-x-auto whitespace-pre-wrap font-mono text-gray-800 dark:text-gray-200 border border-gray-200 dark:border-gray-700 max-h-64 overflow-y-auto custom-scrollbar">
+                        {exportJSON}
+                    </pre>
+                </div>
+            </Modal>
         </div>
     );
 };
