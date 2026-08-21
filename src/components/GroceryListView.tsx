@@ -9,6 +9,7 @@ import { SortableItem } from './SortableItem';
 import { Plus, RotateCcw, ChevronDown, CloudUpload, Mic, Upload, Trash2 } from 'lucide-react';
 import { v4 as uuidv4 } from 'uuid';
 import { Confetti } from './Confetti';
+import { convertToItems } from '../utils/importUtils';
 import { ImportItemsModal } from './ImportItemsModal';
 import { Modal } from './Modal';
 import { useTranslation } from 'react-i18next';
@@ -226,24 +227,31 @@ export const GroceryListView: React.FC = React.memo(function GroceryListView() {
     const handleImportItems = async (items: (string | { text: string; note?: string; checkIfExistAtHome?: boolean })[]) => {
         if (!list) return;
         
-        const newItems: Item[] = items.map(entry => {
+        // Normalize items to ParsedImportItem format for the utility
+        const normalizedItems = items.map(entry => {
             if (typeof entry === 'string') {
-                const isCheckHome = entry.trim().startsWith('?');
-                const cleanText = isCheckHome ? entry.trim().replace(/^\?+\s*/, '') : entry.trim();
-                return { id: uuidv4(), text: cleanText, checkIfExistAtHome: isCheckHome ? true : undefined, completed: false };
+                const trimmed = entry.trim();
+                const isCheck = trimmed.startsWith('?');
+                return { 
+                    text: isCheck ? trimmed.replace(/^\?+\s*/, '') : trimmed, 
+                    checkIfExistAtHome: isCheck ? true : undefined 
+                };
             }
-            const isCheckHome = entry.checkIfExistAtHome || entry.text.trim().startsWith('?');
-            const cleanText = isCheckHome ? entry.text.trim().replace(/^\?+\s*/, '') : entry.text.trim();
-            return { id: uuidv4(), text: cleanText, note: entry.note, checkIfExistAtHome: isCheckHome ? true : undefined, completed: false };
+            return entry;
         });
+
+        const newItems = convertToItems(normalizedItems);
 
         await updateListItems(list.id, [...list.items, ...newItems]);
         
-        for (const entry of items) {
+        // Process history updates in parallel and don't block the modal closure
+        const historyPromises = items.map(entry => {
             const raw = typeof entry === 'string' ? entry : entry.text;
             const txt = raw.replace(/^\?+\s*/, '').trim();
-            if (txt) await addToHistory(txt);
-        }
+            return txt ? addToHistory(txt) : Promise.resolve();
+        });
+        
+        Promise.all(historyPromises).catch(err => console.error("Failed to update history:", err));
     };
 
     return (
