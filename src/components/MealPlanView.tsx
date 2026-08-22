@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { Modal } from './Modal';
 import { MealPlanEditModal } from './MealPlanEditModal';
 import { MealType, Item, Meal } from '../types';
-import { ChevronLeft, ChevronRight, Utensils, CalendarDays, Download, Heart, Plus, ShoppingCart, BookOpen, AlertCircle } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Utensils, CalendarDays, Download, Heart, ShoppingCart, BookOpen, AlertCircle } from 'lucide-react';
 import { useMealPlan } from '../hooks/useMealPlan';
 import { RecipeDetailModal } from './RecipeDetailModal';
 import { v4 as uuidv4 } from 'uuid';
