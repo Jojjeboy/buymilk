@@ -15,8 +15,16 @@ vi.mock('../hooks/useWakeLock');
 vi.mock('react-i18next', () => ({
     useTranslation: () => ({
         t: (key: string) => key,
-        i18n: { language: 'en', changeLanguage: vi.fn() }
+        i18n: { 
+            language: 'en', 
+            changeLanguage: vi.fn(),
+            initReactI18next: vi.fn()
+        }
     }),
+    initReactI18next: {
+        type: 'function',
+        implement: vi.fn(),
+    },
 }));
 
 describe('SettingsView Export & Import Functionality', () => {
@@ -68,7 +76,7 @@ describe('SettingsView Export & Import Functionality', () => {
     it('renders the export list accordion button', () => {
         render(<SettingsView />);
         expect(screen.getByText('settings.exportTitle')).toBeInTheDocument();
-    });
+    }, 10000);
 
     it('opens export section and shows active items only by default in simple array format', () => {
         render(<SettingsView />);

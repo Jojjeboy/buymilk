@@ -7,8 +7,10 @@ describe('ToastContext', () => {
         vi.useFakeTimers();
     });
 
-    afterEach(() => {
-        vi.runOnlyPendingTimers();
+    afterEach(async () => {
+        await act(async () => {
+            vi.runOnlyPendingTimers();
+        });
         vi.useRealTimers();
     });
 

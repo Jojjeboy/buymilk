@@ -88,7 +88,8 @@ export const MealPlanView: React.FC = () => {
         meals, 
         getMealText, 
         handleMealChange, 
-        handleSaveToLibrary 
+        handleSaveToLibrary,
+        copyPreviousWeek
     } = useMealPlan();
     
     const { showToast } = useToast();
@@ -173,6 +174,55 @@ export const MealPlanView: React.FC = () => {
         }
     };
 
+    const handleGenerateWeeklyList = async () => {
+        if (!defaultListId) {
+            showToast(t('errors.noList', 'Kunde inte hitta inköpslistan'), 'error');
+            return;
+        }
+
+        const itemsToAdd: Item[] = [];
+        const dayMeals = ['lunch', 'dinner'] as const;
+
+        displayDays.forEach(date => {
+            dayMeals.forEach(type => {
+                const mealText = getMealText(date, type);
+                const meal = meals.find(m => m.name.toLowerCase() === mealText.toLowerCase());
+                if (meal && meal.ingredients) {
+                    meal.ingredients
+                        .filter(ing => !ing.checkIfExistAtHome)
+                        .forEach(ing => {
+                            itemsToAdd.push({
+                                id: uuidv4(),
+                                text: `${ing.amount ? ing.amount + ' ' : ''}${ing.text}`,
+                                completed: false,
+                            });
+                        });
+                }
+            });
+        });
+
+        if (itemsToAdd.length === 0) {
+            showToast(t('toasts.allAtHome', 'Inga ingredienser att lägga till för veckan'), 'info');
+            return;
+        }
+
+        try {
+            await addItemsToList(defaultListId, itemsToAdd);
+            showToast(`${itemsToAdd.length} ${t('common.items', 'artiklar')} tillagda för hela veckan`, 'success');
+        } catch {
+            showToast(t('toasts.error', 'Ett fel uppstod'), 'error');
+        }
+    };
+
+    const handleCopyPreviousWeek = async () => {
+        const success = await copyPreviousWeek(startDate);
+        if (success) {
+            showToast(t('toasts.weekCopied', 'Förra veckans plan kopierad'), 'success');
+        } else {
+            showToast(t('toasts.noPrevWeek', 'Hittade ingen plan för förra veckan'), 'info');
+        }
+    };
+
     let lastRenderedWeekNumber = -1;
 
     const exportJSON = useMemo(() => {
@@ -222,13 +272,27 @@ export const MealPlanView: React.FC = () => {
                     >
                         Idag
                     </button>
-                    <button 
-                        onClick={() => navigateDays('next')}
-                        className="p-2 rounded-lg bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
-                        title="Framåt 7 dagar"
-                    >
-                        <ChevronRight className="w-5 h-5" />
-                    </button>
+                     <button 
+                         onClick={() => navigateDays('next')}
+                         className="p-2 rounded-lg bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
+                         title="Framåt 7 dagar"
+                     >
+                         <ChevronRight className="w-5 h-5" />
+                     </button>
+                     <button 
+                         onClick={handleCopyPreviousWeek}
+                         className="p-2 rounded-lg bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 hover:bg-blue-100 dark:hover:bg-blue-900/40 transition-colors"
+                         title="Kopiera förra veckan"
+                     >
+                         <CalendarDays className="w-5 h-5" />
+                     </button>
+                     <button 
+                         onClick={handleGenerateWeeklyList}
+                         className="p-2 rounded-lg bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-400 hover:bg-green-100 dark:hover:bg-green-900/40 transition-colors"
+                         title="Generera veckans inköpslista"
+                     >
+                         <ShoppingCart className="w-5 h-5" />
+                     </button>
                 </div>
             </div>
 
@@ -250,7 +314,11 @@ export const MealPlanView: React.FC = () => {
                                     </h3>
                                 </div>
                             )}
-                            <div className="grid grid-cols-1 sm:grid-cols-3 items-center gap-4 p-4 rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 shadow-sm">
+                             <div className={`grid grid-cols-1 sm:grid-cols-3 items-center gap-4 p-4 rounded-xl border ${
+                                 formatDate(date) === formatDate(new Date()) 
+                                 ? 'border-blue-500 bg-blue-50/30 dark:bg-blue-900/10 ring-1 ring-blue-500' 
+                                 : 'border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900'
+                             } shadow-sm transition-all`}>
                                 <div className="flex flex-col justify-center">
                                     <span className="font-bold text-lg">{getDayName(date)}</span>
                                     <span className="text-xs text-gray-500 dark:text-gray-400">{dateString}</span>

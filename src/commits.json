@@ -1,5 +1,45 @@
 [
   {
+    "hash": "82f47a94f3707aef60569600f310e1ac4df35194",
+    "date": "2026-08-22 11:27:59 +0200",
+    "message": "docs: update roadmap and enhance MealEditModal with recipe details"
+  },
+  {
+    "hash": "212e12eb1d86923d9124dc71da526006e35b93ac",
+    "date": "2026-08-22 10:37:01 +0200",
+    "message": "refactor: remove shopping list logic and clean up types"
+  },
+  {
+    "hash": "b854d466f7682f53569a43b49a2934cb83155e34",
+    "date": "2026-08-22 10:29:02 +0200",
+    "message": "Merge branch 'main' of https://github.com/Jojjeboy/buymilk"
+  },
+  {
+    "hash": "54e18a9160a41887d690e37161096c5d109f8431",
+    "date": "2026-08-22 10:27:32 +0200",
+    "message": "mc"
+  },
+  {
+    "hash": "59968e3965761ca6a8deaab36759fd3f637fb529",
+    "date": "2026-08-22 10:19:00 +0200",
+    "message": "feat: implement meal card design with responsive grid and enhanced editing"
+  },
+  {
+    "hash": "0f6d9369bc0d7dd66d039a83b7fe2351665e4a69",
+    "date": "2026-08-22 09:03:52 +0200",
+    "message": "Meal modal (#2)"
+  },
+  {
+    "hash": "dae8c1e6788f1d0fe95c78d1e44ec560113aaf1f",
+    "date": "2026-08-22 08:57:04 +0200",
+    "message": "chore: update commit history and refine meal plan logic"
+  },
+  {
+    "hash": "b054623524d0a9e375b2f408a2f9abe7e747add9",
+    "date": "2026-08-22 08:56:40 +0200",
+    "message": "fix: remove explicit any in MealIngredientsModal to satisfy strict linting"
+  },
+  {
     "hash": "def06bda4c8a2f58175f6a2e2088cf0a5c0e11f1",
     "date": "2026-08-21 11:17:15 +0200",
     "message": "Unused variable"
@@ -58,45 +98,5 @@
     "hash": "293923130bc8423e1a7128fd8f2f9e0b9b25eeeb",
     "date": "2026-08-20 11:18:15 +0200",
     "message": "Implement robust JSON import functionality and update export defaults to active items only"
-  },
-  {
-    "hash": "dde4edd68628c6468976c6cf92e7a4ae94536858",
-    "date": "2026-08-17 14:12:19 +0200",
-    "message": "Package upgrades"
-  },
-  {
-    "hash": "49e4d95c3b5e27303ec747326e2c8b1ae939e982",
-    "date": "2026-08-17 14:10:56 +0200",
-    "message": "Placed the logout button directly underneath the account email address as a styled, full-width button."
-  },
-  {
-    "hash": "4c704fd75590fcce2625e480e1c10105cf32c7d8",
-    "date": "2026-08-17 14:09:03 +0200",
-    "message": "Added export functionality"
-  },
-  {
-    "hash": "272d703adaa8c54b3ae0efa4a47688d2416c7fd4",
-    "date": "2026-08-17 14:02:21 +0200",
-    "message": "package stuff"
-  },
-  {
-    "hash": "fc0564353245a106cb33415ec9acbe117f533659",
-    "date": "2026-08-17 14:00:45 +0200",
-    "message": "Removed autogrouping feature"
-  },
-  {
-    "hash": "89e606bfac96db23bd929d590a4402c77c974311",
-    "date": "2026-06-23 16:13:39 +0200",
-    "message": "Swipe actions"
-  },
-  {
-    "hash": "905bbfaf1cceee269cba55cd9b77e6b254a41fd9",
-    "date": "2026-06-23 16:06:54 +0200",
-    "message": "mc"
-  },
-  {
-    "hash": "43eff345420ca16651e240e82638f39705f93ac4",
-    "date": "2026-06-23 16:01:59 +0200",
-    "message": "mc"
   }
 ]

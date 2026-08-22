@@ -94,12 +94,66 @@ export const useMealPlan = () => {
         return false;
     };
 
+    const copyPreviousWeek = async (targetDate: Date) => {
+        const { weekNumber: targetWeek, year: targetYear } = getISOWeek(targetDate);
+        
+        // Calculate previous week
+        const prevDate = new Date(targetDate);
+        prevDate.setDate(targetDate.getDate() - 7);
+        const { weekNumber: prevWeek, year: prevYear } = getISOWeek(prevDate);
+        
+        const prevPlan = mealPlans.find(p => p.weekNumber === prevWeek && p.year === prevYear);
+        if (!prevPlan) return false;
+
+        // Create new plan for target week
+        const newPlanId = uuidv4();
+        const monday = new Date(targetDate);
+        const day = monday.getDay();
+        const diff = monday.getDate() - day + (day === 0 ? -6 : 1);
+        monday.setDate(diff);
+        
+        const days: DayPlan[] = Array.from({ length: 7 }).map((_, idx) => {
+            const d = new Date(monday);
+            d.setDate(monday.getDate() + idx);
+            
+            // Find corresponding day in previous plan
+            const prevDay = prevPlan.days.find(pd => {
+                const pDate = new Date(pd.date);
+                return pDate.getDay() === d.getDay();
+            });
+
+            return {
+                date: formatDate(d),
+                meals: prevDay ? [...prevDay.meals] : []
+            };
+        });
+
+        const newPlan = {
+            id: newPlanId,
+            weekNumber: targetWeek,
+            year: targetYear,
+            days
+        };
+
+        // Remove existing plan for target week if it exists to avoid duplicates
+        const existingPlan = mealPlans.find(p => p.weekNumber === targetWeek && p.year === targetYear);
+        if (existingPlan) {
+            // We can't delete directly here as we don't have deleteMealPlan, 
+            // but we can update it if it exists.
+            await updateMealPlan(existingPlan.id, { days: newPlan.days });
+        } else {
+            await addMealPlan(newPlan);
+        }
+        return true;
+    };
+
     return {
         mealPlans,
         meals,
         getPlanForDate,
         getMealText,
         handleMealChange,
-        handleSaveToLibrary
+        handleSaveToLibrary,
+        copyPreviousWeek
     };
 };
