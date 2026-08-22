@@ -8,9 +8,34 @@ import { MealType, Item, Meal } from '../types';
 import { InlineAutocompleteInput } from './InlineAutocompleteInput';
 import { ChevronLeft, ChevronRight, Utensils, CalendarDays, Download, Heart, Plus, ShoppingCart, BookOpen } from 'lucide-react';
 import { useMealPlan } from '../hooks/useMealPlan';
+import { DndContext, useDraggable, useDroppable, DragEndEvent } from '@dnd-kit/core';
 import { RecipeDetailModal } from './RecipeDetailModal';
 import { v4 as uuidv4 } from 'uuid';
 import { getISOWeek, formatDate, getDayName } from '../utils/dateUtils';
+
+const DraggableMealInput: React.FC<{
+    id: string;
+    children: React.ReactNode;
+}> = ({ id, children }) => {
+    const { attributes, listeners, setNodeRef, transform } = useDraggable({ id });
+    const style = transform ? {
+        transform: `translate3d(${transform.x}px, ${transform.y}px, 0)`,
+    } : undefined;
+
+    return (
+        <div ref={setNodeRef} style={style} {...listeners} {...attributes}>
+            {children}
+        </div>
+    );
+};
+
+const DroppableSlot: React.FC<{
+    id: string;
+    children: React.ReactNode;
+}> = ({ id, children }) => {
+    const { setNodeRef } = useDroppable({ id });
+    return <div ref={setNodeRef} className="w-full h-full">{children}</div>;
+};
 
 const MealInput: React.FC<{
     initialValue: string;
@@ -23,7 +48,8 @@ const MealInput: React.FC<{
     autoFocus?: boolean;
     onViewRecipe?: () => void;
     hasRecipe?: boolean;
-}> = ({ initialValue, placeholder, onSave, suggestions, isSaved, onSaveToLibrary, onOpenModal, autoFocus, onViewRecipe, hasRecipe }) => {
+    tags?: string[];
+}> = ({ initialValue, placeholder, onSave, suggestions, isSaved, onSaveToLibrary, onOpenModal, autoFocus, onViewRecipe, hasRecipe, tags }) => {
     const [value, setValue] = useState(initialValue);
 
     React.useEffect(() => {
@@ -37,8 +63,19 @@ const MealInput: React.FC<{
     };
 
     return (
-        <div className="flex items-center gap-2">
-            {!value.trim() && onOpenModal && (
+            <div className="flex items-center gap-2">
+                {tags && tags.length > 0 && (
+                    <div className="flex gap-1 mr-1">
+                        {tags.map(tag => (
+                            <span 
+                                key={tag} 
+                                className="w-2 h-2 rounded-full bg-blue-400 dark:bg-blue-500" 
+                                title={tag}
+                            />
+                        ))}
+                    </div>
+                )}
+                {!value.trim() && onOpenModal && (
                 <button
                     onClick={onOpenModal}
                     className="p-2 rounded-md text-blue-500 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-colors"
@@ -89,7 +126,8 @@ export const MealPlanView: React.FC = () => {
         getMealText, 
         handleMealChange, 
         handleSaveToLibrary,
-        copyPreviousWeek
+        copyPreviousWeek,
+        moveMeal
     } = useMealPlan();
     
     const { showToast } = useToast();
@@ -223,6 +261,25 @@ export const MealPlanView: React.FC = () => {
         }
     };
 
+    const handleDragEnd = async (event: DragEndEvent) => {
+        const { active, over } = event;
+        if (!over) return;
+
+        const activeId = active.id as string;
+        const overId = over.id as string;
+
+        const [fromDateStr, fromType] = activeId.split('|');
+        const [toDateStr, toType] = overId.split('|');
+
+        if (fromDateStr === toDateStr && fromType === toType) return;
+
+        const fromDate = new Date(fromDateStr);
+        const toDate = new Date(toDateStr);
+
+        await moveMeal(fromDate, fromType as MealType, toDate, toType as MealType);
+        showToast(t('toasts.mealMoved', 'Måltid flyttad'), 'info');
+    };
+
     let lastRenderedWeekNumber = -1;
 
     const exportJSON = useMemo(() => {
@@ -296,8 +353,9 @@ export const MealPlanView: React.FC = () => {
                 </div>
             </div>
 
-            <div className="flex flex-col gap-4">
-                {displayDays.map((date) => {
+            <DndContext onDragEnd={handleDragEnd}>
+                <div className="flex flex-col gap-4">
+                    {displayDays.map((date) => {
                     const { weekNumber } = getISOWeek(date);
                     const showWeekHeader = weekNumber !== lastRenderedWeekNumber;
                     lastRenderedWeekNumber = weekNumber;
@@ -319,9 +377,16 @@ export const MealPlanView: React.FC = () => {
                                  ? 'border-blue-500 bg-blue-50/30 dark:bg-blue-900/10 ring-1 ring-blue-500' 
                                  : 'border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900'
                              } shadow-sm transition-all`}>
-                                <div className="flex flex-col justify-center">
-                                    <span className="font-bold text-lg">{getDayName(date)}</span>
-                                    <span className="text-xs text-gray-500 dark:text-gray-400">{dateString}</span>
+                                 <div className="flex flex-col justify-center">
+                                     <div className="flex items-center gap-2">
+                                         <span className="font-bold text-lg">{getDayName(date)}</span>
+                                         {formatDate(date) === formatDate(new Date()) && (
+                                             <span className="px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider bg-blue-500 text-white rounded-full">
+                                                 Idag
+                                             </span>
+                                         )}
+                                     </div>
+                                     <span className="text-xs text-gray-500 dark:text-gray-400">{dateString}</span>
                                     
                                     {/* Add ingredients button for the day */}
                                     <button 
@@ -334,44 +399,55 @@ export const MealPlanView: React.FC = () => {
                                     </button>
                                 </div>
                                 
-                                <div className="flex flex-col gap-1">
-                                    <label className="text-xs text-gray-500 dark:text-gray-400 flex items-center gap-1">
-                                        <Utensils className="w-3 h-3" /> Lunch
-                                    </label>
-                                    <MealInput 
-                                        initialValue={getMealText(date, 'lunch')}
-                                        onSave={(val) => handleMealChange(date, 'lunch', val)}
-                                        suggestions={meals.map(m => ({ id: m.id, text: m.name }))}
-                                        isSaved={meals.some(m => m.name.toLowerCase() === getMealText(date, 'lunch').toLowerCase())}
-                                        onSaveToLibrary={onSaveToLibraryWrapper}
-                                        onOpenModal={() => setModalSlot({ date, type: 'lunch' })}
-                                        placeholder="Vad ska ätas?"
-                                        hasRecipe={meals.some(m => m.name.toLowerCase() === getMealText(date, 'lunch').toLowerCase())}
-                                        onViewRecipe={() => handleViewRecipe(getMealText(date, 'lunch'))}
-                                    />
-                                </div>
+                                 <div className="flex flex-col gap-1">
+                                     <label className="text-xs text-gray-500 dark:text-gray-400 flex items-center gap-1">
+                                         <Utensils className="w-3 h-3" /> Lunch
+                                     </label>
+                                     <DroppableSlot id={`${formatDate(date)}|lunch`}>
+                                         <DraggableMealInput id={`${formatDate(date)}|lunch`}>
+                                             <MealInput 
+                                                 initialValue={getMealText(date, 'lunch')}
+                                                 onSave={(val) => handleMealChange(date, 'lunch', val)}
+                                                 suggestions={meals.map(m => ({ id: m.id, text: m.name }))}
+                                                 isSaved={meals.some(m => m.name.toLowerCase() === getMealText(date, 'lunch').toLowerCase())}
+                                                 onSaveToLibrary={onSaveToLibraryWrapper}
+                                                 onOpenModal={() => setModalSlot({ date, type: 'lunch' })}
+                                                 placeholder="Vad ska ätas?"
+                                                 hasRecipe={meals.some(m => m.name.toLowerCase() === getMealText(date, 'lunch').toLowerCase())}
+                                                 onViewRecipe={() => handleViewRecipe(getMealText(date, 'lunch'))}
+                                                 tags={meals.find(m => m.name.toLowerCase() === getMealText(date, 'lunch').toLowerCase())?.tags}
+                                             />
+                                         </DraggableMealInput>
+                                     </DroppableSlot>
+                                 </div>
 
-                                <div className="flex flex-col gap-1">
-                                    <label className="text-xs text-gray-500 dark:text-gray-400 flex items-center gap-1">
-                                        <Utensils className="w-3 h-3" /> Middag
-                                    </label>
-                                    <MealInput 
-                                        initialValue={getMealText(date, 'dinner')}
-                                        onSave={(val) => handleMealChange(date, 'dinner', val)}
-                                        suggestions={meals.map(m => ({ id: m.id, text: m.name }))}
-                                        isSaved={meals.some(m => m.name.toLowerCase() === getMealText(date, 'dinner').toLowerCase())}
-                                        onSaveToLibrary={onSaveToLibraryWrapper}
-                                        onOpenModal={() => setModalSlot({ date, type: 'dinner' })}
-                                        placeholder="Vad ska ätas?"
-                                        hasRecipe={meals.some(m => m.name.toLowerCase() === getMealText(date, 'dinner').toLowerCase())}
-                                        onViewRecipe={() => handleViewRecipe(getMealText(date, 'dinner'))}
-                                    />
-                                </div>
-                            </div>
-                        </React.Fragment>
-                    );
-                })}
-            </div>
+                                 <div className="flex flex-col gap-1">
+                                     <label className="text-xs text-gray-500 dark:text-gray-400 flex items-center gap-1">
+                                         <Utensils className="w-3 h-3" /> Middag
+                                     </label>
+                                     <DroppableSlot id={`${formatDate(date)}|dinner`}>
+                                         <DraggableMealInput id={`${formatDate(date)}|dinner`}>
+                                             <MealInput 
+                                                 initialValue={getMealText(date, 'dinner')}
+                                                 onSave={(val) => handleMealChange(date, 'dinner', val)}
+                                                 suggestions={meals.map(m => ({ id: m.id, text: m.name }))}
+                                                 isSaved={meals.some(m => m.name.toLowerCase() === getMealText(date, 'dinner').toLowerCase())}
+                                                 onSaveToLibrary={onSaveToLibraryWrapper}
+                                                 onOpenModal={() => setModalSlot({ date, type: 'dinner' })}
+                                                 placeholder="Vad ska ätas?"
+                                                 hasRecipe={meals.some(m => m.name.toLowerCase() === getMealText(date, 'dinner').toLowerCase())}
+                                                 onViewRecipe={() => handleViewRecipe(getMealText(date, 'dinner'))}
+                                                 tags={meals.find(m => m.name.toLowerCase() === getMealText(date, 'dinner').toLowerCase())?.tags}
+                                             />
+                                         </DraggableMealInput>
+                                     </DroppableSlot>
+                                 </div>
+                                 </div>
+                             </React.Fragment>
+                         );
+                     })}
+                 </div>
+                </DndContext>
 
             <Modal
                 isOpen={isExportOpen}

@@ -167,18 +167,24 @@ export const MealsView: React.FC = () => {
                                             </p>
                                         )}
                                         
-                                        <div className="mt-auto">
-                                            <div className="flex flex-wrap gap-2 mb-4">
-                                                {meal.tags && meal.tags.length > 0 ? (
-                                                    meal.tags.map(tag => (
-                                                        <span key={tag} className="px-2 py-1 text-xs font-medium bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 rounded-full">
-                                                            #{tag}
-                                                        </span>
-                                                    ))
-                                                ) : (
-                                                    <span className="text-xs text-gray-400 italic">Inga taggar</span>
-                                                )}
-                                            </div>
+                                         <div className="mt-auto">
+                                             <div className="flex flex-wrap gap-2 mb-3">
+                                                 {meal.tags && meal.tags.length > 0 ? (
+                                                     meal.tags.map(tag => (
+                                                         <span key={tag} className="px-2 py-1 text-xs font-medium bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 rounded-full">
+                                                             #{tag}
+                                                         </span>
+                                                     ))
+                                                 ) : (
+                                                     <span className="text-xs text-gray-400 italic">Inga taggar</span>
+                                                 )}
+                                             </div>
+                                             {meal.ingredients && meal.ingredients.length > 0 && (
+                                                 <div className="flex items-center gap-1 text-xs text-gray-500 dark:text-gray-400 mb-4">
+                                                     <Utensils className="w-3 h-3" />
+                                                     <span>{meal.ingredients.length} ingredienser</span>
+                                                 </div>
+                                             )}
 
                                             <div className="flex items-center justify-between gap-2">
                                                 <button 

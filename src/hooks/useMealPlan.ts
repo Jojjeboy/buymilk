@@ -94,6 +94,15 @@ export const useMealPlan = () => {
         return false;
     };
 
+    const moveMeal = async (fromDate: Date, fromType: MealType, toDate: Date, toType: MealType) => {
+        const fromText = getMealText(fromDate, fromType);
+        const toText = getMealText(toDate, toType);
+
+        // Swap the meals
+        await handleMealChange(toDate, toType, fromText);
+        await handleMealChange(fromDate, fromType, toText);
+    };
+
     const copyPreviousWeek = async (targetDate: Date) => {
         const { weekNumber: targetWeek, year: targetYear } = getISOWeek(targetDate);
         
@@ -154,6 +163,7 @@ export const useMealPlan = () => {
         getMealText,
         handleMealChange,
         handleSaveToLibrary,
-        copyPreviousWeek
+        copyPreviousWeek,
+        moveMeal
     };
 };
