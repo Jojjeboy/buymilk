@@ -3,121 +3,15 @@ import { useToast } from '../context/ToastContext';
 import { useApp } from '../context/AppContext';
 import { useTranslation } from 'react-i18next';
 import { Modal } from './Modal';
-import { MealSelectionModal } from './MealSelectionModal';
+import { MealPlanEditModal } from './MealPlanEditModal';
 import { MealType, Item, Meal } from '../types';
-import { InlineAutocompleteInput } from './InlineAutocompleteInput';
-import { ChevronLeft, ChevronRight, Utensils, CalendarDays, Download, Heart, Plus, ShoppingCart, BookOpen } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Utensils, CalendarDays, Download, Heart, Plus, ShoppingCart, BookOpen, AlertCircle } from 'lucide-react';
 import { useMealPlan } from '../hooks/useMealPlan';
-import { DndContext, useDraggable, useDroppable, DragEndEvent } from '@dnd-kit/core';
 import { RecipeDetailModal } from './RecipeDetailModal';
 import { v4 as uuidv4 } from 'uuid';
 import { getISOWeek, formatDate, getDayName } from '../utils/dateUtils';
 
-const DraggableMealInput: React.FC<{
-    id: string;
-    children: React.ReactNode;
-}> = ({ id, children }) => {
-    const { attributes, listeners, setNodeRef, transform } = useDraggable({ id });
-    const style = transform ? {
-        transform: `translate3d(${transform.x}px, ${transform.y}px, 0)`,
-    } : undefined;
 
-    return (
-        <div ref={setNodeRef} style={style} {...listeners} {...attributes}>
-            {children}
-        </div>
-    );
-};
-
-const DroppableSlot: React.FC<{
-    id: string;
-    children: React.ReactNode;
-}> = ({ id, children }) => {
-    const { setNodeRef } = useDroppable({ id });
-    return <div ref={setNodeRef} className="w-full h-full">{children}</div>;
-};
-
-const MealInput: React.FC<{
-    initialValue: string;
-    placeholder: string;
-    onSave: (value: string) => void;
-    suggestions: Array<{ id: string; text: string }>;
-    isSaved: boolean;
-    onSaveToLibrary: (value: string) => void;
-    onOpenModal?: () => void;
-    autoFocus?: boolean;
-    onViewRecipe?: () => void;
-    hasRecipe?: boolean;
-    tags?: string[];
-}> = ({ initialValue, placeholder, onSave, suggestions, isSaved, onSaveToLibrary, onOpenModal, autoFocus, onViewRecipe, hasRecipe, tags }) => {
-    const [value, setValue] = useState(initialValue);
-
-    React.useEffect(() => {
-        setValue(initialValue);
-    }, [initialValue]);
-
-    const handleSave = () => {
-        if (value !== initialValue) {
-            onSave(value);
-        }
-    };
-
-    return (
-            <div className="flex items-center gap-2">
-                {tags && tags.length > 0 && (
-                    <div className="flex gap-1 mr-1">
-                        {tags.map(tag => (
-                            <span 
-                                key={tag} 
-                                className="w-2 h-2 rounded-full bg-blue-400 dark:bg-blue-500" 
-                                title={tag}
-                            />
-                        ))}
-                    </div>
-                )}
-                {!value.trim() && onOpenModal && (
-                <button
-                    onClick={onOpenModal}
-                    className="p-2 rounded-md text-blue-500 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-colors"
-                    title="Välj från favoriter"
-                >
-                    <Plus className="w-5 h-5" />
-                </button>
-            )}
-            <InlineAutocompleteInput
-                value={value}
-                onChange={setValue}
-                onSubmit={handleSave}
-                onBlur={handleSave}
-                suggestions={suggestions}
-                placeholder={placeholder}
-                autoFocus={autoFocus}
-                className="flex-1 px-3 py-2 rounded-md border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 focus:ring-2 focus:ring-blue-500 outline-none transition-all"
-            />
-            <button
-                onClick={() => onSaveToLibrary(value)}
-                disabled={!value.trim() || isSaved}
-                className={`p-2 rounded-md transition-all ${
-                    isSaved 
-                    ? 'text-red-500 bg-red-50 dark:bg-red-900/20' 
-                    : 'text-gray-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 disabled:opacity-50 disabled:hover:text-gray-400 disabled:hover:bg-transparent'
-                }`}
-                title={isSaved ? 'Redan sparad' : 'Spara som favorit'}
-            >
-                <Heart className={`w-5 h-5 ${isSaved ? 'fill-current' : ''}`} />
-            </button>
-            {hasRecipe && onViewRecipe && (
-                <button
-                    onClick={onViewRecipe}
-                    className="p-2 rounded-md text-blue-500 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-colors"
-                    title="Visa recept"
-                >
-                    <BookOpen className="w-5 h-5" />
-                </button>
-            )}
-        </div>
-    );
-};
 
 export const MealPlanView: React.FC = () => {
     const { 
@@ -126,8 +20,7 @@ export const MealPlanView: React.FC = () => {
         getMealText, 
         handleMealChange, 
         handleSaveToLibrary,
-        copyPreviousWeek,
-        moveMeal
+        copyPreviousWeek
     } = useMealPlan();
     
     const { showToast } = useToast();
@@ -136,6 +29,7 @@ export const MealPlanView: React.FC = () => {
     const [isExportOpen, setIsExportOpen] = useState(false);
     const [recipeViewMeal, setRecipeViewMeal] = useState<Meal | null>(null);
     const [modalSlot, setModalSlot] = useState<{ date: Date; type: MealType } | null>(null);
+
     const [startDate, setStartDate] = useState(() => {
         const d = new Date();
         d.setHours(0, 0, 0, 0);
@@ -159,6 +53,19 @@ export const MealPlanView: React.FC = () => {
         d.setDate(startDate.getDate() + i);
         return d;
     });
+
+    const mealCounts = useMemo(() => {
+        const counts: Record<string, number> = {};
+        displayDays.forEach(date => {
+            ['lunch', 'dinner'].forEach(type => {
+                const text = getMealText(date, type as MealType).toLowerCase();
+                if (text) {
+                    counts[text] = (counts[text] || 0) + 1;
+                }
+            });
+        });
+        return counts;
+    }, [displayDays, getMealText]);
 
     const onSaveToLibraryWrapper = async (text: string) => {
         const success = await handleSaveToLibrary(text);
@@ -261,24 +168,6 @@ export const MealPlanView: React.FC = () => {
         }
     };
 
-    const handleDragEnd = async (event: DragEndEvent) => {
-        const { active, over } = event;
-        if (!over) return;
-
-        const activeId = active.id as string;
-        const overId = over.id as string;
-
-        const [fromDateStr, fromType] = activeId.split('|');
-        const [toDateStr, toType] = overId.split('|');
-
-        if (fromDateStr === toDateStr && fromType === toType) return;
-
-        const fromDate = new Date(fromDateStr);
-        const toDate = new Date(toDateStr);
-
-        await moveMeal(fromDate, fromType as MealType, toDate, toType as MealType);
-        showToast(t('toasts.mealMoved', 'Måltid flyttad'), 'info');
-    };
 
     let lastRenderedWeekNumber = -1;
 
@@ -353,7 +242,6 @@ export const MealPlanView: React.FC = () => {
                 </div>
             </div>
 
-            <DndContext onDragEnd={handleDragEnd}>
                 <div className="flex flex-col gap-4">
                     {displayDays.map((date) => {
                     const { weekNumber } = getISOWeek(date);
@@ -399,55 +287,150 @@ export const MealPlanView: React.FC = () => {
                                     </button>
                                 </div>
                                 
-                                 <div className="flex flex-col gap-1">
-                                     <label className="text-xs text-gray-500 dark:text-gray-400 flex items-center gap-1">
-                                         <Utensils className="w-3 h-3" /> Lunch
-                                     </label>
-                                     <DroppableSlot id={`${formatDate(date)}|lunch`}>
-                                         <DraggableMealInput id={`${formatDate(date)}|lunch`}>
-                                             <MealInput 
-                                                 initialValue={getMealText(date, 'lunch')}
-                                                 onSave={(val) => handleMealChange(date, 'lunch', val)}
-                                                 suggestions={meals.map(m => ({ id: m.id, text: m.name }))}
-                                                 isSaved={meals.some(m => m.name.toLowerCase() === getMealText(date, 'lunch').toLowerCase())}
-                                                 onSaveToLibrary={onSaveToLibraryWrapper}
-                                                 onOpenModal={() => setModalSlot({ date, type: 'lunch' })}
-                                                 placeholder="Vad ska ätas?"
-                                                 hasRecipe={meals.some(m => m.name.toLowerCase() === getMealText(date, 'lunch').toLowerCase())}
-                                                 onViewRecipe={() => handleViewRecipe(getMealText(date, 'lunch'))}
-                                                 tags={meals.find(m => m.name.toLowerCase() === getMealText(date, 'lunch').toLowerCase())?.tags}
-                                             />
-                                         </DraggableMealInput>
-                                     </DroppableSlot>
-                                 </div>
+                                  <div className="flex flex-col gap-1">
+                                      <label className="text-xs text-gray-500 dark:text-gray-400 flex items-center gap-1">
+                                          <Utensils className="w-3 h-3" /> Lunch
+                                      </label>
+                                      {(() => {
+                                          const mealText = getMealText(date, 'lunch');
+                                          const isDuplicate = mealCounts[mealText.toLowerCase()] > 1;
+                                          const meal = meals.find(m => m.name.toLowerCase() === mealText.toLowerCase());
+                                          const isSaved = !!meal;
 
-                                 <div className="flex flex-col gap-1">
-                                     <label className="text-xs text-gray-500 dark:text-gray-400 flex items-center gap-1">
-                                         <Utensils className="w-3 h-3" /> Middag
-                                     </label>
-                                     <DroppableSlot id={`${formatDate(date)}|dinner`}>
-                                         <DraggableMealInput id={`${formatDate(date)}|dinner`}>
-                                             <MealInput 
-                                                 initialValue={getMealText(date, 'dinner')}
-                                                 onSave={(val) => handleMealChange(date, 'dinner', val)}
-                                                 suggestions={meals.map(m => ({ id: m.id, text: m.name }))}
-                                                 isSaved={meals.some(m => m.name.toLowerCase() === getMealText(date, 'dinner').toLowerCase())}
-                                                 onSaveToLibrary={onSaveToLibraryWrapper}
-                                                 onOpenModal={() => setModalSlot({ date, type: 'dinner' })}
-                                                 placeholder="Vad ska ätas?"
-                                                 hasRecipe={meals.some(m => m.name.toLowerCase() === getMealText(date, 'dinner').toLowerCase())}
-                                                 onViewRecipe={() => handleViewRecipe(getMealText(date, 'dinner'))}
-                                                 tags={meals.find(m => m.name.toLowerCase() === getMealText(date, 'dinner').toLowerCase())?.tags}
-                                             />
-                                         </DraggableMealInput>
-                                     </DroppableSlot>
-                                 </div>
+                                          return (
+                                              <div className="flex items-center gap-2">
+                                                  <button 
+                                                      onClick={() => setModalSlot({ date, type: 'lunch' })}
+                                                      className={`flex-1 text-left px-3 py-2 rounded-md border transition-all group ${
+                                                          mealText 
+                                                          ? 'bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 hover:border-blue-400 dark:hover:border-blue-500' 
+                                                          : 'bg-gray-50 dark:bg-gray-900/50 border-dashed border-gray-300 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-800'
+                                                      }`}
+                                                      >
+                                                      <div className="flex items-center gap-2">
+                                                          {mealText ? (
+                                                              <span className={`font-medium ${isDuplicate ? 'text-amber-600 dark:text-amber-400' : 'text-gray-800 dark:text-gray-200'}`}>
+                                                                  {mealText}
+                                                              </span>
+                                                          ) : (
+                                                              <span className="text-gray-400 dark:text-gray-500 italic text-sm">Vad ska ätas?</span>
+                                                          )}
+                                                          {isDuplicate && (
+                                                              <span title="Måltiden förekommer flera gånger denna vecka">
+                                                                  <AlertCircle className="w-3 h-3 text-amber-500" />
+                                                              </span>
+                                                          )}
+                                                      </div>
+                                                      {meal?.tags && meal.tags.length > 0 && (
+                                                          <div className="flex gap-1 mt-1">
+                                                              {meal.tags.map(tag => (
+                                                                  <span key={tag} className="w-1.5 h-1.5 rounded-full bg-blue-400 dark:bg-blue-500" title={tag} />
+                                                              ))}
+                                                          </div>
+                                                      )}
+                                                      </button>
+                                                      <div className="flex items-center gap-1">
+                                                          <button
+                                                              onClick={() => onSaveToLibraryWrapper(mealText)}
+                                                              disabled={!mealText.trim() || isSaved}
+                                                              className={`p-2 rounded-md transition-all ${
+                                                                  isSaved 
+                                                                  ? 'text-red-500 bg-red-50 dark:bg-red-900/20' 
+                                                                  : 'text-gray-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 disabled:opacity-50'
+                                                              }`}
+                                                              title={isSaved ? 'Redan sparad' : 'Spara som favorit'}
+                                                              >
+                                                              <Heart className={`w-4 h-4 ${isSaved ? 'fill-current' : ''}`} />
+                                                              </button>
+                                                              {isSaved && (
+                                                                  <button
+                                                                      onClick={() => handleViewRecipe(mealText)}
+                                                                      className="p-2 rounded-md text-blue-500 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-colors"
+                                                                      title="Visa recept"
+                                                                  >
+                                                                      <BookOpen className="w-4 h-4" />
+                                                                  </button>
+                                                              )}
+                                                          </div>
+                                                      </div>
+                                                  );
+                                              })()}
+                                  </div>
+
+                                  <div className="flex flex-col gap-1">
+                                      <label className="text-xs text-gray-500 dark:text-gray-400 flex items-center gap-1">
+                                          <Utensils className="w-3 h-3" /> Middag
+                                      </label>
+                                      {(() => {
+                                          const mealText = getMealText(date, 'dinner');
+                                          const isDuplicate = mealCounts[mealText.toLowerCase()] > 1;
+                                          const meal = meals.find(m => m.name.toLowerCase() === mealText.toLowerCase());
+                                          const isSaved = !!meal;
+
+                                          return (
+                                              <div className="flex items-center gap-2">
+                                                  <button 
+                                                      onClick={() => setModalSlot({ date, type: 'dinner' })}
+                                                      className={`flex-1 text-left px-3 py-2 rounded-md border transition-all group ${
+                                                          mealText 
+                                                          ? 'bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 hover:border-blue-400 dark:hover:border-blue-500' 
+                                                          : 'bg-gray-50 dark:bg-gray-900/50 border-dashed border-gray-300 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-800'
+                                                      }`}
+                                                      >
+                                                      <div className="flex items-center gap-2">
+                                                          {mealText ? (
+                                                              <span className={`font-medium ${isDuplicate ? 'text-amber-600 dark:text-amber-400' : 'text-gray-800 dark:text-gray-200'}`}>
+                                                                  {mealText}
+                                                              </span>
+                                                          ) : (
+                                                              <span className="text-gray-400 dark:text-gray-500 italic text-sm">Vad ska ätas?</span>
+                                                          )}
+                                                          {isDuplicate && (
+                                                              <span title="Måltiden förekommer flera gånger denna vecka">
+                                                                  <AlertCircle className="w-3 h-3 text-amber-500" />
+                                                              </span>
+                                                          )}
+                                                      </div>
+                                                      {meal?.tags && meal.tags.length > 0 && (
+                                                          <div className="flex gap-1 mt-1">
+                                                              {meal.tags.map(tag => (
+                                                                  <span key={tag} className="w-1.5 h-1.5 rounded-full bg-blue-400 dark:bg-blue-500" title={tag} />
+                                                              ))}
+                                                          </div>
+                                                      )}
+                                                      </button>
+                                                      <div className="flex items-center gap-1">
+                                                          <button
+                                                              onClick={() => onSaveToLibraryWrapper(mealText)}
+                                                              disabled={!mealText.trim() || isSaved}
+                                                              className={`p-2 rounded-md transition-all ${
+                                                                  isSaved 
+                                                                  ? 'text-red-500 bg-red-50 dark:bg-red-900/20' 
+                                                                  : 'text-gray-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 disabled:opacity-50'
+                                                              }`}
+                                                              title={isSaved ? 'Redan sparad' : 'Spara som favorit'}
+                                                              >
+                                                              <Heart className={`w-4 h-4 ${isSaved ? 'fill-current' : ''}`} />
+                                                              </button>
+                                                              {isSaved && (
+                                                                  <button
+                                                                      onClick={() => handleViewRecipe(mealText)}
+                                                                      className="p-2 rounded-md text-blue-500 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-colors"
+                                                                      title="Visa recept"
+                                                                  >
+                                                                      <BookOpen className="w-4 h-4" />
+                                                                  </button>
+                                                              )}
+                                                          </div>
+                                                      </div>
+                                                  );
+                                              })()}
+                                  </div>
                                  </div>
                              </React.Fragment>
                          );
                      })}
                  </div>
-                </DndContext>
 
             <Modal
                 isOpen={isExportOpen}
@@ -467,17 +450,17 @@ export const MealPlanView: React.FC = () => {
                 </div>
             </Modal>
 
-            <MealSelectionModal
-                isOpen={!!modalSlot}
-                onClose={() => setModalSlot(null)}
-                meals={meals}
-                mealPlans={mealPlans}
-                onSelect={(mealName) => {
-                    if (modalSlot) {
-                        handleMealChange(modalSlot.date, modalSlot.type, mealName);
-                    }
-                }}
-            />
+             <MealPlanEditModal
+                 isOpen={!!modalSlot}
+                 onClose={() => setModalSlot(null)}
+                 initialValue={modalSlot ? getMealText(modalSlot.date, modalSlot.type) : ''}
+                 meals={meals}
+                 onSave={(mealName) => {
+                     if (modalSlot) {
+                         handleMealChange(modalSlot.date, modalSlot.type, mealName);
+                     }
+                 }}
+             />
 
             <RecipeDetailModal 
                 isOpen={!!recipeViewMeal} 
