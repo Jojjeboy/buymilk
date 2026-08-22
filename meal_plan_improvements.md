@@ -55,7 +55,9 @@ _Dessa funktioner kräver att receptsystemet i Sektion B är implementerat._
 ## Uppdaterad Roadmap
 
 1. **Fas 1 (Quick Wins):** Veckokopiering $\rightarrow$ "Idag"-markering.
-2. **Fas 2 (Grunden):** Implementera Receptredigerare och koppla `Meal` $\rightarrow$ `Recipe`.
-3. **Fas 3 (Integration):** Bygg bryggan mellan `MealPlan` och `GroceryList` (Automatisk inköpslista).
-4. **Fas 4 (Polering):** Receptbibliotek med kort, taggar i schemat och Drag-and-Drop.
-5. **Fas 5 (Analys):** Implementera statistik (t.ex. måltidsvariation över tid).
+2. **Fas 2 (Grunden - Pågående):**
+   - Implementera fullständig Receptredigerare (ingredienser, instruktioner, portioner).
+   - Skapa vy för att visa receptdetaljer direkt från måltidsplanen.
+3. **Fas 3 (Integration - Framtida):** Bygg bryggan mellan `MealPlan` och `GroceryList` (Automatisk inköpslista).
+4. **Fas 4 (Polering - Framtida):** Receptbibliotek med kort, taggar i schemat och Drag-and-Drop.
+5. **Fas 5 (Analys - Framtida):** Implementera statistik (t.ex. måltidsvariation över tid).

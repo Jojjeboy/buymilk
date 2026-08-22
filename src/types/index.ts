@@ -134,6 +134,7 @@ export interface Meal {
     createdAt: string;
     imageUrl?: string;
     description?: string;
+    servings?: number;
     tags?: string[];
     ingredients?: {
         text: string;

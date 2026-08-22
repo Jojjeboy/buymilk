@@ -4,10 +4,11 @@ import { useApp } from '../context/AppContext';
 import { useTranslation } from 'react-i18next';
 import { Modal } from './Modal';
 import { MealSelectionModal } from './MealSelectionModal';
-import { MealType, Item } from '../types';
+import { MealType, Item, Meal } from '../types';
 import { InlineAutocompleteInput } from './InlineAutocompleteInput';
-import { ChevronLeft, ChevronRight, Utensils, CalendarDays, Download, Heart, Plus, ShoppingCart } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Utensils, CalendarDays, Download, Heart, Plus, ShoppingCart, BookOpen } from 'lucide-react';
 import { useMealPlan } from '../hooks/useMealPlan';
+import { RecipeDetailModal } from './RecipeDetailModal';
 import { v4 as uuidv4 } from 'uuid';
 import { getISOWeek, formatDate, getDayName } from '../utils/dateUtils';
 
@@ -20,7 +21,9 @@ const MealInput: React.FC<{
     onSaveToLibrary: (value: string) => void;
     onOpenModal?: () => void;
     autoFocus?: boolean;
-}> = ({ initialValue, placeholder, onSave, suggestions, isSaved, onSaveToLibrary, onOpenModal, autoFocus }) => {
+    onViewRecipe?: () => void;
+    hasRecipe?: boolean;
+}> = ({ initialValue, placeholder, onSave, suggestions, isSaved, onSaveToLibrary, onOpenModal, autoFocus, onViewRecipe, hasRecipe }) => {
     const [value, setValue] = useState(initialValue);
 
     React.useEffect(() => {
@@ -66,6 +69,15 @@ const MealInput: React.FC<{
             >
                 <Heart className={`w-5 h-5 ${isSaved ? 'fill-current' : ''}`} />
             </button>
+            {hasRecipe && onViewRecipe && (
+                <button
+                    onClick={onViewRecipe}
+                    className="p-2 rounded-md text-blue-500 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-colors"
+                    title="Visa recept"
+                >
+                    <BookOpen className="w-5 h-5" />
+                </button>
+            )}
         </div>
     );
 };
@@ -83,6 +95,7 @@ export const MealPlanView: React.FC = () => {
     const { t } = useTranslation();
     const { addItemsToList, defaultListId } = useApp();
     const [isExportOpen, setIsExportOpen] = useState(false);
+    const [recipeViewMeal, setRecipeViewMeal] = useState<Meal | null>(null);
     const [modalSlot, setModalSlot] = useState<{ date: Date; type: MealType } | null>(null);
     const [startDate, setStartDate] = useState(() => {
         const d = new Date();
@@ -112,6 +125,13 @@ export const MealPlanView: React.FC = () => {
         const success = await handleSaveToLibrary(text);
         if (success) {
             showToast('Måltid sparad till favoriter', 'success');
+        }
+    };
+
+    const handleViewRecipe = (mealText: string) => {
+        const meal = meals.find(m => m.name.toLowerCase() === mealText.toLowerCase());
+        if (meal) {
+            setRecipeViewMeal(meal);
         }
     };
 
@@ -258,6 +278,8 @@ export const MealPlanView: React.FC = () => {
                                         onSaveToLibrary={onSaveToLibraryWrapper}
                                         onOpenModal={() => setModalSlot({ date, type: 'lunch' })}
                                         placeholder="Vad ska ätas?"
+                                        hasRecipe={meals.some(m => m.name.toLowerCase() === getMealText(date, 'lunch').toLowerCase())}
+                                        onViewRecipe={() => handleViewRecipe(getMealText(date, 'lunch'))}
                                     />
                                 </div>
 
@@ -273,6 +295,8 @@ export const MealPlanView: React.FC = () => {
                                         onSaveToLibrary={onSaveToLibraryWrapper}
                                         onOpenModal={() => setModalSlot({ date, type: 'dinner' })}
                                         placeholder="Vad ska ätas?"
+                                        hasRecipe={meals.some(m => m.name.toLowerCase() === getMealText(date, 'dinner').toLowerCase())}
+                                        onViewRecipe={() => handleViewRecipe(getMealText(date, 'dinner'))}
                                     />
                                 </div>
                             </div>
@@ -309,6 +333,12 @@ export const MealPlanView: React.FC = () => {
                         handleMealChange(modalSlot.date, modalSlot.type, mealName);
                     }
                 }}
+            />
+
+            <RecipeDetailModal 
+                isOpen={!!recipeViewMeal} 
+                onClose={() => setRecipeViewMeal(null)} 
+                meal={recipeViewMeal} 
             />
         </div>
     );
