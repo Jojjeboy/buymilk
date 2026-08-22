@@ -62,16 +62,21 @@ describe('MealPlanView', () => {
         // Find the Sunday (Idag) heading
         expect(screen.getByText('Söndag (Idag)')).toBeInTheDocument();
 
-        // Find all inputs, the first two are lunch and dinner for Sunday
-        const inputs = screen.getAllByPlaceholderText('Vad ska ätas?');
-        const sundayLunchInput = inputs[0];
+        // Find all buttons that say "Vad ska ätas?", the first one is lunch for Sunday
+        const buttons = screen.getAllByText('Vad ska ätas?');
+        const sundayLunchButton = buttons[0];
 
-        // Type something in the Sunday lunch input
-        fireEvent.change(sundayLunchInput, { target: { value: 'Söndagsstek' } });
-        
-        // Trigger blur to save
+        // Click the button to open the edit modal
+        fireEvent.click(sundayLunchButton);
+
+        // Find the input in the modal and type the meal name
+        const input = screen.getByPlaceholderText('Vad ska ätas?');
+        fireEvent.change(input, { target: { value: 'Söndagsstek' } });
+
+        // Click the save button in the modal
+        const saveButton = screen.getByText('Spara');
         await act(async () => {
-            fireEvent.blur(sundayLunchInput);
+            fireEvent.click(saveButton);
         });
 
         // Verify updateMealPlan was called with the plan id and new day added
