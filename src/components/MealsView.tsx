@@ -125,12 +125,18 @@ export const MealsView: React.FC = () => {
                             className="group relative flex flex-col overflow-hidden rounded-2xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 shadow-sm transition-all hover:shadow-md hover:border-blue-200 dark:hover:border-blue-900"
                         >
                             {/* Image Section */}
-                            <div className="relative h-48 w-full overflow-hidden">
-                                <img 
-                                    src={meal.imageUrl || 'https://images.unsplash.com/photo-1495195129352-aec325a55961?q=80&w=500&auto=format&fit=crop'} 
-                                    alt={meal.name}
-                                    className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
-                                />
+                            <div className="relative h-48 w-full overflow-hidden bg-gray-50 dark:bg-gray-800/50">
+                                {meal.imageUrl ? (
+                                    <img 
+                                        src={meal.imageUrl} 
+                                        alt={meal.name}
+                                        className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                                    />
+                                ) : (
+                                    <div className="flex h-full w-full items-center justify-center text-gray-300 dark:text-gray-600">
+                                        <Utensils className="w-16 h-16 opacity-50" />
+                                    </div>
+                                )}
                                 <div className="absolute top-2 right-2 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
                                     <button 
                                         onClick={() => handleStartEdit(meal)}
