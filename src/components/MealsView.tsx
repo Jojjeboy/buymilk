@@ -10,7 +10,6 @@ import { Item, Meal } from '../types';
 
 export const MealsView: React.FC = () => {
     const { meals, addMeal, updateMeal, deleteMeal, addItemsToList, defaultListId } = useApp();
-    const { meals, addMeal, updateMeal, deleteMeal, addItemsToList, defaultListId } = useApp();
     const { showToast } = useToast();
     const { t } = useTranslation();
     const [newMealName, setNewMealName] = useState('');
@@ -49,34 +48,6 @@ export const MealsView: React.FC = () => {
         try {
             await deleteMeal(id);
             showToast(t('toasts.itemDeleted', 'Måltid borttagen'), 'info');
-        } catch {
-            showToast(t('toasts.error', 'Ett fel uppstod'), 'error');
-        }
-    };
-
-    const handleAddToShoppingList = async (meal: typeof meals[0]) => {
-        if (!meal.ingredients || meal.ingredients.length === 0) return;
-        if (!defaultListId) {
-            showToast(t('errors.noList', 'Kunde inte hitta inköpslistan'), 'error');
-            return;
-        }
-
-        const itemsToAdd: Item[] = meal.ingredients
-            .filter(ing => !ing.checkIfExistAtHome)
-            .map(ing => ({
-                id: uuidv4(),
-                text: `${ing.amount ? ing.amount + ' ' : ''}${ing.text}`,
-                completed: false,
-            }));
-
-        if (itemsToAdd.length === 0) {
-            showToast(t('toasts.allAtHome', 'Alla ingredienser finns redan hemma'), 'info');
-            return;
-        }
-
-        try {
-            await addItemsToList(defaultListId, itemsToAdd);
-            showToast(`${itemsToAdd.length} ${t('common.items', 'artiklar')} tillagda i inköpslistan`, 'success');
         } catch {
             showToast(t('toasts.error', 'Ett fel uppstod'), 'error');
         }
