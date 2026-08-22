@@ -2,15 +2,19 @@ import React, { useState } from 'react';
 import { useApp } from '../context/AppContext';
 import { useToast } from '../context/ToastContext';
 import { useTranslation } from 'react-i18next';
-import { Utensils, Plus, Trash2, Edit2, Check, X } from 'lucide-react';
+import { Utensils, Plus, Trash2, Edit2, Check, X, ShoppingCart } from 'lucide-react';
+import { MealIngredientsModal } from './MealIngredientsModal';
+import { v4 as uuidv4 } from 'uuid';
+import { Item } from '../types';
 
 export const MealsView: React.FC = () => {
-    const { meals, addMeal, updateMeal, deleteMeal } = useApp();
+    const { meals, addMeal, updateMeal, deleteMeal, addItemsToList, defaultListId } = useApp();
     const { showToast } = useToast();
     const { t } = useTranslation();
     const [newMealName, setNewMealName] = useState('');
     const [editingId, setEditingId] = useState<string | null>(null);
     const [editValue, setEditValue] = useState('');
+    const [ingredientsMeal, setIngredientsMeal] = useState<typeof meals[0] | null>(null);
 
     const handleAddMeal = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -48,6 +52,34 @@ export const MealsView: React.FC = () => {
         try {
             await deleteMeal(id);
             showToast(t('toasts.itemDeleted', 'Måltid borttagen'), 'info');
+        } catch {
+            showToast(t('toasts.error', 'Ett fel uppstod'), 'error');
+        }
+    };
+
+    const handleAddToShoppingList = async (meal: typeof meals[0]) => {
+        if (!meal.ingredients || meal.ingredients.length === 0) return;
+        if (!defaultListId) {
+            showToast(t('errors.noList', 'Kunde inte hitta inköpslistan'), 'error');
+            return;
+        }
+
+        const itemsToAdd: Item[] = meal.ingredients
+            .filter(ing => !ing.checkIfExistAtHome)
+            .map(ing => ({
+                id: uuidv4(),
+                text: `${ing.amount ? ing.amount + ' ' : ''}${ing.text}`,
+                completed: false,
+            }));
+
+        if (itemsToAdd.length === 0) {
+            showToast(t('toasts.allAtHome', 'Alla ingredienser finns redan hemma'), 'info');
+            return;
+        }
+
+        try {
+            await addItemsToList(defaultListId, itemsToAdd);
+            showToast(`${itemsToAdd.length} ${t('common.items', 'artiklar')} tillagda i inköpslistan`, 'success');
         } catch {
             showToast(t('toasts.error', 'Ett fel uppstod'), 'error');
         }
@@ -122,6 +154,22 @@ export const MealsView: React.FC = () => {
                                 <>
                                     <span className="font-medium text-gray-700 dark:text-gray-200">{meal.name}</span>
                                     <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                                        {meal.ingredients && meal.ingredients.length > 0 && (
+                                            <button 
+                                                onClick={() => handleAddToShoppingList(meal)}
+                                                className="p-2 text-gray-400 hover:text-green-500 hover:bg-green-50 dark:hover:bg-green-900/20 rounded-lg transition-colors"
+                                                title={t('common.addToShoppingList', 'Lägg till i inköpslista')}
+                                            >
+                                                <ShoppingCart className="w-4 h-4" />
+                                            </button>
+                                        )}
+                                        <button 
+                                            onClick={() => setIngredientsMeal(meal)}
+                                            className="p-2 text-gray-400 hover:text-blue-500 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-lg transition-colors"
+                                            title={t('common.editIngredients', 'Redigera ingredienser')}
+                                        >
+                                            <Utensils className="w-4 h-4" />
+                                        </button>
                                         <button 
                                             onClick={() => handleStartEdit(meal)}
                                             className="p-2 text-gray-400 hover:text-blue-500 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-lg transition-colors"
@@ -143,6 +191,11 @@ export const MealsView: React.FC = () => {
                     ))
                 )}
             </div>
+            <MealIngredientsModal 
+                isOpen={!!ingredientsMeal} 
+                onClose={() => setIngredientsMeal(null)} 
+                meal={ingredientsMeal || { id: '', name: '', createdAt: '' }} 
+            />
         </div>
     );
 };

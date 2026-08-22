@@ -22,6 +22,7 @@ interface AppContextType {
     updateListName: (id: string, name: string) => Promise<void>;
     updateListSettings: (id: string, settings: ListSettings) => Promise<void>;
     updateListItems: (listId: string, items: Item[], sections?: Section[]) => Promise<void>;
+    addItemsToList: (listId: string, items: Item[]) => Promise<void>;
     deleteItem: (listId: string, itemId: string) => Promise<void>;
     
     // Theme
@@ -209,6 +210,14 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
             await listsSync.updateItem(listId, { items, sections });
         } else {
             await listsSync.updateItem(listId, { items });
+        }
+    };
+
+    const addItemsToList = async (listId: string, newItems: Item[]) => {
+        const list = listsSync.data.find((l: List) => l.id === listId);
+        if (list) {
+            const updatedItems = [...list.items, ...newItems];
+            await updateListItems(listId, updatedItems);
         }
     };
 
@@ -448,6 +457,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
                 updateListName,
                 updateListSettings,
                 updateListItems,
+                addItemsToList,
                 deleteItem,
                 toggleTheme,
                 todos: todosSync.data,

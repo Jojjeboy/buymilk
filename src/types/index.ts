@@ -115,4 +115,10 @@ export interface Meal {
     id: string;
     name: string;
     createdAt: string;
+    ingredients?: {
+        text: string;
+        amount?: string;
+        checkIfExistAtHome?: boolean;
+    }[];
+    instructions?: string[];
 }
