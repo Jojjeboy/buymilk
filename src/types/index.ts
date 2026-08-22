@@ -115,9 +115,12 @@ export interface Meal {
     id: string;
     name: string;
     createdAt: string;
+<<<<<<< HEAD
     imageUrl?: string;
     description?: string;
     tags?: string[];
+=======
+>>>>>>> 0f6d9369bc0d7dd66d039a83b7fe2351665e4a69
     ingredients?: {
         text: string;
         amount?: string;
