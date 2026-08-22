@@ -1,8 +1,43 @@
 [
   {
-    "hash": "f58d930794715bc9c8b9c62db764a0502dda7d18",
-    "date": "2026-08-21 08:02:07 +0200",
-    "message": "WIP mealplan"
+    "hash": "def06bda4c8a2f58175f6a2e2088cf0a5c0e11f1",
+    "date": "2026-08-21 11:17:15 +0200",
+    "message": "Unused variable"
+  },
+  {
+    "hash": "19e53045f285dd89e9d36677ca1f219cdbcc605f",
+    "date": "2026-08-21 11:12:11 +0200",
+    "message": "feat: implement SyncIndicator and meal library saving"
+  },
+  {
+    "hash": "eb4df304be81872f6b5692d75f77e568f4f5bfac",
+    "date": "2026-08-21 10:54:15 +0200",
+    "message": "feat: implement meals management with CRUD functionality and dedicated view"
+  },
+  {
+    "hash": "c4c36564c11703788167fe4e0726b17fcb9d8440",
+    "date": "2026-08-21 10:34:31 +0200",
+    "message": "ci: upgrade Node.js version to 22 in CI workflow"
+  },
+  {
+    "hash": "f21c909d14c6cff178f4383b34878a7e0f2dfc30",
+    "date": "2026-08-21 10:29:51 +0200",
+    "message": "Merge branch 'main' into ci-all-branches"
+  },
+  {
+    "hash": "d6418e93079a9addd79ef217d8bcaa2f0f73b40b",
+    "date": "2026-08-21 10:28:43 +0200",
+    "message": "Mealschedule (#1)"
+  },
+  {
+    "hash": "81e33ddd04eb53522a7013f8015eb1297c7ea552",
+    "date": "2026-08-21 08:32:10 +0200",
+    "message": "chore: update commit history and refine item import logic"
+  },
+  {
+    "hash": "4f7cbdb55806b7eb2a5d26108e4b9c3fadc452ea",
+    "date": "2026-08-20 14:18:54 +0200",
+    "message": "ci: update pages workflow trigger to pull requests"
   },
   {
     "hash": "08e863f3f4cb1438112ef08ff435a63fd3b9ee9e",
@@ -63,40 +98,5 @@
     "hash": "43eff345420ca16651e240e82638f39705f93ac4",
     "date": "2026-06-23 16:01:59 +0200",
     "message": "mc"
-  },
-  {
-    "hash": "5f1d488f998b19ab2864b099d495746e34061363",
-    "date": "2026-06-23 16:01:31 +0200",
-    "message": "Sync Status Indicator"
-  },
-  {
-    "hash": "e54563248b00910514126dad1d15b1e5006410fd",
-    "date": "2026-06-23 14:36:28 +0200",
-    "message": "Recipe Ingredient Import"
-  },
-  {
-    "hash": "d533484f921dd5231ccfd301ca858b3a309d1b31",
-    "date": "2026-06-23 11:10:18 +0200",
-    "message": "Voice to text"
-  },
-  {
-    "hash": "658a9596915a67c00514c3409ebd5d566e2ba385",
-    "date": "2026-06-23 01:07:33 +0200",
-    "message": "Uncategorized"
-  },
-  {
-    "hash": "7c7141628a20644375cbbd1e0f0987b3c8dc89c2",
-    "date": "2026-06-23 00:47:05 +0200",
-    "message": "feat: category auto-grouping, drag-and-drop sorting, keyword matching"
-  },
-  {
-    "hash": "ce43e80b77d0d0beb2c6cbecfa6c74a3dac4e1eb",
-    "date": "2026-06-22 15:54:52 +0200",
-    "message": "mc"
-  },
-  {
-    "hash": "43e40f1744f4a0a67401a010dda9a277393b4cc0",
-    "date": "2026-06-22 13:52:33 +0200",
-    "message": "improvements"
   }
 ]

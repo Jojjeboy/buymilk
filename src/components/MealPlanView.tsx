@@ -1,42 +1,15 @@
 import React, { useState, useMemo } from 'react';
-import { useApp } from '../context/AppContext';
 import { useToast } from '../context/ToastContext';
+import { useApp } from '../context/AppContext';
+import { useTranslation } from 'react-i18next';
 import { Modal } from './Modal';
-import { DayPlan, PlannedMeal, MealType } from '../types';
+import { MealSelectionModal } from './MealSelectionModal';
+import { MealType, Item } from '../types';
 import { InlineAutocompleteInput } from './InlineAutocompleteInput';
+import { ChevronLeft, ChevronRight, Utensils, CalendarDays, Download, Heart, Plus, ShoppingCart } from 'lucide-react';
+import { useMealPlan } from '../hooks/useMealPlan';
 import { v4 as uuidv4 } from 'uuid';
-import { ChevronLeft, ChevronRight, Utensils, CalendarDays, Download, Heart } from 'lucide-react';
-
-// Helpers
-const getISOWeek = (date: Date) => {
-    const d = new Date(date);
-    d.setHours(0, 0, 0, 0);
-    d.setDate(d.getDate() + 4 - (d.getDay() || 7));
-    const yearStart = new Date(d.getFullYear(), 0, 1);
-    const weekNo = Math.ceil((((d.getTime() - yearStart.getTime()) / 86400000) + 1) / 7);
-    return { weekNumber: weekNo, year: d.getFullYear() };
-};
-
-const formatDate = (date: Date) => {
-    const yyyy = date.getFullYear();
-    const mm = String(date.getMonth() + 1).padStart(2, '0');
-    const dd = String(date.getDate()).padStart(2, '0');
-    return `${yyyy}-${mm}-${dd}`;
-};
-
-const dayNames = ['Söndag', 'Måndag', 'Tisdag', 'Onsdag', 'Torsdag', 'Fredag', 'Lördag'];
-const getDayName = (date: Date) => {
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-    const d = new Date(date);
-    d.setHours(0, 0, 0, 0);
-    const diff = Math.round((d.getTime() - today.getTime()) / 86400000);
-    
-    let name = dayNames[date.getDay()];
-    if (diff === 0) name += ' (Idag)';
-    else if (diff === 1) name += ' (Imorgon)';
-    return name;
-};
+import { getISOWeek, formatDate, getDayName } from '../utils/dateUtils';
 
 const MealInput: React.FC<{
     initialValue: string;
@@ -45,8 +18,9 @@ const MealInput: React.FC<{
     suggestions: Array<{ id: string; text: string }>;
     isSaved: boolean;
     onSaveToLibrary: (value: string) => void;
+    onOpenModal?: () => void;
     autoFocus?: boolean;
-}> = ({ initialValue, placeholder, onSave, suggestions, isSaved, onSaveToLibrary, autoFocus }) => {
+}> = ({ initialValue, placeholder, onSave, suggestions, isSaved, onSaveToLibrary, onOpenModal, autoFocus }) => {
     const [value, setValue] = useState(initialValue);
 
     React.useEffect(() => {
@@ -61,6 +35,15 @@ const MealInput: React.FC<{
 
     return (
         <div className="flex items-center gap-2">
+            {!value.trim() && onOpenModal && (
+                <button
+                    onClick={onOpenModal}
+                    className="p-2 rounded-md text-blue-500 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-colors"
+                    title="Välj från favoriter"
+                >
+                    <Plus className="w-5 h-5" />
+                </button>
+            )}
             <InlineAutocompleteInput
                 value={value}
                 onChange={setValue}
@@ -88,9 +71,19 @@ const MealInput: React.FC<{
 };
 
 export const MealPlanView: React.FC = () => {
-    const { mealPlans, addMealPlan, updateMealPlan, meals, addMeal } = useApp();
+    const { 
+        mealPlans, 
+        meals, 
+        getMealText, 
+        handleMealChange, 
+        handleSaveToLibrary 
+    } = useMealPlan();
+    
     const { showToast } = useToast();
+    const { t } = useTranslation();
+    const { addItemsToList, defaultListId } = useApp();
     const [isExportOpen, setIsExportOpen] = useState(false);
+    const [modalSlot, setModalSlot] = useState<{ date: Date; type: MealType } | null>(null);
     const [startDate, setStartDate] = useState(() => {
         const d = new Date();
         d.setHours(0, 0, 0, 0);
@@ -109,103 +102,56 @@ export const MealPlanView: React.FC = () => {
         setStartDate(d);
     };
 
-    // Generate the next 7 days
     const displayDays = Array.from({ length: 7 }).map((_, i) => {
         const d = new Date(startDate);
         d.setDate(startDate.getDate() + i);
         return d;
     });
 
-    const getPlanForDate = (date: Date) => {
-        const { weekNumber, year } = getISOWeek(date);
-        return mealPlans.find(p => p.weekNumber === weekNumber && p.year === year);
-    };
-
-    const handleMealChange = async (date: Date, type: MealType, text: string) => {
-        const { weekNumber, year } = getISOWeek(date);
-        let plan = mealPlans.find(p => p.weekNumber === weekNumber && p.year === year);
-        const dateStr = formatDate(date);
-
-        // If no plan exists for this week, create one
-        if (!plan) {
-            const newPlanId = uuidv4();
-            
-            // Generate all 7 days for that ISO week to maintain consistency
-            const monday = new Date(date);
-            const day = monday.getDay();
-            const diff = monday.getDate() - day + (day === 0 ? -6 : 1);
-            monday.setDate(diff);
-            
-            const days: DayPlan[] = Array.from({ length: 7 }).map((_, idx) => {
-                const d = new Date(monday);
-                d.setDate(monday.getDate() + idx);
-                return {
-                    date: formatDate(d),
-                    meals: []
-                };
-            });
-
-            plan = {
-                id: newPlanId,
-                weekNumber,
-                year,
-                days
-            };
-            await addMealPlan(plan);
-        }
-
-        const updatedDays = [...plan.days];
-        const dayIndex = updatedDays.findIndex(d => d.date === dateStr);
-        
-        if (dayIndex >= 0) {
-            const day = updatedDays[dayIndex];
-            const mealIndex = day.meals.findIndex(m => m.type === type);
-            const mealData: PlannedMeal = {
-                id: mealIndex >= 0 ? day.meals[mealIndex].plannedMeal.id : uuidv4(),
-                customTitle: text
-            };
-
-            if (mealIndex >= 0) {
-                day.meals[mealIndex] = { type, plannedMeal: mealData };
-            } else {
-                day.meals.push({ type, plannedMeal: mealData });
-            }
-        } else {
-            const mealData: PlannedMeal = {
-                id: uuidv4(),
-                customTitle: text
-            };
-            updatedDays.push({
-                date: dateStr,
-                meals: [{ type, plannedMeal: mealData }]
-            });
-            updatedDays.sort((a, b) => a.date.localeCompare(b.date));
-        }
-
-        await updateMealPlan(plan.id, { days: updatedDays });
-    };
-
-    const handleSaveToLibrary = async (text: string) => {
-        const trimmedText = text.trim();
-        if (!trimmedText) return;
-
-        const exists = meals.some(m => m.name.toLowerCase() === trimmedText.toLowerCase());
-        if (!exists) {
-            await addMeal(trimmedText);
+    const onSaveToLibraryWrapper = async (text: string) => {
+        const success = await handleSaveToLibrary(text);
+        if (success) {
             showToast('Måltid sparad till favoriter', 'success');
         }
     };
 
-    const getMealText = (date: Date, type: MealType) => {
-        const plan = getPlanForDate(date);
-        if (!plan) return '';
-        const dateStr = formatDate(date);
-        const day = plan.days.find(d => d.date === dateStr);
-        if (!day) return '';
-        const meal = day.meals.find(m => m.type === type);
-        return meal?.plannedMeal.customTitle || '';
-    };
+    const handleAddDayIngredientsToList = async (date: Date) => {
+        if (!defaultListId) {
+            showToast(t('errors.noList', 'Kunde inte hitta inköpslistan'), 'error');
+            return;
+        }
 
+        const dayMeals = ['lunch', 'dinner'] as const;
+        const itemsToAdd: Item[] = [];
+
+        dayMeals.forEach(type => {
+            const mealText = getMealText(date, type);
+            const meal = meals.find(m => m.name.toLowerCase() === mealText.toLowerCase());
+            if (meal && meal.ingredients) {
+                meal.ingredients
+                    .filter(ing => !ing.checkIfExistAtHome)
+                    .forEach(ing => {
+                        itemsToAdd.push({
+                            id: uuidv4(),
+                            text: `${ing.amount ? ing.amount + ' ' : ''}${ing.text}`,
+                            completed: false,
+                        });
+                    });
+            }
+        });
+
+        if (itemsToAdd.length === 0) {
+            showToast(t('toasts.allAtHome', 'Inga ingredienser att lägga till'), 'info');
+            return;
+        }
+
+        try {
+            await addItemsToList(defaultListId, itemsToAdd);
+            showToast(`${itemsToAdd.length} ${t('common.items', 'artiklar')} tillagda i inköpslistan`, 'success');
+        } catch {
+            showToast(t('toasts.error', 'Ett fel uppstod'), 'error');
+        }
+    };
 
     let lastRenderedWeekNumber = -1;
 
@@ -227,7 +173,6 @@ export const MealPlanView: React.FC = () => {
 
     return (
         <div className="max-w-6xl mx-auto space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500 pb-20 px-4">
-            {/* Header */}
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
                 <div>
                     <h2 className="text-2xl font-bold">Måltidsschema</h2>
@@ -267,7 +212,6 @@ export const MealPlanView: React.FC = () => {
                 </div>
             </div>
 
-            {/* Daily Grid */}
             <div className="flex flex-col gap-4">
                 {displayDays.map((date) => {
                     const { weekNumber } = getISOWeek(date);
@@ -287,37 +231,49 @@ export const MealPlanView: React.FC = () => {
                                 </div>
                             )}
                             <div className="grid grid-cols-1 sm:grid-cols-3 items-center gap-4 p-4 rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 shadow-sm">
-                                <div className="flex flex-col">
+                                <div className="flex flex-col justify-center">
                                     <span className="font-bold text-lg">{getDayName(date)}</span>
                                     <span className="text-xs text-gray-500 dark:text-gray-400">{dateString}</span>
+                                    
+                                    {/* Add ingredients button for the day */}
+                                    <button 
+                                        onClick={() => handleAddDayIngredientsToList(date)}
+                                        className="mt-2 p-1.5 rounded-md bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-400 hover:bg-green-100 dark:hover:bg-green-900/40 transition-colors flex items-center gap-1 text-[10px] font-bold uppercase tracking-wider"
+                                        title="Lägg till dagens ingredienser i listan"
+                                    >
+                                        <ShoppingCart className="w-3 h-3" />
+                                        Lista
+                                    </button>
                                 </div>
                                 
-                                 <div className="flex flex-col gap-1">
-                                     <label className="text-xs text-gray-500 dark:text-gray-400 flex items-center gap-1">
-                                         <Utensils className="w-3 h-3" /> Lunch
-                                     </label>
-                                      <MealInput 
-                                          initialValue={getMealText(date, 'lunch')}
-                                          onSave={(val) => handleMealChange(date, 'lunch', val)}
-                                          suggestions={meals.map(m => ({ id: m.id, text: m.name }))}
-                                          isSaved={meals.some(m => m.name.toLowerCase() === getMealText(date, 'lunch').toLowerCase())}
-                                          onSaveToLibrary={handleSaveToLibrary}
-                                          placeholder="Vad ska ätas?"
-                                      />
-                                 </div>
+                                <div className="flex flex-col gap-1">
+                                    <label className="text-xs text-gray-500 dark:text-gray-400 flex items-center gap-1">
+                                        <Utensils className="w-3 h-3" /> Lunch
+                                    </label>
+                                    <MealInput 
+                                        initialValue={getMealText(date, 'lunch')}
+                                        onSave={(val) => handleMealChange(date, 'lunch', val)}
+                                        suggestions={meals.map(m => ({ id: m.id, text: m.name }))}
+                                        isSaved={meals.some(m => m.name.toLowerCase() === getMealText(date, 'lunch').toLowerCase())}
+                                        onSaveToLibrary={onSaveToLibraryWrapper}
+                                        onOpenModal={() => setModalSlot({ date, type: 'lunch' })}
+                                        placeholder="Vad ska ätas?"
+                                    />
+                                </div>
 
                                 <div className="flex flex-col gap-1">
                                     <label className="text-xs text-gray-500 dark:text-gray-400 flex items-center gap-1">
                                         <Utensils className="w-3 h-3" /> Middag
                                     </label>
-                                      <MealInput 
-                                          initialValue={getMealText(date, 'dinner')}
-                                          onSave={(val) => handleMealChange(date, 'dinner', val)}
-                                          suggestions={meals.map(m => ({ id: m.id, text: m.name }))}
-                                          isSaved={meals.some(m => m.name.toLowerCase() === getMealText(date, 'dinner').toLowerCase())}
-                                          onSaveToLibrary={handleSaveToLibrary}
-                                          placeholder="Vad ska ätas?"
-                                      />
+                                    <MealInput 
+                                        initialValue={getMealText(date, 'dinner')}
+                                        onSave={(val) => handleMealChange(date, 'dinner', val)}
+                                        suggestions={meals.map(m => ({ id: m.id, text: m.name }))}
+                                        isSaved={meals.some(m => m.name.toLowerCase() === getMealText(date, 'dinner').toLowerCase())}
+                                        onSaveToLibrary={onSaveToLibraryWrapper}
+                                        onOpenModal={() => setModalSlot({ date, type: 'dinner' })}
+                                        placeholder="Vad ska ätas?"
+                                    />
                                 </div>
                             </div>
                         </React.Fragment>
@@ -342,6 +298,18 @@ export const MealPlanView: React.FC = () => {
                     </pre>
                 </div>
             </Modal>
+
+            <MealSelectionModal
+                isOpen={!!modalSlot}
+                onClose={() => setModalSlot(null)}
+                meals={meals}
+                mealPlans={mealPlans}
+                onSelect={(mealName) => {
+                    if (modalSlot) {
+                        handleMealChange(modalSlot.date, modalSlot.type, mealName);
+                    }
+                }}
+            />
         </div>
     );
 };
