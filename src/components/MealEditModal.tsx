@@ -58,8 +58,8 @@ export const MealEditModal: React.FC<MealEditModalProps> = ({ isOpen, onClose, o
 
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm animate-in fade-in duration-200">
-            <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-xl w-full max-w-md overflow-hidden animate-in zoom-in-95 duration-200">
-                <div className="flex items-center justify-between p-4 border-b border-gray-100 dark:border-gray-800">
+                    <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-xl w-full max-w-md max-h-[90vh] flex flex-col overflow-hidden animate-in zoom-in-95 duration-200">
+                        <div className="flex-shrink-0 flex items-center justify-between p-4 border-b border-gray-100 dark:border-gray-800">
                     <h3 className="text-lg font-bold text-gray-800 dark:text-gray-100">
                         {t('common.edit', 'Redigera måltid')}
                     </h3>
@@ -68,7 +68,7 @@ export const MealEditModal: React.FC<MealEditModalProps> = ({ isOpen, onClose, o
                     </button>
                 </div>
                 
-                <div className="p-4 space-y-4">
+                        <div className="p-4 space-y-4 overflow-y-auto">
                     <div className="space-y-1">
                         <label className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                             {t('common.name', 'Namn')}
@@ -164,7 +164,7 @@ export const MealEditModal: React.FC<MealEditModalProps> = ({ isOpen, onClose, o
                     />
                 )}
 
-                <div className="p-4 border-t border-gray-100 dark:border-gray-800 flex justify-end gap-3">
+                        <div className="flex-shrink-0 p-4 border-t border-gray-100 dark:border-gray-800 flex justify-end gap-3">
                     <button 
                         onClick={onClose}
                         className="px-4 py-2 text-sm font-medium text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors"
