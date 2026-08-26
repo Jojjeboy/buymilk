@@ -1,5 +1,35 @@
 [
   {
+    "hash": "faa1c3127f2771ed8e96950e131553172fffdc6b",
+    "date": "2026-08-23 08:07:55 +0200",
+    "message": "style(MealEditModal): add scrolling to modal content"
+  },
+  {
+    "hash": "8c9d1db8a0e3e9a6b6937653240496c785e7e6a6",
+    "date": "2026-08-22 18:22:44 +0200",
+    "message": "feat: improve meal plan mobile usability, add duplicate detection and replace inline editing with modal"
+  },
+  {
+    "hash": "5260112b294f81ee6579413be44f12128d70de22",
+    "date": "2026-08-22 18:20:00 +0200",
+    "message": "build: update tsconfig build info"
+  },
+  {
+    "hash": "e1a7812e53f4f9a3ccc44e06e7a411a0f65be9eb",
+    "date": "2026-08-22 18:14:53 +0200",
+    "message": "refactor(MealPlanView): extract meal input logic to MealPlanEditModal"
+  },
+  {
+    "hash": "27e4010505471f5cd3a07a639c8d8e36da28b087",
+    "date": "2026-08-22 12:44:21 +0200",
+    "message": "feat(meal-plan): implement drag-and-drop meal reorganization"
+  },
+  {
+    "hash": "bc671a8d2023a11d1716230112a15166ce2634b3",
+    "date": "2026-08-22 11:52:35 +0200",
+    "message": "docs: update meal plan improvement roadmap"
+  },
+  {
     "hash": "82f47a94f3707aef60569600f310e1ac4df35194",
     "date": "2026-08-22 11:27:59 +0200",
     "message": "docs: update roadmap and enhance MealEditModal with recipe details"
@@ -68,35 +98,5 @@
     "hash": "d6418e93079a9addd79ef217d8bcaa2f0f73b40b",
     "date": "2026-08-21 10:28:43 +0200",
     "message": "Mealschedule (#1)"
-  },
-  {
-    "hash": "81e33ddd04eb53522a7013f8015eb1297c7ea552",
-    "date": "2026-08-21 08:32:10 +0200",
-    "message": "chore: update commit history and refine item import logic"
-  },
-  {
-    "hash": "4f7cbdb55806b7eb2a5d26108e4b9c3fadc452ea",
-    "date": "2026-08-20 14:18:54 +0200",
-    "message": "ci: update pages workflow trigger to pull requests"
-  },
-  {
-    "hash": "08e863f3f4cb1438112ef08ff435a63fd3b9ee9e",
-    "date": "2026-08-20 14:13:42 +0200",
-    "message": "docs: add design proposal for \"check at home\" feature"
-  },
-  {
-    "hash": "aec45f6a0752a63094d74c68007864c1ae8455b7",
-    "date": "2026-08-20 13:19:34 +0200",
-    "message": "docs: update import examples and remove file upload functionality"
-  },
-  {
-    "hash": "4892f0dee848aa681fdc94ecc0d5827d1a330988",
-    "date": "2026-08-20 13:01:01 +0200",
-    "message": "feat(grocery-list): add support for item notes and enhanced import"
-  },
-  {
-    "hash": "293923130bc8423e1a7128fd8f2f9e0b9b25eeeb",
-    "date": "2026-08-20 11:18:15 +0200",
-    "message": "Implement robust JSON import functionality and update export defaults to active items only"
   }
 ]

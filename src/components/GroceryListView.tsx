@@ -6,7 +6,7 @@ import type { Item, List } from '../types';
 import { DndContext, closestCenter, KeyboardSensor, PointerSensor, useSensor, useSensors, type DragEndEvent } from '@dnd-kit/core';
 import { arrayMove, SortableContext, sortableKeyboardCoordinates, verticalListSortingStrategy } from '@dnd-kit/sortable';
 import { SortableItem } from './SortableItem';
-import { Plus, RotateCcw, ChevronDown, CloudUpload, Mic, Upload, Trash2 } from 'lucide-react';
+import { Plus, RotateCcw, ChevronDown, CloudUpload, Mic, Upload, Trash2, Utensils } from 'lucide-react';
 import { v4 as uuidv4 } from 'uuid';
 import { Confetti } from './Confetti';
 import { convertToItems } from '../utils/importUtils';
@@ -15,11 +15,14 @@ import { Modal } from './Modal';
 import { useTranslation } from 'react-i18next';
 import { InlineAutocompleteInput } from './InlineAutocompleteInput';
 import { useVoiceInput } from '../hooks/useVoiceInput';
+import { useMealPlan } from '../hooks/useMealPlan';
+import { formatDate } from '../utils/dateUtils';
 
 export const GroceryListView: React.FC = React.memo(function GroceryListView() {
     const { t } = useTranslation();
     const { lists, defaultListId, updateListItems, deleteItem, updateListAccess, loading, itemHistory, addToHistory } = useApp();
     const { showToast } = useToast();
+    const { getPlanForDate } = useMealPlan();
     const { isListening, transcript, startListening, stopListening, hasSupport } = useVoiceInput();
     const [newItemText, setNewItemText] = useState('');
     const [showConfetti, setShowConfetti] = useState(false);
@@ -97,6 +100,33 @@ export const GroceryListView: React.FC = React.memo(function GroceryListView() {
         setSuggestions(historyMatches.slice(0, 5));
         setShowSuggestions(true);
     }, [newItemText, itemHistory]);
+
+    // Next Meal Banner Logic
+    const nextMeals = React.useMemo(() => {
+        const now = new Date();
+        const hour = now.getHours();
+        const plan = getPlanForDate(now);
+        if (!plan) return [];
+
+        const dateStr = formatDate(now);
+        const day = plan.days.find(d => d.date === dateStr);
+        if (!day) return [];
+
+        if (hour < 14) {
+            // Show all meals for the day
+            return day.meals.map(m => ({
+                type: m.type,
+                title: m.plannedMeal.customTitle || ''
+            })).filter(m => m.title);
+        } else {
+            // Show only dinner
+            const dinner = day.meals.find(m => m.type === 'dinner');
+            if (dinner && dinner.plannedMeal.customTitle) {
+                return [{ type: 'dinner', title: dinner.plannedMeal.customTitle }];
+            }
+        }
+        return [];
+    }, [getPlanForDate]);
 
     if (loading && !list) {
         return <div className="flex justify-center items-center h-64"><div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></div></div>;
@@ -263,16 +293,36 @@ export const GroceryListView: React.FC = React.memo(function GroceryListView() {
                 existingItemTexts={list?.items.map(i => i.text.toLowerCase()) || []}
             />
             {showConfetti && <Confetti trigger={true} />}
+            {nextMeals.length > 0 && (
+                <div className="mb-6 p-3 bg-blue-50 dark:bg-blue-900/20 border border-blue-100 dark:border-blue-800 rounded-2xl flex items-start gap-3 animate-in fade-in slide-in-from-top-2 duration-300">
+                    <div className="p-2 bg-blue-100 dark:bg-blue-800 text-blue-600 dark:text-blue-300 rounded-xl">
+                        <Utensils size={18} />
+                    </div>
+                    <div className="flex flex-col gap-1">
+                        <span className="text-xs font-bold text-blue-600 dark:text-blue-400 uppercase tracking-wider">
+                            {t('meals.nextMeal', 'Nästa måltid')}
+                        </span>
+                        <div className="flex flex-wrap gap-x-3 gap-y-1">
+                            {nextMeals.map((meal, idx) => (
+                                <div key={idx} className="text-sm font-medium text-gray-700 dark:text-gray-200">
+                                    <span className="opacity-60 capitalize">{meal.type === 'dinner' ? t('meals.dinner', 'Middag') : meal.type === 'lunch' ? t('meals.lunch', 'Lunch') : t('meals.snack', 'Mellanmål')}: </span>
+                                    {meal.title}
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                </div>
+            )}
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
                     <div className="flex items-center justify-between gap-2 flex-1 min-w-0">
-                        <div className="flex items-center gap-2 group min-w-0 flex-1">
-                            <h2 className="text-xl font-semibold truncate">{t('lists.groceryTitle')}</h2>
-                            {list.isPending && (
-                                <div className="text-blue-500 animate-in fade-in duration-300" title="Syncing list...">
-                                    <CloudUpload size={20} />
-                                </div>
-                            )}
-                        </div>
+                    <div className="flex items-center gap-2 group min-w-0 flex-1 relative">
+                        <h2 className="text-xl font-semibold truncate">{t('lists.groceryTitle')}</h2>
+                        {list.isPending && (
+                            <div className="absolute -right-6 top-1/2 -translate-y-1/2 text-blue-500 animate-in fade-in duration-300 z-10" title="Syncing list...">
+                                <CloudUpload size={20} />
+                            </div>
+                        )}
+                    </div>
                         <button 
                             onClick={() => setImportModalOpen(true)}
                             className="p-1.5 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors"

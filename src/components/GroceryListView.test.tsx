@@ -1,4 +1,4 @@
-import React from 'react';
+ a import React from 'react';
 import { render, screen, fireEvent, act, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { GroceryListView } from './GroceryListView';
@@ -45,6 +45,7 @@ describe('GroceryListView Voice Input', () => {
             addToHistory: vi.fn(),
             categories: [],
             addCategory: vi.fn(),
+            mealPlans: [],
         } as unknown as ReturnType<typeof useApp>);
 
         vi.mocked(useToast).mockReturnValue({
