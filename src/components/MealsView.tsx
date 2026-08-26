@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { Utensils, Plus, Trash2, Edit2, ShoppingCart } from 'lucide-react';
 import { MealIngredientsModal } from './MealIngredientsModal';
 import { MealEditModal } from './MealEditModal';
+import { MealDetailModal } from './MealDetailModal';
 import { v4 as uuidv4 } from 'uuid';
 import { Item, Meal } from '../types';
 
@@ -15,6 +16,7 @@ export const MealsView: React.FC = () => {
     const [newMealName, setNewMealName] = useState('');
     const [editingMeal, setEditingMeal] = useState<typeof meals[0] | null>(null);
     const [ingredientsMeal, setIngredientsMeal] = useState<typeof meals[0] | null>(null);
+    const [viewingMeal, setViewingMeal] = useState<typeof meals[0] | null>(null);
 
     const handleAddMeal = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -120,10 +122,11 @@ export const MealsView: React.FC = () => {
                     </div>
                 ) : (
                     meals.map((meal) => (
-                        <div 
-                            key={meal.id} 
-                            className="group relative flex flex-col overflow-hidden rounded-2xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 shadow-sm transition-all hover:shadow-md hover:border-blue-200 dark:hover:border-blue-900"
-                        >
+                                <div 
+                                    key={meal.id} 
+                                    onClick={() => setViewingMeal(meal)}
+                                    className="group relative flex flex-col overflow-hidden rounded-2xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 shadow-sm transition-all hover:shadow-md hover:border-blue-200 dark:hover:border-blue-900 cursor-pointer"
+                                >
                             {/* Image Section */}
                             <div className="relative h-48 w-full overflow-hidden bg-gray-50 dark:bg-gray-800/50">
                                 {meal.imageUrl ? (
@@ -137,22 +140,28 @@ export const MealsView: React.FC = () => {
                                         <Utensils className="w-16 h-16 opacity-50" />
                                     </div>
                                 )}
-                                <div className="absolute top-2 right-2 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                                    <button 
-                                        onClick={() => handleStartEdit(meal)}
-                                        className="p-2 bg-white/90 dark:bg-gray-800/90 text-gray-600 dark:text-gray-300 hover:text-blue-500 rounded-full shadow-sm transition-colors"
-                                        title={t('common.edit', 'Redigera')}
-                                    >
-                                        <Edit2 className="w-4 h-4" />
-                                    </button>
-                                    <button 
-                                        onClick={() => handleDeleteMeal(meal.id)}
-                                        className="p-2 bg-white/90 dark:bg-gray-800/90 text-gray-600 dark:text-gray-300 hover:text-red-500 rounded-full shadow-sm transition-colors"
-                                        title={t('common.delete', 'Ta bort')}
-                                    >
-                                        <Trash2 className="w-4 h-4" />
-                                    </button>
-                                </div>
+                                 <div className="absolute top-2 right-2 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                                     <button 
+                                         onClick={(e) => {
+                                             e.stopPropagation();
+                                             handleStartEdit(meal);
+                                         }}
+                                         className="p-2 bg-white/90 dark:bg-gray-800/90 text-gray-600 dark:text-gray-300 hover:text-blue-500 rounded-full shadow-sm transition-colors"
+                                         title={t('common.edit', 'Redigera')}
+                                     >
+                                         <Edit2 className="w-4 h-4" />
+                                     </button>
+                                     <button 
+                                         onClick={(e) => {
+                                             e.stopPropagation();
+                                             handleDeleteMeal(meal.id);
+                                         }}
+                                         className="p-2 bg-white/90 dark:bg-gray-800/90 text-gray-600 dark:text-gray-300 hover:text-red-500 rounded-full shadow-sm transition-colors"
+                                         title={t('common.delete', 'Ta bort')}
+                                     >
+                                         <Trash2 className="w-4 h-4" />
+                                     </button>
+                                 </div>
                             </div>
 
                             {/* Content Section */}
@@ -186,24 +195,30 @@ export const MealsView: React.FC = () => {
                                                  </div>
                                              )}
 
-                                            <div className="flex items-center justify-between gap-2">
-                                                <button 
-                                                    onClick={() => setIngredientsMeal(meal)}
-                                                    className="flex-1 flex items-center justify-center gap-2 px-3 py-2 text-sm font-medium text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/20 hover:bg-blue-100 dark:hover:bg-blue-900/30 rounded-lg transition-colors"
-                                                >
-                                                    <Utensils className="w-4 h-4" />
-                                                    {t('common.editIngredients', 'Ingredienser')}
-                                                </button>
-                                                {meal.ingredients && meal.ingredients.length > 0 && (
-                                                    <button 
-                                                        onClick={() => handleAddToShoppingList(meal)}
-                                                        className="p-2 text-gray-400 hover:text-green-500 hover:bg-green-50 dark:hover:bg-green-900/20 rounded-lg transition-colors"
-                                                        title={t('common.addToShoppingList', 'Lägg till i inköpslista')}
-                                                    >
-                                                        <ShoppingCart className="w-5 h-5" />
-                                                    </button>
-                                                )}
-                                            </div>
+                                              <div className="flex items-center justify-between gap-2">
+                                                  <button 
+                                                      onClick={(e) => {
+                                                          e.stopPropagation();
+                                                          setIngredientsMeal(meal);
+                                                      }}
+                                                      className="flex-1 flex items-center justify-center gap-2 px-3 py-2 text-sm font-medium text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/20 hover:bg-blue-100 dark:hover:bg-blue-900/30 rounded-lg transition-colors"
+                                                  >
+                                                      <Utensils className="w-4 h-4" />
+                                                      {t('common.editIngredients', 'Ingredienser')}
+                                                  </button>
+                                                  {meal.ingredients && meal.ingredients.length > 0 && (
+                                                      <button 
+                                                          onClick={(e) => {
+                                                              e.stopPropagation();
+                                                              handleAddToShoppingList(meal);
+                                                          }}
+                                                          className="p-2 text-gray-400 hover:text-green-500 hover:bg-green-50 dark:hover:bg-green-900/20 rounded-lg transition-colors"
+                                                          title={t('common.addToShoppingList', 'Lägg till i inköpslista')}
+                                                      >
+                                                          <ShoppingCart className="w-5 h-5" />
+                                                      </button>
+                                                  )}
+                                              </div>
                                         </div>
                                     </>
                             </div>
@@ -221,6 +236,11 @@ export const MealsView: React.FC = () => {
                 onClose={() => setEditingMeal(null)}
                 onSave={handleSaveMeal}
                 meal={editingMeal}
+            />
+            <MealDetailModal 
+                isOpen={!!viewingMeal}
+                onClose={() => setViewingMeal(null)}
+                meal={viewingMeal}
             />
         </div>
     );
