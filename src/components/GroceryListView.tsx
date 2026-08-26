@@ -310,7 +310,11 @@ export const GroceryListView: React.FC = React.memo(function GroceryListView() {
                                 <div 
                                     key={idx} 
                                     onClick={() => {
-                                        const fullMeal = meals.find(m => m.id === meal.meal.id);
+                                        // Try to find by ID first, then by name as fallback
+                                        const fullMeal = meals.find(m => 
+                                            m.id === meal.meal.id || 
+                                            m.name.toLowerCase() === meal.title.toLowerCase()
+                                        );
                                         if (fullMeal) setViewingMeal(fullMeal);
                                     }}
                                     className="text-sm font-medium text-gray-700 dark:text-gray-200 cursor-pointer hover:text-blue-600 dark:hover:text-blue-400 transition-colors"

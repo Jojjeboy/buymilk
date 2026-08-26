@@ -1,5 +1,5 @@
-import React from 'react';
-import { X, Utensils, Tag } from 'lucide-react';
+import React, { useState } from 'react';
+import { X, Utensils, Tag, BookOpen } from 'lucide-react';
 import { Meal } from '../types';
 
 interface MealDetailModalProps {
@@ -9,6 +9,8 @@ interface MealDetailModalProps {
 }
 
 export const MealDetailModal: React.FC<MealDetailModalProps> = ({ isOpen, onClose, meal }) => {
+    const [activeTab, setActiveTab] = useState<'ingredients' | 'instructions'>('ingredients');
+
     if (!isOpen || !meal) return null;
 
     return (
@@ -51,42 +53,85 @@ export const MealDetailModal: React.FC<MealDetailModalProps> = ({ isOpen, onClos
                         </p>
                     )}
 
-                    {meal.tags && meal.tags.length > 0 && (
-                        <div className="flex flex-wrap gap-2 mb-6">
-                            {meal.tags.map(tag => (
-                                <span 
-                                    key={tag} 
-                                    className="flex items-center gap-1 px-2 py-1 text-xs font-medium bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 rounded-full"
-                                >
-                                    <Tag size={12} />
-                                    {tag}
-                                </span>
-                            ))}
-                        </div>
-                    )}
+                     {meal.tags && meal.tags.length > 0 && (
+                         <div className="flex flex-wrap gap-2 mb-6">
+                             {meal.tags.map(tag => (
+                                 <span 
+                                     key={tag} 
+                                     className="flex items-center gap-1 px-2 py-1 text-xs font-medium bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 rounded-full"
+                                 >
+                                     <Tag size={12} />
+                                     {tag}
+                                 </span>
+                             ))}
+                         </div>
+                     )}
 
-                    {meal.ingredients && meal.ingredients.length > 0 && (
-                        <div className="space-y-3">
-                            <h3 className="text-sm font-semibold text-gray-900 dark:text-gray-100 flex items-center gap-2 mb-2">
-                                <Utensils size={16} className="text-blue-500" />
-                                Ingredients
-                            </h3>
-                            <ul className="grid grid-cols-1 gap-2">
-                                {meal.ingredients.map((ing, idx) => (
-                                    <li 
-                                        key={idx} 
-                                        className="text-sm text-gray-600 dark:text-gray-400 flex items-start gap-2 p-2 rounded-lg bg-gray-50 dark:bg-gray-900/50"
-                                    >
-                                        <span className="text-blue-500 mt-1">•</span>
-                                        <span>
-                                            {ing.amount && <span className="font-medium">{ing.amount} </span>}
-                                            {ing.text}
-                                        </span>
-                                    </li>
-                                ))}
-                            </ul>
-                        </div>
-                    )}
+                     <div className="flex p-1 bg-gray-100 dark:bg-gray-900/50 rounded-xl mb-6">
+                         <button 
+                             onClick={() => setActiveTab('ingredients')}
+                             className={`flex-1 flex items-center justify-center gap-2 py-2 text-sm font-medium rounded-lg transition-all ${
+                                 activeTab === 'ingredients' 
+                                 ? 'bg-white dark:bg-gray-800 text-blue-600 dark:text-blue-400 shadow-sm' 
+                                 : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300'
+                             }`}
+                         >
+                             <Utensils size={16} />
+                             Ingredients
+                         </button>
+                         <button 
+                             onClick={() => setActiveTab('instructions')}
+                             className={`flex-1 flex items-center justify-center gap-2 py-2 text-sm font-medium rounded-lg transition-all ${
+                                 activeTab === 'instructions' 
+                                 ? 'bg-white dark:bg-gray-800 text-blue-600 dark:text-blue-400 shadow-sm' 
+                                 : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300'
+                             }`}
+                         >
+                             <BookOpen size={16} />
+                             Preparation
+                         </button>
+                     </div>
+
+                     {activeTab === 'ingredients' ? (
+                         meal.ingredients && meal.ingredients.length > 0 ? (
+                             <div className="space-y-3 animate-in fade-in slide-in-from-left-2 duration-200">
+                                 <ul className="grid grid-cols-1 gap-2">
+                                     {meal.ingredients.map((ing, idx) => (
+                                         <li 
+                                             key={idx} 
+                                             className="text-sm text-gray-600 dark:text-gray-400 flex items-start gap-2 p-2 rounded-lg bg-gray-50 dark:bg-gray-900/50"
+                                         >
+                                             <span className="text-blue-500 mt-1">•</span>
+                                             <span>
+                                                 {ing.amount && <span className="font-medium">{ing.amount} </span>}
+                                                 {ing.text}
+                                             </span>
+                                         </li>
+                                     ))}
+                                 </ul>
+                             </div>
+                         ) : (
+                             <p className="text-sm text-gray-500 dark:text-gray-400 italic text-center py-4">No ingredients listed.</p>
+                         )
+                     ) : (
+                         meal.instructions && meal.instructions.length > 0 ? (
+                             <div className="space-y-3 animate-in fade-in slide-in-from-right-2 duration-200">
+                                 <ol className="grid grid-cols-1 gap-3">
+                                     {meal.instructions.map((step, idx) => (
+                                         <li 
+                                             key={idx} 
+                                             className="text-sm text-gray-600 dark:text-gray-400 flex items-start gap-3 p-2 rounded-lg bg-gray-50 dark:bg-gray-900/50"
+                                         >
+                                             <span className="font-bold text-blue-500 mt-1">{idx + 1}.</span>
+                                             <span>{step}</span>
+                                         </li>
+                                     ))}
+                                 </ol>
+                             </div>
+                         ) : (
+                             <p className="text-sm text-gray-500 dark:text-gray-400 italic text-center py-4">No preparation instructions listed.</p>
+                         )
+                     )}
 
                     <div className="mt-8 flex justify-end">
                         <button 
