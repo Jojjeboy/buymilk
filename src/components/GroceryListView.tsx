@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { useApp } from '../context/AppContext';
 import { useToast } from '../context/ToastContext';
-import type { Item, List } from '../types';
+import type { Item, List, Meal } from '../types';
 import { DndContext, closestCenter, KeyboardSensor, PointerSensor, useSensor, useSensors, type DragEndEvent } from '@dnd-kit/core';
 import { arrayMove, SortableContext, sortableKeyboardCoordinates, verticalListSortingStrategy } from '@dnd-kit/sortable';
 import { SortableItem } from './SortableItem';
@@ -12,6 +12,7 @@ import { Confetti } from './Confetti';
 import { convertToItems } from '../utils/importUtils';
 import { ImportItemsModal } from './ImportItemsModal';
 import { Modal } from './Modal';
+import { MealDetailModal } from './MealDetailModal';
 import { useTranslation } from 'react-i18next';
 import { InlineAutocompleteInput } from './InlineAutocompleteInput';
 import { useVoiceInput } from '../hooks/useVoiceInput';
@@ -20,10 +21,11 @@ import { formatDate } from '../utils/dateUtils';
 
 export const GroceryListView: React.FC = React.memo(function GroceryListView() {
     const { t } = useTranslation();
-    const { lists, defaultListId, updateListItems, deleteItem, updateListAccess, loading, itemHistory, addToHistory } = useApp();
+    const { meals, lists, defaultListId, updateListItems, deleteItem, updateListAccess, loading, itemHistory, addToHistory } = useApp();
     const { showToast } = useToast();
     const { getPlanForDate } = useMealPlan();
     const { isListening, transcript, startListening, stopListening, hasSupport } = useVoiceInput();
+    const [viewingMeal, setViewingMeal] = useState<Meal | null>(null);
     const [newItemText, setNewItemText] = useState('');
     const [showConfetti, setShowConfetti] = useState(false);
     const [suggestions, setSuggestions] = useState<(typeof itemHistory)>([]);
@@ -116,13 +118,14 @@ export const GroceryListView: React.FC = React.memo(function GroceryListView() {
             // Show all meals for the day
             return day.meals.map(m => ({
                 type: m.type,
-                title: m.plannedMeal.customTitle || ''
+                title: m.plannedMeal.customTitle || '',
+                meal: m.plannedMeal
             })).filter(m => m.title);
         } else {
             // Show only dinner
             const dinner = day.meals.find(m => m.type === 'dinner');
             if (dinner && dinner.plannedMeal.customTitle) {
-                return [{ type: 'dinner', title: dinner.plannedMeal.customTitle }];
+                return [{ type: 'dinner', title: dinner.plannedMeal.customTitle, meal: dinner.plannedMeal }];
             }
         }
         return [];
@@ -304,9 +307,16 @@ export const GroceryListView: React.FC = React.memo(function GroceryListView() {
                         </span>
                         <div className="flex flex-wrap gap-x-3 gap-y-1">
                             {nextMeals.map((meal, idx) => (
-                                <div key={idx} className="text-sm font-medium text-gray-700 dark:text-gray-200">
+                                <div 
+                                    key={idx} 
+                                    onClick={() => {
+                                        const fullMeal = meals.find(m => m.id === meal.meal.id);
+                                        if (fullMeal) setViewingMeal(fullMeal);
+                                    }}
+                                    className="text-sm font-medium text-gray-700 dark:text-gray-200 cursor-pointer hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
+                                >
                                     <span className="opacity-60 capitalize">{meal.type === 'dinner' ? t('meals.dinner', 'Middag') : meal.type === 'lunch' ? t('meals.lunch', 'Lunch') : t('meals.snack', 'Mellanmål')}: </span>
-                                    {meal.title}
+                                    <span className="underline underline-offset-2 decoration-blue-300 dark:decoration-blue-700">{meal.title}</span>
                                 </div>
                             ))}
                         </div>
@@ -356,6 +366,11 @@ export const GroceryListView: React.FC = React.memo(function GroceryListView() {
                 message={t('lists.clearCompletedMessage')}
                 confirmText={t('common.delete')}
                 isDestructive={true}
+            />
+            <MealDetailModal 
+                isOpen={!!viewingMeal}
+                onClose={() => setViewingMeal(null)}
+                meal={viewingMeal}
             />
 
 

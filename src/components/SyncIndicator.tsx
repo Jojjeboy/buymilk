@@ -10,7 +10,7 @@ export const SyncIndicator: React.FC = () => {
     if (!isSyncing) return null;
 
     return (
-        <div className="bg-blue-500 text-white px-4 py-2 text-center text-sm font-medium flex items-center justify-center gap-2 animate-in slide-in-from-top duration-300">
+        <div className="fixed top-0 left-0 right-0 z-[100] bg-blue-500 text-white px-4 py-2 text-center text-sm font-medium flex items-center justify-center gap-2 animate-in slide-in-from-top duration-300">
             <Cloud size={16} className="animate-pulse" />
             <span>{t('common.syncing', 'Syncing changes...')}</span>
         </div>
