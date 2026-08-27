@@ -13,6 +13,7 @@ import { convertToItems } from '../utils/importUtils';
 import { ImportItemsModal } from './ImportItemsModal';
 import { Modal } from './Modal';
 import { MealDetailModal } from './MealDetailModal';
+import { MealEditModal } from './MealEditModal';
 import { useTranslation } from 'react-i18next';
 import { InlineAutocompleteInput } from './InlineAutocompleteInput';
 import { useVoiceInput } from '../hooks/useVoiceInput';
@@ -21,11 +22,12 @@ import { formatDate } from '../utils/dateUtils';
 
 export const GroceryListView: React.FC = React.memo(function GroceryListView() {
     const { t } = useTranslation();
-    const { meals, lists, defaultListId, updateListItems, deleteItem, updateListAccess, loading, itemHistory, addToHistory } = useApp();
+    const { meals, lists, defaultListId, updateListItems, deleteItem, updateListAccess, loading, itemHistory, addToHistory, updateMeal } = useApp();
     const { showToast } = useToast();
     const { getPlanForDate } = useMealPlan();
     const { isListening, transcript, startListening, stopListening, hasSupport } = useVoiceInput();
     const [viewingMeal, setViewingMeal] = useState<Meal | null>(null);
+    const [editingMeal, setEditingMeal] = useState<Meal | null>(null);
     const [newItemText, setNewItemText] = useState('');
     const [showConfetti, setShowConfetti] = useState(false);
     const [suggestions, setSuggestions] = useState<(typeof itemHistory)>([]);
@@ -277,6 +279,16 @@ export const GroceryListView: React.FC = React.memo(function GroceryListView() {
         await updateListItems(list.id, newItems);
     };
 
+    const handleSaveMeal = async (id: string, updates: Partial<Meal>) => {
+        try {
+            await updateMeal(id, updates);
+            setEditingMeal(null);
+            showToast(t('toasts.itemUpdated', 'Måltid uppdaterad'), 'success');
+        } catch {
+            showToast(t('toasts.error', 'Ett fel uppstod'), 'error');
+        }
+    };
+
     const handleImportItems = async (items: (string | { text: string; note?: string; checkIfExistAtHome?: boolean })[]) => {
         if (!list) return;
         
@@ -380,7 +392,17 @@ export const GroceryListView: React.FC = React.memo(function GroceryListView() {
             <MealDetailModal 
                 isOpen={!!viewingMeal}
                 onClose={() => setViewingMeal(null)}
+                onEdit={(meal) => {
+                    setViewingMeal(null);
+                    setEditingMeal(meal);
+                }}
                 meal={viewingMeal}
+            />
+            <MealEditModal 
+                isOpen={!!editingMeal}
+                onClose={() => setEditingMeal(null)}
+                onSave={handleSaveMeal}
+                meal={editingMeal}
             />
 
 

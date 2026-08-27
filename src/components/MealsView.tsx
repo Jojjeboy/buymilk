@@ -240,6 +240,10 @@ export const MealsView: React.FC = () => {
             <MealDetailModal 
                 isOpen={!!viewingMeal}
                 onClose={() => setViewingMeal(null)}
+                onEdit={(meal) => {
+                    setViewingMeal(null);
+                    handleStartEdit(meal);
+                }}
                 meal={viewingMeal}
             />
         </div>

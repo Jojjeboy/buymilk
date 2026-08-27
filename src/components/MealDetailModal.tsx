@@ -1,14 +1,15 @@
 import React, { useState } from 'react';
-import { X, Utensils, Tag, BookOpen } from 'lucide-react';
+import { X, Utensils, Tag, BookOpen, Edit2 } from 'lucide-react';
 import { Meal } from '../types';
 
 interface MealDetailModalProps {
     isOpen: boolean;
     onClose: () => void;
+    onEdit: (meal: Meal) => void;
     meal: Meal | null;
 }
 
-export const MealDetailModal: React.FC<MealDetailModalProps> = ({ isOpen, onClose, meal }) => {
+export const MealDetailModal: React.FC<MealDetailModalProps> = ({ isOpen, onClose, onEdit, meal }) => {
     const [activeTab, setActiveTab] = useState<'ingredients' | 'instructions'>('ingredients');
 
     if (!isOpen || !meal) return null;
@@ -133,12 +134,19 @@ export const MealDetailModal: React.FC<MealDetailModalProps> = ({ isOpen, onClos
                          )
                      )}
 
-                    <div className="mt-8 flex justify-end">
+                    <div className="mt-8 flex justify-end gap-3">
                         <button 
                             onClick={onClose}
                             className="px-6 py-2 text-sm font-medium text-gray-700 dark:text-gray-200 bg-gray-100 dark:bg-gray-700 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
                         >
                             Close
+                        </button>
+                        <button 
+                            onClick={() => meal && onEdit(meal)}
+                            className="flex items-center gap-2 px-6 py-2 text-sm font-medium text-white bg-blue-500 rounded-lg hover:bg-blue-600 transition-colors"
+                        >
+                            <Edit2 size={16} />
+                            Edit
                         </button>
                     </div>
                 </div>

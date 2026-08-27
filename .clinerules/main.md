@@ -5,6 +5,7 @@
 - **CRITICAL:** After every code change, and before reporting a task as complete, you MUST execute:
   `npm run validate`
 - If the validation fails, you must analyze the errors, fix them, and run the command again until it passes.
+- **Git Workflow:** Once `npm run validate` passes without any errors, you MUST perform a git commit and push the changes to the repository.
 - Do not assume a change is safe without running this validation.
 
 ## General Workflow
