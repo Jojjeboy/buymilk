@@ -162,8 +162,8 @@ export const SortableItem: React.FC<SortableItemProps> = ({
                             : 'bg-white dark:bg-gray-800 border-gray-100 dark:border-gray-700'
                     }`}>
                         {/* We need to wrap the content to allow leading actions to be visible */}
-                        <div className="flex flex-col sm:flex-row gap-3 w-full">
-                            <div className="flex items-center gap-3 w-full">
+                        <div className="flex flex-wrap items-center gap-3 w-full">
+                            <div className="flex items-center gap-3 flex-1 min-w-0">
                                 <button
                                     onClick={(e) => {
                                         e.stopPropagation();
@@ -247,7 +247,7 @@ export const SortableItem: React.FC<SortableItemProps> = ({
                                 </div>
                             </div>
 
-                            <div className="flex items-center justify-between gap-1 sm:gap-3 w-full">
+                            <div className="flex items-center gap-1 sm:gap-3 flex-shrink-0">
                                 <div className="flex items-center gap-1.5">
                                     {item.checkIfExistAtHome && !item.completed && (
                                         <>
