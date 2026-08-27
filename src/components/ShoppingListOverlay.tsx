@@ -68,17 +68,28 @@ export const ShoppingListOverlay: React.FC<ShoppingListOverlayProps> = ({ isOpen
                             {activeItems.map((item: Item) => (
                                 <div 
                                     key={item.id} 
-                                    className="flex items-center gap-3 p-3 rounded-lg bg-gray-50 dark:bg-gray-800/50 border dark:border-gray-700 transition-colors"
+                                    className={`flex items-center gap-3 p-3 rounded-lg border transition-colors ${
+                                        item.checkIfExistAtHome 
+                                            ? 'bg-amber-50/80 dark:bg-amber-950/20 border-amber-200 dark:border-amber-700/60' 
+                                            : 'bg-gray-50 dark:bg-gray-800/50 border-gray-100 dark:border-gray-700'
+                                    }`}
                                 >
-                                    <input 
-                                        type="checkbox" 
-                                        checked={item.completed} 
-                                        onChange={() => handleToggleChecked(item.id)}
-                                        className="w-5 h-5 rounded border-gray-300 text-[#2c6de3] focus:ring-[#2c6de3] cursor-pointer"
-                                    />
+                                <input 
+                                    type="checkbox" 
+                                    checked={item.completed} 
+                                    onChange={() => handleToggleChecked(item.id)}
+                                    className="w-5 h-5 rounded-full border-gray-300 text-[#2c6de3] focus:ring-[#2c6de3] cursor-pointer"
+                                />
+                                <div className="flex flex-col">
                                     <span className={`text-lg ${item.completed ? 'line-through text-gray-400' : 'text-gray-700 dark:text-gray-200'}`}>
                                         {item.text}
                                     </span>
+                                    {item.note && (
+                                        <span className={`text-sm ${item.completed ? 'text-gray-400' : 'text-gray-500 dark:text-gray-400'}`}>
+                                            {item.note}
+                                        </span>
+                                    )}
+                                </div>
                                 </div>
                             ))}
                         </div>
@@ -102,15 +113,22 @@ export const ShoppingListOverlay: React.FC<ShoppingListOverlayProps> = ({ isOpen
                                                 key={item.id} 
                                                 className="flex items-center gap-3 p-3 rounded-lg bg-gray-50/50 dark:bg-gray-800/30 border dark:border-gray-700 opacity-60"
                                             >
-                                                <input 
-                                                    type="checkbox" 
-                                                    checked={item.completed} 
-                                                    onChange={() => handleToggleChecked(item.id)}
-                                                    className="w-5 h-5 rounded border-gray-300 text-[#2c6de3] focus:ring-[#2c6de3] cursor-pointer"
-                                                />
-                                                <span className="text-lg line-through text-gray-400">
-                                                    {item.text}
-                                                </span>
+                                <input 
+                                    type="checkbox" 
+                                    checked={item.completed} 
+                                    onChange={() => handleToggleChecked(item.id)}
+                                    className="w-5 h-5 rounded-full border-gray-300 text-[#2c6de3] focus:ring-[#2c6de3] cursor-pointer"
+                                />
+                                <div className="flex flex-col">
+                                    <span className="text-lg line-through text-gray-400">
+                                        {item.text}
+                                    </span>
+                                    {item.note && (
+                                        <span className="text-sm text-gray-400">
+                                            {item.note}
+                                        </span>
+                                    )}
+                                </div>
                                             </div>
                                         ))}
                                     </div>
