@@ -48,7 +48,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ onNavClick }) => {
     return (
         <div className="flex min-h-screen h-full flex-col glass border-r-0">
             {/* Logo Area */}
-            <div className="p-6">
+            <div className="p-6 hidden md:block">
                 <Link to="/" onClick={onNavClick} className="flex items-center gap-3 hover:opacity-80 transition-opacity">
                     <img src="/buymilk/favicon.png" alt="Logo" className="w-20 h-20 rounded-2xl shadow-sm" />
                     <h1 className="text-3xl font-bold text-[#2c6de3]">

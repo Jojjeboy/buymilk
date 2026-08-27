@@ -56,6 +56,7 @@ vi.mock('lucide-react', () => ({
     Upload: () => <div />,
     Trash2: () => <div />,
     Edit2: () => <div />,
+    Braces: () => <div />,
 }));
 
 const mockUpdateListItems = vi.fn();

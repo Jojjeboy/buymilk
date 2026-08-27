@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Braces, Upload, ChevronDown, Copy, Check, X, FileText } from 'lucide-react';
+import { Braces, ChevronDown, Copy, Check, X, FileText } from 'lucide-react';
 import { parseRecipeText } from '../utils/recipeParser';
 import { parseJsonItems, ParsedImportItem } from '../utils/importUtils';
 

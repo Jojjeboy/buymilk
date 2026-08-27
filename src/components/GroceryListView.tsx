@@ -6,7 +6,7 @@ import type { Item, List, Meal, PlannedMeal } from '../types';
 import { DndContext, closestCenter, KeyboardSensor, PointerSensor, useSensor, useSensors, type DragEndEvent } from '@dnd-kit/core';
 import { arrayMove, SortableContext, sortableKeyboardCoordinates, verticalListSortingStrategy } from '@dnd-kit/sortable';
 import { SortableItem } from './SortableItem';
-import { Plus, RotateCcw, ChevronDown, CloudUpload, Mic, Upload, Trash2, Utensils, Braces } from 'lucide-react';
+import { Plus, RotateCcw, ChevronDown, CloudUpload, Mic, Trash2, Utensils, Braces } from 'lucide-react';
 import { v4 as uuidv4 } from 'uuid';
 import { Confetti } from './Confetti';
 import { convertToItems } from '../utils/importUtils';

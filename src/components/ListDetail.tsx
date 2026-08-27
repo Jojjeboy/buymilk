@@ -5,7 +5,7 @@ import type { Item, ListSettings, List } from '../types';
 import { DndContext, closestCenter, KeyboardSensor, PointerSensor, useSensor, useSensors, type DragEndEvent, useDroppable } from '@dnd-kit/core';
 import { arrayMove, SortableContext, sortableKeyboardCoordinates, verticalListSortingStrategy } from '@dnd-kit/sortable';
 import { SortableItem } from './SortableItem';
-import { Plus, ChevronLeft, Settings, RotateCcw, ChevronDown, Trash2, Edit2, Pin, Upload, Braces } from 'lucide-react';
+import { Plus, ChevronLeft, Settings, RotateCcw, ChevronDown, Trash2, Edit2, Pin,Braces } from 'lucide-react';
 import { v4 as uuidv4 } from 'uuid';
 import { Modal } from './Modal';
 import { ImportItemsModal } from './ImportItemsModal';
