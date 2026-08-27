@@ -216,7 +216,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     const addItemsToList = async (listId: string, newItems: Item[]) => {
         const list = listsSync.data.find((l: List) => l.id === listId);
         if (list) {
-            const updatedItems = [...list.items, ...newItems];
+            const updatedItems = [...newItems, ...list.items];
             await updateListItems(listId, updatedItems);
         }
     };

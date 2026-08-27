@@ -13,17 +13,20 @@ interface ShoppingListOverlayProps {
 export const ShoppingListOverlay: React.FC<ShoppingListOverlayProps> = ({ isOpen, onClose, isWakeLockActive }) => {
     const { t } = useTranslation();
     const { lists, defaultListId, updateListItems } = useApp();
+    const [completedAccordionOpen, setCompletedAccordionOpen] = React.useState(false);
 
     if (!isOpen) return null;
 
     // Find the active list
     const activeList = lists.find(l => l.id === defaultListId);
-    const items = activeList ? activeList.items : [];
+    const allItems = activeList ? activeList.items : [];
+    const activeItems = allItems.filter(i => !i.completed);
+    const completedItems = allItems.filter(i => i.completed);
 
     const handleToggleChecked = async (itemId: string) => {
         if (!activeList) return;
         
-        const updatedItems = items.map(item => 
+        const updatedItems = allItems.map(item => 
             item.id === itemId ? { ...item, completed: !item.completed } : item
         );
         
@@ -54,28 +57,66 @@ export const ShoppingListOverlay: React.FC<ShoppingListOverlayProps> = ({ isOpen
 
             {/* Simplified List */}
             <div className="flex-1 overflow-y-auto p-4">
-                {items.length === 0 ? (
+                {allItems.length === 0 ? (
                     <div className="flex flex-col items-center justify-center h-full text-gray-500 dark:text-gray-400">
                         <p>{t('groceryList.empty', 'Listan är tom')}</p>
                     </div>
                 ) : (
-                    <div className="max-w-2xl mx-auto w-full space-y-2">
-                        {items.map((item: Item) => (
-                            <div 
-                                key={item.id} 
-                                className="flex items-center gap-3 p-3 rounded-lg bg-gray-50 dark:bg-gray-800/50 border dark:border-gray-700 transition-colors"
-                            >
-                                <input 
-                                    type="checkbox" 
-                                    checked={item.completed} 
-                                    onChange={() => handleToggleChecked(item.id)}
-                                    className="w-5 h-5 rounded border-gray-300 text-[#2c6de3] focus:ring-[#2c6de3] cursor-pointer"
-                                />
-                                <span className={`text-lg ${item.completed ? 'line-through text-gray-400' : 'text-gray-700 dark:text-gray-200'}`}>
-                                    {item.text}
-                                </span>
+                    <div className="max-w-2xl mx-auto w-full space-y-4">
+                        {/* Active Items */}
+                        <div className="space-y-2">
+                            {activeItems.map((item: Item) => (
+                                <div 
+                                    key={item.id} 
+                                    className="flex items-center gap-3 p-3 rounded-lg bg-gray-50 dark:bg-gray-800/50 border dark:border-gray-700 transition-colors"
+                                >
+                                    <input 
+                                        type="checkbox" 
+                                        checked={item.completed} 
+                                        onChange={() => handleToggleChecked(item.id)}
+                                        className="w-5 h-5 rounded border-gray-300 text-[#2c6de3] focus:ring-[#2c6de3] cursor-pointer"
+                                    />
+                                    <span className={`text-lg ${item.completed ? 'line-through text-gray-400' : 'text-gray-700 dark:text-gray-200'}`}>
+                                        {item.text}
+                                    </span>
+                                </div>
+                            ))}
+                        </div>
+
+                        {/* Completed Items Accordion */}
+                        {completedItems.length > 0 && (
+                            <div className="pt-4 border-t dark:border-gray-800">
+                                <button 
+                                    onClick={() => setCompletedAccordionOpen(!completedAccordionOpen)}
+                                    className="flex items-center justify-between w-full p-2 text-sm font-medium text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 transition-colors"
+                                >
+                                    <div className="flex items-center gap-2">
+                                        <span className="text-xs opacity-60">▼</span>
+                                        {t('lists.completedItems', 'Avbockade varor')} ({completedItems.length})
+                                    </div>
+                                </button>
+                                {completedAccordionOpen && (
+                                    <div className="space-y-2 mt-2 animate-in slide-in-from-top-2 duration-200">
+                                        {completedItems.map((item: Item) => (
+                                            <div 
+                                                key={item.id} 
+                                                className="flex items-center gap-3 p-3 rounded-lg bg-gray-50/50 dark:bg-gray-800/30 border dark:border-gray-700 opacity-60"
+                                            >
+                                                <input 
+                                                    type="checkbox" 
+                                                    checked={item.completed} 
+                                                    onChange={() => handleToggleChecked(item.id)}
+                                                    className="w-5 h-5 rounded border-gray-300 text-[#2c6de3] focus:ring-[#2c6de3] cursor-pointer"
+                                                />
+                                                <span className="text-lg line-through text-gray-400">
+                                                    {item.text}
+                                                </span>
+                                            </div>
+                                        ))}
+                                    </div>
+                                )}
                             </div>
-                        ))}
+                        )}
                     </div>
                 )}
             </div>

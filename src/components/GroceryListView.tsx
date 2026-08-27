@@ -201,14 +201,14 @@ export const GroceryListView: React.FC = React.memo(function GroceryListView() {
                     setSuggestions([]);
                     setShowSuggestions(false);
 
-                    const newItem: Item = { 
-                        id: uuidv4(), 
-                        text: textToAdd, 
-                        completed: false,
-                        checkIfExistAtHome: isCheckHome ? true : undefined,
-                    };
-                    await updateListItems(list.id, [...list.items, newItem]);
-                    await addToHistory(textToAdd);
+                     const newItem: Item = { 
+                         id: uuidv4(), 
+                         text: textToAdd, 
+                         completed: false,
+                         checkIfExistAtHome: isCheckHome ? true : undefined,
+                     };
+                     await updateListItems(list.id, [newItem, ...list.items]);
+                     await addToHistory(textToAdd);
                 }
             } catch (error) {
                 console.error("Failed to add item:", error);
@@ -293,9 +293,9 @@ export const GroceryListView: React.FC = React.memo(function GroceryListView() {
             return entry;
         });
 
-        const newItems = convertToItems(normalizedItems);
-
-        await updateListItems(list.id, [...list.items, ...newItems]);
+                      const newItems = convertToItems(normalizedItems);
+                      
+                      await updateListItems(list.id, [...newItems, ...list.items]);
         
         // Process history updates in parallel and don't block the modal closure
         const historyPromises = items.map(entry => {
