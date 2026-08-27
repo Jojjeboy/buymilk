@@ -2,12 +2,13 @@ import React, { useState } from 'react';
 import { useApp } from '../context/AppContext';
 import { useToast } from '../context/ToastContext';
 import { useTranslation } from 'react-i18next';
-import { Utensils, Plus, Trash2, Edit2, ShoppingCart } from 'lucide-react';
+import { Utensils, Plus, Trash2, Edit2, ShoppingCart, Dices } from 'lucide-react';
 import { MealIngredientsModal } from './MealIngredientsModal';
 import { MealEditModal } from './MealEditModal';
 import { MealDetailModal } from './MealDetailModal';
 import { v4 as uuidv4 } from 'uuid';
 import { Item, Meal } from '../types';
+import mealSuggestions from '../data/mealSuggestions.json';
 
 export const MealsView: React.FC = () => {
     const { meals, addMeal, updateMeal, deleteMeal, addItemsToList, defaultListId } = useApp();
@@ -55,6 +56,11 @@ export const MealsView: React.FC = () => {
         }
     };
 
+    const handleRandomMeal = () => {
+        const randomMeal = mealSuggestions[Math.floor(Math.random() * mealSuggestions.length)];
+        setViewingMeal(randomMeal);
+    };
+
     const handleAddToShoppingList = async (meal: typeof meals[0]) => {
         if (!meal.ingredients || meal.ingredients.length === 0) return;
         if (!defaultListId) {
@@ -86,7 +92,7 @@ export const MealsView: React.FC = () => {
     return (
         <div className="max-w-2xl mx-auto space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500 pb-20 px-4">
             <div className="flex items-center justify-between mb-8">
-                <div>
+                <div className="flex-1">
                     <h2 className="text-2xl font-bold flex items-center gap-2">
                         <Utensils className="w-6 h-6 text-blue-500" />
                         {t('views.meals', 'Måltider')}
@@ -95,6 +101,14 @@ export const MealsView: React.FC = () => {
                         {t('views.mealsDescription', 'Dina sparade favorit-måltider')}
                     </p>
                 </div>
+                <button 
+                    onClick={handleRandomMeal}
+                    className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/20 hover:bg-blue-100 dark:hover:bg-blue-900/30 rounded-lg transition-colors border border-blue-100 dark:border-blue-800"
+                    title={t('views.randomMeal', 'Slumpa måltid')}
+                >
+                    <Dices className="w-4 h-4" />
+                    {t('views.randomMeal', 'Slumpa måltid')}
+                </button>
             </div>
 
             <form onSubmit={handleAddMeal} className="flex gap-2 mb-8">

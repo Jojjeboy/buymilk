@@ -1,0 +1,225 @@
+[
+  {
+    "id": "sug-1",
+    "name": "Klassisk Lasagne",
+    "description": "En krämig och smakrik lasagne med köttfärs, bechamelsås och tomatsås.",
+    "ingredients": [
+      { "text": "Köttfärs", "amount": "500g" },
+      { "text": "Lasagneplattor", "amount": "12st" },
+      { "text": "Krossade tomater", "amount": "800g" },
+      { "text": "Lök", "amount": "1st" },
+      { "text": "Vitlök", "amount": "2 klyftor" },
+      { "text": "Smör", "amount": "50g" },
+      { "text": "Vetemjöl", "amount": "50g" },
+      { "text": "Mjölk", "amount": "6dl" },
+      { "text": "riven ost", "amount": "200g" }
+    ],
+    "instructions": [
+      "Fräs lök och vitlök, tillsätt köttfärs och bryn.",
+      "Häll i krossade tomater och låt puttra i 20 minuter.",
+      "Gör bechamelsås genom att smälta smör, vispa i mjöl och tillsätt mjölk gradvis.",
+      "Varva köttfärssås, bechamelsås och lasagneplattor i en form.",
+      "Toppa med ost och grädda i ugnen på 200 grader i ca 30 minuter."
+    ],
+    "tags": ["Klassiker", "Familjemiddag", "Pasta"],
+    "createdAt": "2026-08-27T00:00:00Z"
+  },
+  {
+    "id": "sug-2",
+    "name": "Vegetarisk Pad Thai",
+    "description": "Thailändska nudlar med tofu, jordnötter och lime.",
+    "ingredients": [
+      { "text": "Rispudlar", "amount": "200g" },
+      { "text": "Tofu", "amount": "200g" },
+      { "text": "Bönsprouts", "amount": "100g" },
+      { "text": "Jordnötter", "amount": "50g" },
+      { "text": "Tamarindpasta", "amount": "3 msk" },
+      { "text": "Sojasås", "amount": "2 msk" },
+      { "text": "Palmsocker", "amount": "2 msk" },
+      { "text": "Lime", "amount": "1st" }
+    ],
+    "instructions": [
+      "Blötlägg nudlarna enligt anvisning.",
+      "Stek tofu i olja tills den är gyllene.",
+      "Blanda tamarindpasta, sojasås och socker till en sås.",
+      "Tillsätt nudlar och sås i pannan, stek snabbt.",
+      "Blanda i bönsprouts och toppa med jordnötter och lime."
+    ],
+    "tags": ["Vegetariskt", "Asiatiskt", "Snabbt"],
+    "createdAt": "2026-08-27T00:00:00Z"
+  },
+  {
+    "id": "sug-3",
+    "name": "Tacos med kryddig kyckling",
+    "description": "En festlig klassiker med hemgjord kryddblandning.",
+    "ingredients": [
+      { "text": "Kycklingfilé", "amount": "600g" },
+      { "text": "Tacoskal", "amount": "12st" },
+      { "text": "Sallad", "amount": "1 huvud" },
+      { "text": "Tomater", "amount": "3st" },
+      { "text": "Majs", "amount": "1 burk" },
+      { "text": "Gräddfil", "amount": "1 burk" },
+      { "text": "Paprika", "amount": "1st" }
+    ],
+    "instructions": [
+      "Tärna kycklingen och stek den i pannan.",
+      "Tillsätt tacokrydda och lite vatten, låt puttra.",
+      "Hacka alla grönsaker i småtärningar.",
+      "Värm tacoskalen i ugnen.",
+      "Fyll skalen med kyckling och toppa med grönsaker och gräddfil."
+    ],
+    "tags": ["Fest", "Mexikanskt", "Barnvänligt"],
+    "createdAt": "2026-08-27T00:00:00Z"
+  },
+  {
+    "id": "sug-4",
+    "name": "Krämig Laxpasta",
+    "description": "Lyxig pasta med lax, spenat och grädde.",
+    "ingredients": [
+      { "text": "Laxfilé", "amount": "400g" },
+      { "text": "Pasta (t.ex. Penne)", "amount": "400g" },
+      { "text": "Grädde", "amount": "3dl" },
+      { "text": "Spenat", "amount": "100g" },
+      { "text": "Citron", "amount": "1/2 st" },
+      { "text": "Vitlök", "amount": "1 klyfta" }
+    ],
+    "instructions": [
+      "Koka pastan enligt anvisning.",
+      "Tärna laxen och stek den snabbt i smör.",
+      "Tillsätt vitlök och grädde, låt sjuda i några minuter.",
+      "Rör ner spenat och pressa i lite citron.",
+      "Blanda pastan med såsen och servera."
+    ],
+    "tags": ["Fisk", "Lyxigt", "Snabbt"],
+    "createdAt": "2026-08-27T00:00:00Z"
+  },
+  {
+    "id": "sug-5",
+    "name": "Köttbullar med potatismos",
+    "description": "Svensk husmanskost när den är som bäst.",
+    "ingredients": [
+      { "text": "Köttfärs", "amount": "500g" },
+      { "text": "Ströbröd", "amount": "1/2 dl" },
+      { "text": "Mjölk", "amount": "1 dl" },
+      { "text": "Potatis", "amount": "1 kg" },
+      { "text": "Smör", "amount": "50g" },
+      { "text": "Lingonsylt", "amount": "1 burk" }
+    ],
+    "instructions": [
+      "Blanda färs, ströbröd och mjölk. Rulla till bollar.",
+      "Stek köttbullarna i smör tills de är genomstekta.",
+      "Koka potatisen mjuk, häll av vattnet och mosa med smör och mjölk.",
+      "Servera köttbullarna med mos och lingonsylt."
+    ],
+    "tags": ["Husmanskost", "Svenskt", "Klassiker"],
+    "createdAt": "2026-08-27T00:00:00Z"
+  },
+  {
+    "id": "sug-6",
+    "name": "Marockansk Couscous med grönsaker",
+    "description": "En färgstark och nyttig rätt med spiskummin och saffran.",
+    "ingredients": [
+      { "text": "Couscous", "amount": "2 dl" },
+      { "text": "Kikärtor", "amount": "1 burk" },
+      { "text": "Morötter", "amount": "2st" },
+      { "text": "Zucchini", "amount": "1st" },
+      { "text": "Torkade aprikoser", "amount": "5st" },
+      { "text": "Olivolja", "amount": "2 msk" },
+      { "text": "Spiskummin", "amount": "1 tsk" }
+    ],
+    "instructions": [
+      "Koka upp vatten och häll över couscousen, låt svälla.",
+      "Tärna morötter och zucchini, stek i olja med spiskummin.",
+      "Tillsätt kikärtor och hackade aprikoser.",
+      "Blanda ihop grönsakerna med couscousen.",
+      "Servera med en klick yoghurt eller citron."
+    ],
+    "tags": ["Vegetariskt", "Nyttigt", "Exotiskt"],
+    "createdAt": "2026-08-27T00:00:00Z"
+  },
+  {
+    "id": "sug-7",
+    "name": "Kyckling Curry med ris",
+    "description": "Krämig currygryta med kokosmjölk och grönsaker.",
+    "ingredients": [
+      { "text": "Kycklingfilé", "amount": "500g" },
+      { "text": "Kokosmjölk", "amount": "1 burk" },
+      { "text": "Currypulver", "amount": "2 msk" },
+      { "text": "Lök", "amount": "1st" },
+      { "text": "Röd paprika", "amount": "1st" },
+      { "text": "Jasminris", "amount": "3 dl" }
+    ],
+    "instructions": [
+      "Koka riset enligt anvisning.",
+      "Fräs lök och kycklingtärningar i olja.",
+      "Rör i currypulver och låt steka med en kort stund.",
+      "Häll i kokosmjölk och tillsätt tärnad paprika.",
+      "Låt sjuda i 10 minuter och servera med riset."
+    ],
+    "tags": ["Asiatiskt", "Krämigt", "Vardagsmat"],
+    "createdAt": "2026-08-27T00:00:00Z"
+  },
+  {
+    "id": "sug-8",
+    "name": "Halloumi-burgare",
+    "description": "Saftig halloumiost i bröd med avokado och chilimajonnäs.",
+    "ingredients": [
+      { "text": "Halloumi", "amount": "250g" },
+      { "text": "Hamburgarebröd", "amount": "2st" },
+      { "text": "Avokado", "amount": "1st" },
+      { "text": "Sallad", "amount": "några blad" },
+      { "text": "Majonnäs", "amount": "2 msk" },
+      { "text": "Chiliflakes", "amount": "en nypa" }
+    ],
+    "instructions": [
+      "Skär halloumin i tjocka skivor och stek tills de är gyllene.",
+      "Rosta bröden lätt.",
+      "Blanda majonnäs med chiliflakes.",
+      "Bygg burgaren: bröd, chilimajonnäs, sallad, halloumi, avokado, bröd."
+    ],
+    "tags": ["Vegetariskt", "Lunch", "Snabbmat"],
+    "createdAt": "2026-08-27T00:00:00Z"
+  },
+  {
+    "id": "sug-9",
+    "name": "Pasta Carbonara",
+    "description": "Klassisk romersk pasta med guanciale, ägg och pecorino.",
+    "ingredients": [
+      { "text": "Spaghetti", "amount": "400g" },
+      { "text": "Guanciale eller Pancetta", "amount": "150g" },
+      { "text": "Ägg", "amount": "3st" },
+      { "text": "Pecorino Romano", "amount": "50g" },
+      { "text": "Svartpeppar", "amount": "mycket" }
+    ],
+    "instructions": [
+      "Koka pastan i saltat vatten.",
+      "Stek guanciale tills det är krispigt.",
+      "Vispa ihop ägg och riven pecorino i en skål.",
+      "Blanda pastan med köttet, ta bort från värmen.",
+      "Rör snabbt i äggblandningen så att den blir krämig men inte stelnar."
+    ],
+    "tags": ["Italienskt", "Klassiker", "Pasta"],
+    "createdAt": "2026-08-27T00:00:00Z"
+  },
+  {
+    "id": "sug-10",
+    "name": "Sötpotatissoppa med kokosmjölk",
+    "description": "Värmande och len soppa med en touch av ingefära.",
+    "ingredients": [
+      { "text": "Sötpotatis", "amount": "800g" },
+      { "text": "Kokosmjölk", "amount": "400ml" },
+      { "text": "Grönsaksbuljong", "amount": "1 liter" },
+      { "text": "Ingefära", "amount": "2 cm" },
+      { "text": "Lök", "amount": "1st" }
+    ],
+    "instructions": [
+      "Fräs lök och riven ingefära i en kastrull.",
+      "Tillsätt tärnad sötpotatis och buljong.",
+      "Koka tills potatisen är mjuk.",
+      "Mixa soppan slät med en stavmixer.",
+      "Rör ner kokosmjölk och värm upp igen."
+    ],
+    "tags": ["Vegetariskt", "Soppa", "Nyttigt"],
+    "createdAt": "2026-08-27T00:00:00Z"
+  }
+]

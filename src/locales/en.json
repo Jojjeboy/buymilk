@@ -230,7 +230,8 @@
   "views": {
     "meals": "Meals",
     "mealsDescription": "Your saved favorite meals",
-    "noMeals": "No saved meals yet"
+    "noMeals": "No saved meals yet",
+    "randomMeal": "Random Meal"
   },
   "meals": {
     "nextMeal": "Next Meal",

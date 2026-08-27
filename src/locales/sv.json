@@ -230,7 +230,8 @@
   "views": {
     "meals": "Måltider",
     "mealsDescription": "Dina sparade favorit-måltider",
-    "noMeals": "Inga sparade måltider än"
+    "noMeals": "Inga sparade måltider än",
+    "randomMeal": "Slumpa måltid"
   },
   "meals": {
     "nextMeal": "Nästa måltid",
