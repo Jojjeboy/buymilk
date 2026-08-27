@@ -6,7 +6,7 @@ import type { Item, List, Meal, PlannedMeal } from '../types';
 import { DndContext, closestCenter, KeyboardSensor, PointerSensor, useSensor, useSensors, type DragEndEvent } from '@dnd-kit/core';
 import { arrayMove, SortableContext, sortableKeyboardCoordinates, verticalListSortingStrategy } from '@dnd-kit/sortable';
 import { SortableItem } from './SortableItem';
-import { Plus, RotateCcw, ChevronDown, CloudUpload, Mic, Upload, Trash2, Utensils } from 'lucide-react';
+import { Plus, RotateCcw, ChevronDown, CloudUpload, Mic, Upload, Trash2, Utensils, Braces } from 'lucide-react';
 import { v4 as uuidv4 } from 'uuid';
 import { Confetti } from './Confetti';
 import { convertToItems } from '../utils/importUtils';
@@ -363,7 +363,7 @@ export const GroceryListView: React.FC = React.memo(function GroceryListView() {
                             title={t('categories.importJSON', 'Importera JSON')}
                             aria-label={t('categories.importJSON', 'Importera JSON')}
                         >
-                            <Upload size={18} />
+                                <Braces size={18} />
                         </button>
                     </div>
             </div>
@@ -463,7 +463,7 @@ export const GroceryListView: React.FC = React.memo(function GroceryListView() {
 
 
             {/* Floating Persistent Bottom Bar */}
-            {document.body && createPortal(
+            {!importModalOpen && document.body && createPortal(
                 <div className="fixed bottom-0 left-0 right-0 md:left-72 bg-gradient-to-t from-white via-white/95 to-white/0 dark:from-gray-900 dark:via-gray-900/95 dark:to-gray-900/0 pt-10 pb-6 px-4 z-[100] transition-all duration-300 pointer-events-none">
                     <div className="max-w-4xl mx-auto pointer-events-auto">
                             <div className="relative group">

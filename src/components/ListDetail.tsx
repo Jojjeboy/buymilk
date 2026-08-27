@@ -5,7 +5,7 @@ import type { Item, ListSettings, List } from '../types';
 import { DndContext, closestCenter, KeyboardSensor, PointerSensor, useSensor, useSensors, type DragEndEvent, useDroppable } from '@dnd-kit/core';
 import { arrayMove, SortableContext, sortableKeyboardCoordinates, verticalListSortingStrategy } from '@dnd-kit/sortable';
 import { SortableItem } from './SortableItem';
-import { Plus, ChevronLeft, Settings, RotateCcw, ChevronDown, Trash2, Edit2, Pin, Upload } from 'lucide-react';
+import { Plus, ChevronLeft, Settings, RotateCcw, ChevronDown, Trash2, Edit2, Pin, Upload, Braces } from 'lucide-react';
 import { v4 as uuidv4 } from 'uuid';
 import { Modal } from './Modal';
 import { ImportItemsModal } from './ImportItemsModal';
@@ -606,7 +606,7 @@ export const ListDetail: React.FC = React.memo(function ListDetail() {
                 </div>
             )}
 
-            {!list?.archived && (
+            {!list?.archived && !importModalOpen && (
                 <div className="relative">
                      <form onSubmit={handleAddItem} className="flex gap-2">
                         <div className="relative flex-1">
@@ -656,7 +656,7 @@ export const ListDetail: React.FC = React.memo(function ListDetail() {
                             className="p-3 rounded-xl bg-pink-500 hover:bg-pink-600 transition-colors text-white shadow-lg animate-bounce"
                             title={t('common.import', 'Import')}
                         >
-                            <Upload size={20} />
+                                <Braces size={20} />
                         </button>
                         <button
                             onClick={() => setSettingsOpen(true)}

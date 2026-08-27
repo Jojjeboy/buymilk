@@ -3,7 +3,7 @@ import { useApp } from '../context/AppContext';
 import { useToast } from '../context/ToastContext';
 import { useTranslation } from 'react-i18next';
 import { Modal } from './Modal';
-import { Plus, Trash2, Copy } from 'lucide-react';
+import { Plus, Trash2, Copy, Braces } from 'lucide-react';
 import { Meal } from '../types';
 
 const EXAMPLE_INGREDIENTS_JSON = JSON.stringify([
@@ -108,12 +108,13 @@ export const MealIngredientsModal: React.FC<MealIngredientsModalProps> = ({ isOp
                         {isImporting ? t('views.importIngredients', 'Importera ingredienser') : t('views.addIngredients', 'Lägg till ingredienser')}
                     </h4>
                     {!isImporting && (
-                        <button 
-                            onClick={() => setIsImporting(true)}
-                            className="text-xs text-blue-500 hover:underline font-medium"
-                        >
-                            {t('common.importJSON', 'Importera JSON')}
-                        </button>
+                                <button 
+                                    onClick={() => setIsImporting(true)}
+                                    className="text-xs text-blue-500 hover:underline font-medium flex items-center gap-1"
+                                >
+                                    <Braces size={12} />
+                                    {t('common.importJSON', 'Importera JSON')}
+                                </button>
                     )}
                 </div>
 

@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Upload, ChevronDown, Copy, Check, X, FileText } from 'lucide-react';
+import { Braces, Upload, ChevronDown, Copy, Check, X, FileText } from 'lucide-react';
 import { parseRecipeText } from '../utils/recipeParser';
 import { parseJsonItems, ParsedImportItem } from '../utils/importUtils';
 
@@ -149,7 +149,7 @@ export const ImportItemsModal: React.FC<ImportItemsModalProps> = ({
     return (
         /* Backdrop */
         <div
-            className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-end sm:items-center justify-center p-4 animate-in fade-in duration-200"
+            className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4 animate-in fade-in duration-200"
             onClick={(e) => { if (e.target === e.currentTarget) handleClose(); }}
         >
             <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl w-full max-w-lg max-h-[90vh] flex flex-col animate-in slide-in-from-bottom-4 sm:slide-in-from-bottom-0 sm:zoom-in-95 duration-200">
@@ -157,7 +157,7 @@ export const ImportItemsModal: React.FC<ImportItemsModalProps> = ({
                 <div className="flex items-center justify-between px-5 pt-5 pb-3 border-b border-gray-100 dark:border-gray-700">
                     <div className="flex items-center gap-2">
                         <div className="p-2 bg-blue-100 dark:bg-blue-900/30 rounded-lg">
-                            {importMode === 'json' ? <Upload size={18} className="text-blue-600 dark:text-blue-400" /> : <FileText size={18} className="text-blue-600 dark:text-blue-400" />}
+                            {importMode === 'json' ? <Braces size={18} className="text-blue-600 dark:text-blue-400" /> : <FileText size={18} className="text-blue-600 dark:text-blue-400" />}
                         </div>
                         <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
                             {importMode === 'json' ? t('importItems.title') : t('importRecipe.title')}
@@ -272,7 +272,7 @@ export const ImportItemsModal: React.FC<ImportItemsModalProps> = ({
                                 onClick={() => fileInputRef.current?.click()}
                                 className="w-full flex items-center justify-center gap-2 p-3 rounded-xl border-2 border-dashed border-gray-200 dark:border-gray-700 hover:border-blue-400 dark:hover:border-blue-500 hover:bg-blue-50 dark:hover:bg-blue-900/10 text-gray-500 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-all text-sm font-medium"
                             >
-                                <Upload size={16} />
+                                <Braces size={16} />
                                 {t('importItems.selectFile')}
                             </button>
                             <input
@@ -358,7 +358,7 @@ export const ImportItemsModal: React.FC<ImportItemsModalProps> = ({
                         disabled={isImporting || (importMode === 'json' ? !jsonText.trim() : selectedItems.size === 0)}
                         className="flex-1 px-4 py-2.5 rounded-xl bg-blue-600 text-white font-medium text-sm hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center justify-center gap-2"
                     >
-                        {importMode === 'json' ? <Upload size={15} /> : <Check size={15} />}
+                        {importMode === 'json' ? <Braces size={15} /> : <Check size={15} />}
                         {isImporting ? t('importItems.importing') : (importMode === 'json' ? t('importItems.import') : t('importRecipe.import'))}
                     </button>
                 </div>
