@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
 import { useApp } from '../context/AppContext';
 import { Link } from 'react-router-dom';
-import { Moon, Sun, Menu, X, Eye, EyeOff } from 'lucide-react';
+import { Moon, Sun, Menu, X, Eye } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { Sidebar } from './Sidebar';
 import { OfflineIndicator } from './OfflineIndicator';
 import { SyncIndicator } from './SyncIndicator';
 import { useWakeLock } from '../hooks/useWakeLock';
+import { ShoppingListOverlay } from './ShoppingListOverlay';
 
 export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     const { t } = useTranslation();
@@ -14,6 +15,7 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
     const { isSupported, isLocked, requestWakeLock, releaseWakeLock } = useWakeLock();
     
     const [isMenuOpen, setIsMenuOpen] = useState(false);
+    const [isShoppingListViewOpen, setIsShoppingListViewOpen] = useState(false);
 
     return (
         <div className="flex min-h-screen bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100 transition-colors duration-300 overflow-x-hidden">
@@ -63,17 +65,24 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
                         </div>
                         <div className="flex items-center gap-2">
                             {isSupported && (
-                                <button
-                                    onClick={() => isLocked ? releaseWakeLock() : requestWakeLock()}
-                                    className={`p-2 rounded-full transition-colors ${
-                                        isLocked 
-                                            ? 'bg-yellow-100 dark:bg-yellow-900/30 text-yellow-600 dark:text-yellow-400' 
-                                            : 'text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700'
-                                    }`}
-                                    title={t('settings.wakeLock')}
-                                >
-                                    {isLocked ? <Eye size={22} /> : <EyeOff size={22} />}
-                                </button>
+                                 <button
+                                     onClick={() => {
+                                         if (!isShoppingListViewOpen) {
+                                             requestWakeLock();
+                                         } else {
+                                             releaseWakeLock();
+                                         }
+                                         setIsShoppingListViewOpen(!isShoppingListViewOpen);
+                                     }}
+                                     className={`p-2 rounded-full transition-colors ${
+                                         isLocked 
+                                             ? 'bg-yellow-100 dark:bg-yellow-900/30 text-yellow-600 dark:text-yellow-400' 
+                                             : 'text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700'
+                                     }`}
+                                     title={t('settings.wakeLock')}
+                                 >
+                                     <Eye size={22} />
+                                 </button>
                             )}
                             <button
                                 onClick={toggleTheme}
@@ -97,6 +106,14 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
                 <main className="flex-1 p-4 w-full mx-auto md:p-8 md:max-w-7xl pb-8 min-w-0">
                     {children}
                 </main>
+                <ShoppingListOverlay 
+                    isOpen={isShoppingListViewOpen} 
+                    onClose={() => {
+                        setIsShoppingListViewOpen(false);
+                        releaseWakeLock();
+                    }} 
+                    isWakeLockActive={isLocked}
+                />
             </div>
         </div>
     );
