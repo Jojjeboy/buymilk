@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { useApp } from '../context/AppContext';
 import { useToast } from '../context/ToastContext';
-import type { Item, List, Meal } from '../types';
+import type { Item, List, Meal, PlannedMeal } from '../types';
 import { DndContext, closestCenter, KeyboardSensor, PointerSensor, useSensor, useSensors, type DragEndEvent } from '@dnd-kit/core';
 import { arrayMove, SortableContext, sortableKeyboardCoordinates, verticalListSortingStrategy } from '@dnd-kit/sortable';
 import { SortableItem } from './SortableItem';
@@ -104,32 +104,52 @@ export const GroceryListView: React.FC = React.memo(function GroceryListView() {
     }, [newItemText, itemHistory]);
 
     // Next Meal Banner Logic
-    const nextMeals = React.useMemo(() => {
+    const { nextMeals, nextMealLabel } = React.useMemo(() => {
         const now = new Date();
         const hour = now.getHours();
-        const plan = getPlanForDate(now);
-        if (!plan) return [];
+        const minute = now.getMinutes();
+        const isAfterEveningCutoff = hour > 19 || (hour === 19 && minute >= 30);
+        
+        const targetDate = new Date(now);
+        let label = t('meals.nextMeal', 'Nästa måltid');
 
-        const dateStr = formatDate(now);
+        if (isAfterEveningCutoff) {
+            targetDate.setDate(targetDate.getDate() + 1);
+            label = t('meals.tomorrow', 'Imorgon');
+        }
+
+        const plan = getPlanForDate(targetDate);
+        if (!plan) return { nextMeals: [], nextMealLabel: label };
+
+        const dateStr = formatDate(targetDate);
         const day = plan.days.find(d => d.date === dateStr);
-        if (!day) return [];
+        if (!day) return { nextMeals: [], nextMealLabel: label };
 
-        if (hour < 14) {
-            // Show all meals for the day
-            return day.meals.map(m => ({
+        let meals: { type: string; title: string; meal: PlannedMeal }[] = [];
+        if (isAfterEveningCutoff) {
+            // Show all meals for tomorrow
+            meals = day.meals.map(m => ({
+                type: m.type,
+                title: m.plannedMeal.customTitle || '',
+                meal: m.plannedMeal
+            })).filter(m => m.title);
+        } else if (hour < 14) {
+            // Show all meals for today
+            meals = day.meals.map(m => ({
                 type: m.type,
                 title: m.plannedMeal.customTitle || '',
                 meal: m.plannedMeal
             })).filter(m => m.title);
         } else {
-            // Show only dinner
+            // Show only dinner for today
             const dinner = day.meals.find(m => m.type === 'dinner');
             if (dinner && dinner.plannedMeal.customTitle) {
-                return [{ type: 'dinner', title: dinner.plannedMeal.customTitle, meal: dinner.plannedMeal }];
+                meals = [{ type: 'dinner', title: dinner.plannedMeal.customTitle, meal: dinner.plannedMeal }];
             }
         }
-        return [];
-    }, [getPlanForDate]);
+        
+        return { nextMeals: meals, nextMealLabel: label };
+    }, [getPlanForDate, t]);
 
     if (loading && !list) {
         return <div className="flex justify-center items-center h-64"><div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></div></div>;
@@ -303,7 +323,7 @@ export const GroceryListView: React.FC = React.memo(function GroceryListView() {
                     </div>
                     <div className="flex flex-col gap-1">
                         <span className="text-xs font-bold text-blue-600 dark:text-blue-400 uppercase tracking-wider">
-                            {t('meals.nextMeal', 'Nästa måltid')}
+                            {nextMealLabel}
                         </span>
                         <div className="flex flex-wrap gap-x-3 gap-y-1">
                             {nextMeals.map((meal, idx) => (

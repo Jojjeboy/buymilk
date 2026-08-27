@@ -232,6 +232,13 @@
     "mealsDescription": "Your saved favorite meals",
     "noMeals": "No saved meals yet"
   },
+  "meals": {
+    "nextMeal": "Next Meal",
+    "tomorrow": "Tomorrow",
+    "dinner": "Dinner",
+    "lunch": "Lunch",
+    "snack": "Snack"
+  },
   "placeholders": {
     "newMeal": "Add new meal..."
   },

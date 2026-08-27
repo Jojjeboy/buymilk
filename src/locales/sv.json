@@ -232,6 +232,13 @@
     "mealsDescription": "Dina sparade favorit-måltider",
     "noMeals": "Inga sparade måltider än"
   },
+  "meals": {
+    "nextMeal": "Nästa måltid",
+    "tomorrow": "Imorgon",
+    "dinner": "Middag",
+    "lunch": "Lunch",
+    "snack": "Mellanmål"
+  },
   "placeholders": {
     "newMeal": "Lägg till ny måltid..."
   },
