@@ -27,6 +27,7 @@ export const MealPlanView: React.FC = () => {
     const { t } = useTranslation();
     const { addItemsToList, defaultListId } = useApp();
     const [isExportOpen, setIsExportOpen] = useState(false);
+    const [isConfirmAddIngredientsOpen, setIsConfirmAddIngredientsOpen] = useState(false);
     const [recipeViewMeal, setRecipeViewMeal] = useState<Meal | null>(null);
     const [modalSlot, setModalSlot] = useState<{ date: Date; type: MealType } | null>(null);
 
@@ -232,13 +233,13 @@ export const MealPlanView: React.FC = () => {
                      >
                          <CalendarDays className="w-5 h-5" />
                      </button>
-                     <button 
-                         onClick={handleGenerateWeeklyList}
-                         className="p-2 rounded-lg bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-400 hover:bg-green-100 dark:hover:bg-green-900/40 transition-colors"
-                         title="Generera veckans inköpslista"
-                     >
-                         <ShoppingCart className="w-5 h-5" />
-                     </button>
+                      <button 
+                          onClick={() => setIsConfirmAddIngredientsOpen(true)}
+                          className="p-2 rounded-lg bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-400 hover:bg-green-100 dark:hover:bg-green-900/40 transition-colors"
+                          title="Generera veckans inköpslista"
+                      >
+                          <ShoppingCart className="w-5 h-5" />
+                      </button>
                 </div>
             </div>
 
@@ -432,23 +433,35 @@ export const MealPlanView: React.FC = () => {
                      })}
                  </div>
 
-            <Modal
-                isOpen={isExportOpen}
-                onClose={() => setIsExportOpen(false)}
-                title="Exportera Måltidsplan"
-                message="Här är din måltidsplan för de valda dagarna i JSON-format. Du kan enkelt kopiera detta och använda i andra appar."
-                confirmText="Kopiera till urklipp"
-                onConfirm={() => {
-                    navigator.clipboard.writeText(exportJSON);
-                    showToast('JSON kopierad till urklipp', 'success');
-                }}
-            >
-                <div className="relative">
-                    <pre className="bg-gray-50 dark:bg-gray-900 p-4 rounded-xl text-xs overflow-x-auto whitespace-pre-wrap font-mono text-gray-800 dark:text-gray-200 border border-gray-200 dark:border-gray-700 max-h-64 overflow-y-auto custom-scrollbar">
-                        {exportJSON}
-                    </pre>
-                </div>
-            </Modal>
+             <Modal
+                 isOpen={isExportOpen}
+                 onClose={() => setIsExportOpen(false)}
+                 title="Exportera Måltidsplan"
+                 message="Här är din måltidsplan för de valda dagarna i JSON-format. Du kan enkelt kopiera detta och använda i andra appar."
+                 confirmText="Kopiera till urklipp"
+                 onConfirm={() => {
+                     navigator.clipboard.writeText(exportJSON);
+                     showToast('JSON kopierad till urklipp', 'success');
+                 }}
+             >
+                 <div className="relative">
+                     <pre className="bg-gray-50 dark:bg-gray-900 p-4 rounded-xl text-xs overflow-x-auto whitespace-pre-wrap font-mono text-gray-800 dark:text-gray-200 border border-gray-200 dark:border-gray-700 max-h-64 overflow-y-auto custom-scrollbar">
+                         {exportJSON}
+                     </pre>
+                 </div>
+             </Modal>
+
+             <Modal
+                 isOpen={isConfirmAddIngredientsOpen}
+                 onClose={() => setIsConfirmAddIngredientsOpen(false)}
+                 title={t('mealplan.addIngredientsTitle', 'Lägg till ingredienser')}
+                 message={t('mealplan.addIngredientsMessage', 'Vill du lägga till alla ingredienser från de planerade måltiderna i din inköpslista?')}
+                 confirmText={t('common.confirm', 'Bekräfta')}
+                 onConfirm={async () => {
+                     await handleGenerateWeeklyList();
+                     setIsConfirmAddIngredientsOpen(false);
+                 }}
+             />
 
              <MealPlanEditModal
                  isOpen={!!modalSlot}

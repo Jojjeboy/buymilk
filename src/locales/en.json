@@ -238,6 +238,10 @@
     "lunch": "Lunch",
     "snack": "Snack"
   },
+  "mealplan": {
+    "addIngredientsTitle": "Add Ingredients",
+    "addIngredientsMessage": "Do you want to add all ingredients from the planned meals to your shopping list?"
+  },
   "placeholders": {
     "newMeal": "Add new meal..."
   },

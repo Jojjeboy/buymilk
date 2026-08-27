@@ -238,6 +238,10 @@
     "lunch": "Lunch",
     "snack": "Mellanmål"
   },
+  "mealplan": {
+    "addIngredientsTitle": "Lägg till ingredienser",
+    "addIngredientsMessage": "Vill du lägga till alla ingredienser från de planerade måltiderna i din inköpslista?"
+  },
   "placeholders": {
     "newMeal": "Lägg till ny måltid..."
   },
