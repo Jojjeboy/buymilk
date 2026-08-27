@@ -142,6 +142,7 @@
     "save": "Spara",
     "undo": "Ångra",
     "confirm": "Bekräfta",
+    "close": "Stäng",
     "done": "Klar",
     "name": "Namn",
     "edit": "Redigera",
@@ -236,7 +237,11 @@
     "tomorrow": "Imorgon",
     "dinner": "Middag",
     "lunch": "Lunch",
-    "snack": "Mellanmål"
+    "snack": "Mellanmål",
+    "ingredients": "Ingredienser",
+    "preparation": "Tillagning",
+    "noIngredients": "Inga ingredienser listade.",
+    "noInstructions": "Inga instruktioner för tillagning listade."
   },
   "mealplan": {
     "addIngredientsTitle": "Lägg till ingredienser",

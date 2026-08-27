@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { X, Utensils, Tag, BookOpen, Edit2 } from 'lucide-react';
 import { Meal } from '../types';
+import { useTranslation } from 'react-i18next';
 
 interface MealDetailModalProps {
     isOpen: boolean;
@@ -10,6 +11,7 @@ interface MealDetailModalProps {
 }
 
 export const MealDetailModal: React.FC<MealDetailModalProps> = ({ isOpen, onClose, onEdit, meal }) => {
+    const { t } = useTranslation();
     const [activeTab, setActiveTab] = useState<'ingredients' | 'instructions'>('ingredients');
 
     if (!isOpen || !meal) return null;
@@ -35,7 +37,7 @@ export const MealDetailModal: React.FC<MealDetailModalProps> = ({ isOpen, onClos
                     <button 
                         onClick={onClose}
                         className="absolute top-4 right-4 p-2 bg-black/20 hover:bg-black/40 text-white rounded-full backdrop-blur-md transition-colors"
-                        title="Close"
+                        title={t('common.close', 'Close')}
                     >
                         <X size={20} />
                     </button>
@@ -69,28 +71,28 @@ export const MealDetailModal: React.FC<MealDetailModalProps> = ({ isOpen, onClos
                      )}
 
                      <div className="flex p-1 bg-gray-100 dark:bg-gray-900/50 rounded-xl mb-6">
-                         <button 
-                             onClick={() => setActiveTab('ingredients')}
-                             className={`flex-1 flex items-center justify-center gap-2 py-2 text-sm font-medium rounded-lg transition-all ${
-                                 activeTab === 'ingredients' 
-                                 ? 'bg-white dark:bg-gray-800 text-blue-600 dark:text-blue-400 shadow-sm' 
-                                 : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300'
-                             }`}
-                         >
-                             <Utensils size={16} />
-                             Ingredients
-                         </button>
-                         <button 
-                             onClick={() => setActiveTab('instructions')}
-                             className={`flex-1 flex items-center justify-center gap-2 py-2 text-sm font-medium rounded-lg transition-all ${
-                                 activeTab === 'instructions' 
-                                 ? 'bg-white dark:bg-gray-800 text-blue-600 dark:text-blue-400 shadow-sm' 
-                                 : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300'
-                             }`}
-                         >
-                             <BookOpen size={16} />
-                             Preparation
-                         </button>
+                          <button 
+                              onClick={() => setActiveTab('ingredients')}
+                              className={`flex-1 flex items-center justify-center gap-2 py-2 text-sm font-medium rounded-lg transition-all ${
+                                  activeTab === 'ingredients' 
+                                  ? 'bg-white dark:bg-gray-800 text-blue-600 dark:text-blue-400 shadow-sm' 
+                                  : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300'
+                              }`}
+                          >
+                              <Utensils size={16} />
+                              {t('meals.ingredients', 'Ingredients')}
+                          </button>
+                          <button 
+                              onClick={() => setActiveTab('instructions')}
+                              className={`flex-1 flex items-center justify-center gap-2 py-2 text-sm font-medium rounded-lg transition-all ${
+                                  activeTab === 'instructions' 
+                                  ? 'bg-white dark:bg-gray-800 text-blue-600 dark:text-blue-400 shadow-sm' 
+                                  : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300'
+                              }`}
+                          >
+                              <BookOpen size={16} />
+                              {t('meals.preparation', 'Preparation')}
+                          </button>
                      </div>
 
                      {activeTab === 'ingredients' ? (
@@ -111,9 +113,9 @@ export const MealDetailModal: React.FC<MealDetailModalProps> = ({ isOpen, onClos
                                      ))}
                                  </ul>
                              </div>
-                         ) : (
-                             <p className="text-sm text-gray-500 dark:text-gray-400 italic text-center py-4">No ingredients listed.</p>
-                         )
+                          ) : (
+                              <p className="text-sm text-gray-500 dark:text-gray-400 italic text-center py-4">{t('meals.noIngredients', 'No ingredients listed.')}</p>
+                          )
                      ) : (
                          meal.instructions && meal.instructions.length > 0 ? (
                              <div className="space-y-3 animate-in fade-in slide-in-from-right-2 duration-200">
@@ -129,9 +131,9 @@ export const MealDetailModal: React.FC<MealDetailModalProps> = ({ isOpen, onClos
                                      ))}
                                  </ol>
                              </div>
-                         ) : (
-                             <p className="text-sm text-gray-500 dark:text-gray-400 italic text-center py-4">No preparation instructions listed.</p>
-                         )
+                          ) : (
+                              <p className="text-sm text-gray-500 dark:text-gray-400 italic text-center py-4">{t('meals.noInstructions', 'No preparation instructions listed.')}</p>
+                          )
                      )}
 
                     <div className="mt-8 flex justify-end gap-3">
@@ -139,14 +141,14 @@ export const MealDetailModal: React.FC<MealDetailModalProps> = ({ isOpen, onClos
                             onClick={onClose}
                             className="px-6 py-2 text-sm font-medium text-gray-700 dark:text-gray-200 bg-gray-100 dark:bg-gray-700 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
                         >
-                            Close
+                            {t('common.close', 'Close')}
                         </button>
                         <button 
                             onClick={() => meal && onEdit(meal)}
                             className="flex items-center gap-2 px-6 py-2 text-sm font-medium text-white bg-blue-500 rounded-lg hover:bg-blue-600 transition-colors"
                         >
                             <Edit2 size={16} />
-                            Edit
+                            {t('common.edit', 'Edit')}
                         </button>
                     </div>
                 </div>

@@ -142,6 +142,7 @@
     "save": "Save",
     "undo": "Undo",
     "confirm": "Confirm",
+    "close": "Close",
     "done": "Done",
     "name": "Name",
     "edit": "Edit",
@@ -236,7 +237,11 @@
     "tomorrow": "Tomorrow",
     "dinner": "Dinner",
     "lunch": "Lunch",
-    "snack": "Snack"
+    "snack": "Snack",
+    "ingredients": "Ingredients",
+    "preparation": "Preparation",
+    "noIngredients": "No ingredients listed.",
+    "noInstructions": "No preparation instructions listed."
   },
   "mealplan": {
     "addIngredientsTitle": "Add Ingredients",
