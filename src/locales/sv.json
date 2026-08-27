@@ -56,7 +56,6 @@
     "deleteMessage": "Är du säker på att du vill ta bort denna lista? Denna åtgärd kan inte ångras.",
     "deleteConfirm": "Ta bort",
     "progress": "Avklarade",
-    "itemsCount": "objekt",
     "moveToCategory": "Flytta till kategori:",
     "noOtherCategories": "Inga andra kategorier",
     "copy": "Kopiera lista",

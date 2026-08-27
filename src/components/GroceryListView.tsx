@@ -366,20 +366,6 @@ export const GroceryListView: React.FC = React.memo(function GroceryListView() {
                             <Upload size={18} />
                         </button>
                     </div>
-                <div className="flex items-center gap-2 self-end sm:self-auto">
-                    <span className="text-xs font-semibold px-2.5 py-1 bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 rounded-full border border-gray-200 dark:border-gray-700">
-                        {list.items.filter(i => !i.completed).length} {t('lists.itemsCount')}
-                    </span>
-                    {list.items.some(i => i.completed) && (
-                        <button
-                            onClick={() => setClearCompletedModalOpen(true)}
-                            className="flex items-center gap-1 text-xs font-semibold px-2.5 py-1 bg-red-50 dark:bg-red-950/30 text-red-600 dark:text-red-400 rounded-full border border-red-200 dark:border-red-900/50 hover:bg-red-100 dark:hover:bg-red-900/50 transition-colors"
-                        >
-                            <Trash2 size={12} />
-                            {t('lists.clearCompleted')}
-                        </button>
-                    )}
-                </div>
             </div>
 
             <Modal
@@ -435,13 +421,22 @@ export const GroceryListView: React.FC = React.memo(function GroceryListView() {
                         {/* Completed Items Accordion */}
                         {completedItems.length > 0 && (
                             <div className="mt-8 pt-4 border-t border-gray-100 dark:border-gray-800">
-                                <button
-                                    onClick={() => setCompletedAccordionOpen(!completedAccordionOpen)}
-                                    className="flex items-center gap-2 text-sm font-medium text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 transition-colors mb-4"
-                                >
-                                    <ChevronDown size={16} className={`transition-transform ${completedAccordionOpen ? 'rotate-180' : ''}`} />
-                                    {t('lists.completedItems', 'Completed Items')} ({completedItems.length})
-                                </button>
+                                <div className="flex items-center justify-between mb-4">
+                                    <button
+                                        onClick={() => setCompletedAccordionOpen(!completedAccordionOpen)}
+                                        className="flex items-center gap-2 text-sm font-medium text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 transition-colors"
+                                    >
+                                        <ChevronDown size={16} className={`transition-transform ${completedAccordionOpen ? 'rotate-180' : ''}`} />
+                                        {t('lists.completedItems', 'Completed Items')} ({completedItems.length})
+                                    </button>
+                                    <button
+                                        onClick={() => setClearCompletedModalOpen(true)}
+                                        className="flex items-center gap-1 text-xs font-semibold px-2.5 py-1 bg-red-50 dark:bg-red-950/30 text-red-600 dark:text-red-400 rounded-full border border-red-200 dark:border-red-900/50 hover:bg-red-100 dark:hover:bg-red-900/50 transition-colors"
+                                    >
+                                        <Trash2 size={12} />
+                                        {t('lists.clearCompleted')}
+                                    </button>
+                                </div>
 
                                 {completedAccordionOpen && (
                                     <div className="space-y-2 animate-in slide-in-from-top-2 duration-200">
