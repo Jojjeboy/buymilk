@@ -5,9 +5,10 @@ import { useTranslation } from 'react-i18next';
 import { Modal } from './Modal';
 import { MealPlanEditModal } from './MealPlanEditModal';
 import { MealType, Item, Meal } from '../types';
-import { ChevronLeft, ChevronRight, Utensils, CalendarDays, Download, Heart, ShoppingCart, BookOpen, AlertCircle } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Utensils, CalendarDays, Download, Heart, ShoppingCart, BookOpen, AlertCircle, Calendar } from 'lucide-react';
 import { useMealPlan } from '../hooks/useMealPlan';
 import { RecipeDetailModal } from './RecipeDetailModal';
+import { exportMealPlanToICS } from '../utils/calendarUtils';
 import { v4 as uuidv4 } from 'uuid';
 import { getISOWeek, formatDate, getDayName } from '../utils/dateUtils';
 
@@ -169,6 +170,26 @@ export const MealPlanView: React.FC = () => {
         }
     };
 
+    const handleExportToCalendar = () => {
+        const exportData = displayDays.map(date => ({
+            date,
+            lunch: getMealText(date, 'lunch'),
+            dinner: getMealText(date, 'dinner')
+        }));
+
+        const icsContent = exportMealPlanToICS(exportData);
+        const blob = new Blob([icsContent], { type: 'text/calendar;charset=utf-8' });
+        const url = window.URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.setAttribute('download', `mealplan-${formatDate(startDate)}.ics`);
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        window.URL.revokeObjectURL(url);
+        showToast(t('toasts.calendarExported', 'Måltidsplan exporterad till kalender'), 'success');
+    };
+
 
     let lastRenderedWeekNumber = -1;
 
@@ -198,13 +219,20 @@ export const MealPlanView: React.FC = () => {
                     </p>
                 </div>
                 <div className="flex items-center gap-2">
-                    <button 
-                        onClick={() => setIsExportOpen(true)}
-                        className="p-2 rounded-lg bg-blue-100 dark:bg-blue-900/40 text-blue-600 dark:text-blue-400 hover:bg-blue-200 dark:hover:bg-blue-900/60 transition-colors mr-2"
-                        title="Exportera till JSON"
-                    >
-                        <Download className="w-5 h-5" />
-                    </button>
+                        <button 
+                            onClick={() => setIsExportOpen(true)}
+                            className="p-2 rounded-lg bg-blue-100 dark:bg-blue-900/40 text-blue-600 dark:text-blue-400 hover:bg-blue-200 dark:hover:bg-blue-900/60 transition-colors mr-2"
+                            title="Exportera till JSON"
+                        >
+                            <Download className="w-5 h-5" />
+                        </button>
+                        <button 
+                            onClick={handleExportToCalendar}
+                            className="p-2 rounded-lg bg-indigo-100 dark:bg-indigo-900/40 text-indigo-600 dark:text-indigo-400 hover:bg-indigo-200 dark:hover:bg-indigo-900/60 transition-colors mr-2"
+                            title="Exportera till kalender (.ics)"
+                        >
+                            <Calendar className="w-5 h-5" />
+                        </button>
                     <button 
                         onClick={() => navigateDays('prev')}
                         className="p-2 rounded-lg bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"

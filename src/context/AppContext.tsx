@@ -216,7 +216,14 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     const addItemsToList = async (listId: string, newItems: Item[]) => {
         const list = listsSync.data.find((l: List) => l.id === listId);
         if (list) {
-            const updatedItems = [...newItems, ...list.items];
+            const existingTexts = new Set(list.items.map(item => item.text.toLowerCase().trim()));
+            const filteredNewItems = newItems.filter(item => 
+                !existingTexts.has(item.text.toLowerCase().trim())
+            );
+
+            if (filteredNewItems.length === 0) return;
+
+            const updatedItems = [...filteredNewItems, ...list.items];
             await updateListItems(listId, updatedItems);
         }
     };

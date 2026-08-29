@@ -1,102 +1,102 @@
 [
   {
-    "hash": "faa1c3127f2771ed8e96950e131553172fffdc6b",
-    "date": "2026-08-23 08:07:55 +0200",
-    "message": "style(MealEditModal): add scrolling to modal content"
+    "hash": "c3ab5fbfd4e2910e4236497e6ded784f840689ad",
+    "date": "2026-08-27 16:23:22 +0200",
+    "message": "feat: add random meal suggestion feature"
   },
   {
-    "hash": "8c9d1db8a0e3e9a6b6937653240496c785e7e6a6",
-    "date": "2026-08-22 18:22:44 +0200",
-    "message": "feat: improve meal plan mobile usability, add duplicate detection and replace inline editing with modal"
-  },
-  {
-    "hash": "5260112b294f81ee6579413be44f12128d70de22",
-    "date": "2026-08-22 18:20:00 +0200",
-    "message": "build: update tsconfig build info"
-  },
-  {
-    "hash": "e1a7812e53f4f9a3ccc44e06e7a411a0f65be9eb",
-    "date": "2026-08-22 18:14:53 +0200",
-    "message": "refactor(MealPlanView): extract meal input logic to MealPlanEditModal"
-  },
-  {
-    "hash": "27e4010505471f5cd3a07a639c8d8e36da28b087",
-    "date": "2026-08-22 12:44:21 +0200",
-    "message": "feat(meal-plan): implement drag-and-drop meal reorganization"
-  },
-  {
-    "hash": "bc671a8d2023a11d1716230112a15166ce2634b3",
-    "date": "2026-08-22 11:52:35 +0200",
-    "message": "docs: update meal plan improvement roadmap"
-  },
-  {
-    "hash": "82f47a94f3707aef60569600f310e1ac4df35194",
-    "date": "2026-08-22 11:27:59 +0200",
-    "message": "docs: update roadmap and enhance MealEditModal with recipe details"
-  },
-  {
-    "hash": "212e12eb1d86923d9124dc71da526006e35b93ac",
-    "date": "2026-08-22 10:37:01 +0200",
-    "message": "refactor: remove shopping list logic and clean up types"
-  },
-  {
-    "hash": "b854d466f7682f53569a43b49a2934cb83155e34",
-    "date": "2026-08-22 10:29:02 +0200",
-    "message": "Merge branch 'main' of https://github.com/Jojjeboy/buymilk"
-  },
-  {
-    "hash": "54e18a9160a41887d690e37161096c5d109f8431",
-    "date": "2026-08-22 10:27:32 +0200",
+    "hash": "dc2c1733ea67ed9ab22aaa3703db350ab6447ec9",
+    "date": "2026-08-27 16:18:08 +0200",
     "message": "mc"
   },
   {
-    "hash": "59968e3965761ca6a8deaab36759fd3f637fb529",
-    "date": "2026-08-22 10:19:00 +0200",
-    "message": "feat: implement meal card design with responsive grid and enhanced editing"
+    "hash": "8cd01e4e5f2441c6d9cdc9dc33e279a1b6393b0a",
+    "date": "2026-08-27 15:58:51 +0200",
+    "message": "fix: translate hardcoded strings in MealDetailModal"
   },
   {
-    "hash": "0f6d9369bc0d7dd66d039a83b7fe2351665e4a69",
-    "date": "2026-08-22 09:03:52 +0200",
-    "message": "Meal modal (#2)"
+    "hash": "3d222f964902f68357969e9fe67d58d71feb9f43",
+    "date": "2026-08-27 15:52:38 +0200",
+    "message": "feat: add edit button to MealDetailModal and update validation rules"
   },
   {
-    "hash": "dae8c1e6788f1d0fe95c78d1e44ec560113aaf1f",
-    "date": "2026-08-22 08:57:04 +0200",
-    "message": "chore: update commit history and refine meal plan logic"
+    "hash": "862bbb95bf8c11812f7fad06237b72dbb261296d",
+    "date": "2026-08-27 15:47:52 +0200",
+    "message": "feat(mealplan): add confirmation modal before generating shopping list"
   },
   {
-    "hash": "b054623524d0a9e375b2f408a2f9abe7e747add9",
-    "date": "2026-08-22 08:56:40 +0200",
-    "message": "fix: remove explicit any in MealIngredientsModal to satisfy strict linting"
+    "hash": "9fb01dd3fefe8ac0022380af1d46f535b3641ca6",
+    "date": "2026-08-27 15:41:51 +0200",
+    "message": "Added .clinerules"
   },
   {
-    "hash": "def06bda4c8a2f58175f6a2e2088cf0a5c0e11f1",
-    "date": "2026-08-21 11:17:15 +0200",
-    "message": "Unused variable"
+    "hash": "644df39f3847aacd198230da88b642fb016560e2",
+    "date": "2026-08-27 15:38:17 +0200",
+    "message": "feat(ui): enhance shopping list item styling and display"
   },
   {
-    "hash": "19e53045f285dd89e9d36677ca1f219cdbcc605f",
-    "date": "2026-08-21 11:12:11 +0200",
-    "message": "feat: implement SyncIndicator and meal library saving"
+    "hash": "b8089f386cf39a310266bdc7b3e02f903fefb359",
+    "date": "2026-08-27 14:55:41 +0200",
+    "message": "feat(grocery-list): prepend new items and group completed items"
   },
   {
-    "hash": "eb4df304be81872f6b5692d75f77e568f4f5bfac",
-    "date": "2026-08-21 10:54:15 +0200",
-    "message": "feat: implement meals management with CRUD functionality and dedicated view"
+    "hash": "e8e081e5ffd2921da08c2bc05db9d90cd723d87b",
+    "date": "2026-08-27 14:48:35 +0200",
+    "message": "feat(layout): integrate ShoppingListOverlay with wake lock control"
   },
   {
-    "hash": "c4c36564c11703788167fe4e0726b17fcb9d8440",
-    "date": "2026-08-21 10:34:31 +0200",
-    "message": "ci: upgrade Node.js version to 22 in CI workflow"
+    "hash": "442c2457c1deb6a657a0d3b63c3023a33caa1e6c",
+    "date": "2026-08-27 14:07:01 +0200",
+    "message": "docs: translate improvements checklist to Swedish and update tasks"
   },
   {
-    "hash": "f21c909d14c6cff178f4383b34878a7e0f2dfc30",
-    "date": "2026-08-21 10:29:51 +0200",
-    "message": "Merge branch 'main' into ci-all-branches"
+    "hash": "a0daecd349f08839ee61369e12306b2c621eda4c",
+    "date": "2026-08-27 13:59:49 +0200",
+    "message": "refactor: remove unused Upload icon and hide logo on mobile"
   },
   {
-    "hash": "d6418e93079a9addd79ef217d8bcaa2f0f73b40b",
-    "date": "2026-08-21 10:28:43 +0200",
-    "message": "Mealschedule (#1)"
+    "hash": "d973e0382dd42037ed007a3d3092f221aa927349",
+    "date": "2026-08-27 11:09:47 +0200",
+    "message": "refactor: replace Upload icon with Braces for JSON import actions and update modal/overlay visibility logic"
+  },
+  {
+    "hash": "d2e7c7d515d6641c84670b3cfb7ab5f57eeec798",
+    "date": "2026-08-27 10:20:28 +0200",
+    "message": "ui: relocate clear completed button in GroceryListView"
+  },
+  {
+    "hash": "2c66b514a2089d24f8ff1747a470a3ccc5848255",
+    "date": "2026-08-27 09:58:04 +0200",
+    "message": "style(SortableItem): improve layout responsiveness and alignment"
+  },
+  {
+    "hash": "ef1a302c35f7d828e75b0e0957166ce4b6e491b7",
+    "date": "2026-08-27 09:32:23 +0200",
+    "message": "feat(grocery-list): improve next meal banner logic and localization"
+  },
+  {
+    "hash": "2ea57abb03ba488105ad12efa31465bc3cbad0ed",
+    "date": "2026-08-26 15:43:19 +0200",
+    "message": "feat(meals): improve meal lookup and detail modal navigation"
+  },
+  {
+    "hash": "f79683213fbf5427863839d060ebaf14147462f9",
+    "date": "2026-08-26 15:31:32 +0200",
+    "message": "feat(grocery-list): add meal detail view to grocery list"
+  },
+  {
+    "hash": "7ac605cfde365a82ab6bc816b3c5188ecab85706",
+    "date": "2026-08-26 15:22:57 +0200",
+    "message": "feat(meals): add meal detail view and improve card interactions"
+  },
+  {
+    "hash": "7a109e701e5eb782f72ab133b640f829b0c02465",
+    "date": "2026-08-26 15:12:06 +0200",
+    "message": "chore: update commit history in commits.json"
+  },
+  {
+    "hash": "faa1c3127f2771ed8e96950e131553172fffdc6b",
+    "date": "2026-08-23 08:07:55 +0200",
+    "message": "style(MealEditModal): add scrolling to modal content"
   }
 ]

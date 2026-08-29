@@ -3,7 +3,6 @@
     "id": "sug-1",
     "name": "Klassisk Lasagne",
     "description": "En krämig och smakrik lasagne med köttfärs, bechamelsås och tomatsås.",
-    "imageUrl": "https://images.unsplash.com/photo-1574894709920-11b28e7367e3?auto=format&fit=crop&w=800&q=80",
     "ingredients": [
       { "text": "Köttfärs", "amount": "500g" },
       { "text": "Lasagneplattor", "amount": "12st" },
@@ -29,7 +28,6 @@
     "id": "sug-2",
     "name": "Vegetarisk Pad Thai",
     "description": "Thailändska nudlar med tofu, jordnötter och lime.",
-    "imageUrl": "https://images.unsplash.com/photo-1559847844-5315695dadae?auto=format&fit=crop&w=800&q=80",
     "ingredients": [
       { "text": "Rispudlar", "amount": "200g" },
       { "text": "Tofu", "amount": "200g" },
@@ -54,7 +52,6 @@
     "id": "sug-3",
     "name": "Tacos med kryddig kyckling",
     "description": "En festlig klassiker med hemgjord kryddblandning.",
-    "imageUrl": "https://images.unsplash.com/photo-1565299585323-38d6b0865b47?auto=format&fit=crop&w=800&q=80",
     "ingredients": [
       { "text": "Kycklingfilé", "amount": "600g" },
       { "text": "Tacoskal", "amount": "12st" },
@@ -78,7 +75,6 @@
     "id": "sug-4",
     "name": "Krämig Laxpasta",
     "description": "Lyxig pasta med lax, spenat och grädde.",
-    "imageUrl": "https://images.unsplash.com/photo-1621996346565-e3d5d6281318?auto=format&fit=crop&w=800&q=80",
     "ingredients": [
       { "text": "Laxfilé", "amount": "400g" },
       { "text": "Pasta (t.ex. Penne)", "amount": "400g" },
@@ -101,7 +97,6 @@
     "id": "sug-5",
     "name": "Köttbullar med potatismos",
     "description": "Svensk husmanskost när den är som bäst.",
-    "imageUrl": "https://images.unsplash.com/photo-1529042410759-befb1204b468?auto=format&fit=crop&w=800&q=80",
     "ingredients": [
       { "text": "Köttfärs", "amount": "500g" },
       { "text": "Ströbröd", "amount": "1/2 dl" },
@@ -123,7 +118,6 @@
     "id": "sug-6",
     "name": "Marockansk Couscous med grönsaker",
     "description": "En färgstark och nyttig rätt med spiskummin och saffran.",
-    "imageUrl": "https://images.unsplash.com/photo-1541518763669-27fef04b14ea?auto=format&fit=crop&w=800&q=80",
     "ingredients": [
       { "text": "Couscous", "amount": "2 dl" },
       { "text": "Kikärtor", "amount": "1 burk" },
@@ -147,7 +141,6 @@
     "id": "sug-7",
     "name": "Kyckling Curry med ris",
     "description": "Krämig currygryta med kokosmjölk och grönsaker.",
-    "imageUrl": "https://images.unsplash.com/photo-1588166524941-3bf61a9c41db?auto=format&fit=crop&w=800&q=80",
     "ingredients": [
       { "text": "Kycklingfilé", "amount": "500g" },
       { "text": "Kokosmjölk", "amount": "1 burk" },
@@ -170,7 +163,6 @@
     "id": "sug-8",
     "name": "Halloumi-burgare",
     "description": "Saftig halloumiost i bröd med avokado och chilimajonnäs.",
-    "imageUrl": "https://images.unsplash.com/photo-1550547660-d9450f859349?auto=format&fit=crop&w=800&q=80",
     "ingredients": [
       { "text": "Halloumi", "amount": "250g" },
       { "text": "Hamburgarebröd", "amount": "2st" },
@@ -192,7 +184,6 @@
     "id": "sug-9",
     "name": "Pasta Carbonara",
     "description": "Klassisk romersk pasta med guanciale, ägg och pecorino.",
-    "imageUrl": "https://images.unsplash.com/photo-1612874742237-6526221588e3?auto=format&fit=crop&w=800&q=80",
     "ingredients": [
       { "text": "Spaghetti", "amount": "400g" },
       { "text": "Guanciale eller Pancetta", "amount": "150g" },
@@ -214,7 +205,6 @@
     "id": "sug-10",
     "name": "Sötpotatissoppa med kokosmjölk",
     "description": "Värmande och len soppa med en touch av ingefära.",
-    "imageUrl": "https://images.unsplash.com/photo-1547592166-23ac45744acd?auto=format&fit=crop&w=800&q=80",
     "ingredients": [
       { "text": "Sötpotatis", "amount": "800g" },
       { "text": "Kokosmjölk", "amount": "400ml" },

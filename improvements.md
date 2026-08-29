@@ -14,7 +14,7 @@ Detta dokument spårar planerade och föreslagna förbättringar för **BuyMilk*
 - [ ] **Snabba inköpslistor**: Lägg till en funktion för att omedelbart lägga till alla saknade ingredienser från en planerad måltid till inköpslistan.
 - [ ] **Smarta förslag**: Föreslå måltider baserat på varor som köps ofta, säsongstrender eller användarpreferenser.
 - [ ] **Import av ingredienser via URL**: Implementera en backend-scraper för att importera ingredienser direkt från recept-URL:er.
-- [ ] **Kalenderintegration**: Möjlighet att exportera måltidsplanen till externa kalendrar som iCal eller Google Calendar.
+- [x] **Kalenderintegration**: Möjlighet att exportera måltidsplanen till externa kalendrar som iCal eller Google Calendar.
 
 ## ✨ UI/UX & Tillgänglighet
 
