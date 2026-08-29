@@ -4,13 +4,15 @@ import { useApp } from '../context/AppContext';
 import { useTranslation } from 'react-i18next';
 import { Modal } from './Modal';
 import { MealPlanEditModal } from './MealPlanEditModal';
+import { RandomMealModal } from './RandomMealModal';
 import { MealType, Item, Meal } from '../types';
-import { ChevronLeft, ChevronRight, Utensils, CalendarDays, Download, Heart, ShoppingCart, BookOpen, AlertCircle, Calendar } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Utensils, CalendarDays, Download, Heart, ShoppingCart, BookOpen, AlertCircle, Calendar, Dices } from 'lucide-react';
 import { useMealPlan } from '../hooks/useMealPlan';
 import { RecipeDetailModal } from './RecipeDetailModal';
 import { exportMealPlanToICS } from '../utils/calendarUtils';
 import { v4 as uuidv4 } from 'uuid';
 import { getISOWeek, formatDate, getDayName } from '../utils/dateUtils';
+import mealSuggestions from '../data/mealSuggestions.json';
 
 
 
@@ -31,6 +33,7 @@ export const MealPlanView: React.FC = () => {
     const [isConfirmAddIngredientsOpen, setIsConfirmAddIngredientsOpen] = useState(false);
     const [recipeViewMeal, setRecipeViewMeal] = useState<Meal | null>(null);
     const [modalSlot, setModalSlot] = useState<{ date: Date; type: MealType } | null>(null);
+    const [randomMealModal, setRandomMealModal] = useState<{ isOpen: boolean; date: Date | null; type: MealType | null }>({ isOpen: false, date: null, type: null });
 
     const [startDate, setStartDate] = useState(() => {
         const d = new Date();
@@ -81,6 +84,14 @@ export const MealPlanView: React.FC = () => {
         if (meal) {
             setRecipeViewMeal(meal);
         }
+    };
+
+    const handleRandomMealSelect = (meal: Meal) => {
+        if (randomMealModal.date && randomMealModal.type) {
+            handleMealChange(randomMealModal.date, randomMealModal.type, meal.name);
+            showToast(t('toasts.mealPlanned', 'Måltid planerad'), 'success');
+        }
+        setRandomMealModal({ isOpen: false, date: null, type: null });
     };
 
     const handleAddDayIngredientsToList = async (date: Date) => {
@@ -349,6 +360,18 @@ export const MealPlanView: React.FC = () => {
                                                                   <AlertCircle className="w-3 h-3 text-amber-500" />
                                                               </span>
                                                           )}
+                                                          {!mealText && (
+                                                              <button
+                                                                  onClick={(e) => {
+                                                                      e.stopPropagation();
+                                                                      setRandomMealModal({ isOpen: true, date, type: 'lunch' });
+                                                                  }}
+                                                                  className="p-1 rounded-md text-blue-500 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-colors"
+                                                                  title={t('mealplan.randomMeal', 'Slumpa måltid')}
+                                                              >
+                                                                  <Dices className="w-3 h-3" />
+                                                              </button>
+                                                          )}
                                                       </div>
                                                       {meal?.tags && meal.tags.length > 0 && (
                                                           <div className="flex gap-1 mt-1">
@@ -407,6 +430,18 @@ export const MealPlanView: React.FC = () => {
                                                       }`}
                                                       >
                                                       <div className="flex items-center gap-2">
+                                                          {!mealText && (
+                                                              <button
+                                                                  onClick={(e) => {
+                                                                      e.stopPropagation();
+                                                                      setRandomMealModal({ isOpen: true, date, type: 'dinner' });
+                                                                  }}
+                                                                  className="p-1 rounded-md text-blue-500 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-colors"
+                                                                  title={t('mealplan.randomMeal', 'Slumpa måltid')}
+                                                              >
+                                                                  <Dices className="w-3 h-3" />
+                                                              </button>
+                                                          )}
                                                           {mealText ? (
                                                               <span className={`font-medium ${isDuplicate ? 'text-amber-600 dark:text-amber-400' : 'text-gray-800 dark:text-gray-200'}`}>
                                                                   {mealText}
@@ -507,6 +542,13 @@ export const MealPlanView: React.FC = () => {
                 isOpen={!!recipeViewMeal} 
                 onClose={() => setRecipeViewMeal(null)} 
                 meal={recipeViewMeal} 
+            />
+            <RandomMealModal
+                isOpen={randomMealModal.isOpen}
+                onClose={() => setRandomMealModal({ isOpen: false, date: null, type: null })}
+                onSelect={handleRandomMealSelect}
+                meals={meals}
+                mealSuggestions={mealSuggestions}
             />
         </div>
     );

@@ -6,18 +6,23 @@ import { Utensils, Plus, Trash2, Edit2, ShoppingCart, Dices } from 'lucide-react
 import { MealIngredientsModal } from './MealIngredientsModal';
 import { MealEditModal } from './MealEditModal';
 import { MealDetailModal } from './MealDetailModal';
+import { PlanMealModal } from './PlanMealModal';
 import { v4 as uuidv4 } from 'uuid';
-import { Item, Meal } from '../types';
+import { Item, Meal, MealType } from '../types';
 import mealSuggestions from '../data/mealSuggestions.json';
+import { useMealPlan } from '../hooks/useMealPlan';
 
 export const MealsView: React.FC = () => {
     const { meals, addMeal, updateMeal, deleteMeal, addItemsToList, defaultListId } = useApp();
     const { showToast } = useToast();
     const { t } = useTranslation();
+    const { handleMealChange } = useMealPlan();
     const [newMealName, setNewMealName] = useState('');
     const [editingMeal, setEditingMeal] = useState<typeof meals[0] | null>(null);
     const [ingredientsMeal, setIngredientsMeal] = useState<typeof meals[0] | null>(null);
     const [viewingMeal, setViewingMeal] = useState<typeof meals[0] | null>(null);
+    const [isPlanningOpen, setIsPlanningOpen] = useState(false);
+    const [planningMeal, setPlanningMeal] = useState<Meal | null>(null);
 
     const handleAddMeal = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -57,8 +62,21 @@ export const MealsView: React.FC = () => {
     };
 
     const handleRandomMeal = () => {
-        const randomMeal = mealSuggestions[Math.floor(Math.random() * mealSuggestions.length)];
+        const allMeals = [...meals, ...mealSuggestions];
+        const randomMeal = allMeals[Math.floor(Math.random() * allMeals.length)];
         setViewingMeal(randomMeal);
+    };
+
+    const handlePlanMeal = (meal: Meal) => {
+        setPlanningMeal(meal);
+        setIsPlanningOpen(true);
+    };
+
+    const handleSavePlannedMeal = (date: Date, type: MealType) => {
+        if (planningMeal) {
+            handleMealChange(date, type, planningMeal.name);
+            showToast(t('toasts.mealPlanned', 'Måltid planerad'), 'success');
+        }
     };
 
     const handleAddToShoppingList = async (meal: typeof meals[0]) => {
@@ -258,7 +276,15 @@ export const MealsView: React.FC = () => {
                     setViewingMeal(null);
                     handleStartEdit(meal);
                 }}
+                onPlanMeal={handlePlanMeal}
+                onRandomMeal={handleRandomMeal}
                 meal={viewingMeal}
+            />
+            <PlanMealModal
+                isOpen={isPlanningOpen}
+                onClose={() => setIsPlanningOpen(false)}
+                onSave={handleSavePlannedMeal}
+                meal={planningMeal}
             />
         </div>
     );

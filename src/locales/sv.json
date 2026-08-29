@@ -225,6 +225,7 @@
     "itemAdded": "Tillagd i listan",
     "itemDeleted": "Borttagen från listan",
     "itemUpdated": "Uppdaterad",
+    "mealPlanned": "Måltid planerad",
     "error": "Ett fel uppstod"
   },
   "views": {
@@ -361,5 +362,29 @@
       "completedItems": "Klara objekt",
       "totalTodos": "Att göra"
     }
+  },
+  "mealplan": {
+    "randomMeal": "Slumpa måltid",
+    "planMealTitle": "Planera in måltid",
+    "planMealDescription": "Välj dag och måltidstyp för {{mealName}}",
+    "selectDay": "Välj dag",
+    "selectMealType": "Välj måltidstyp",
+    "noMealsMatch": "Inga måltider matchar filtren."
+  },
+  "mealDetail": {
+    "planMeal": "Planera in måltid",
+    "randomMeal": "Slumpa ny måltid"
+  },
+  "mealTypes": {
+    "lunch": "Lunch",
+    "dinner": "Middag",
+    "snack": "Mellis"
+  },
+  "common": {
+    "back": "Tillbaka",
+    "next": "Nästa",
+    "select": "Välj",
+    "save": "Spara",
+    "cancel": "Avbryt"
   }
 }

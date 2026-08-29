@@ -396,6 +396,8 @@ export const GroceryListView: React.FC = React.memo(function GroceryListView() {
                     setViewingMeal(null);
                     setEditingMeal(meal);
                 }}
+                onPlanMeal={() => {}}
+                onRandomMeal={() => {}}
                 meal={viewingMeal}
             />
             <MealEditModal 

@@ -225,6 +225,7 @@
     "itemAdded": "Added to list",
     "itemDeleted": "Removed from list",
     "itemUpdated": "Updated",
+    "mealPlanned": "Meal planned",
     "error": "An error occurred"
   },
   "views": {
@@ -361,5 +362,29 @@
       "completedItems": "Done Items",
       "totalTodos": "To-dos"
     }
+  },
+  "mealplan": {
+    "randomMeal": "Random Meal",
+    "planMealTitle": "Plan Meal",
+    "planMealDescription": "Select day and meal type for {{mealName}}",
+    "selectDay": "Select Day",
+    "selectMealType": "Select Meal Type",
+    "noMealsMatch": "No meals match the filters."
+  },
+  "mealDetail": {
+    "planMeal": "Plan Meal",
+    "randomMeal": "Random Meal"
+  },
+  "mealTypes": {
+    "lunch": "Lunch",
+    "dinner": "Dinner",
+    "snack": "Snack"
+  },
+  "common": {
+    "back": "Back",
+    "next": "Next",
+    "select": "Select",
+    "save": "Save",
+    "cancel": "Cancel"
   }
 }

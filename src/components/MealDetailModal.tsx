@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { X, Utensils, Tag, BookOpen, Edit2 } from 'lucide-react';
+import { X, Utensils, Tag, BookOpen, Edit2, Calendar, Dices } from 'lucide-react';
 import { Meal } from '../types';
 import { useTranslation } from 'react-i18next';
 
@@ -7,10 +7,12 @@ interface MealDetailModalProps {
     isOpen: boolean;
     onClose: () => void;
     onEdit: (meal: Meal) => void;
+    onPlanMeal: (meal: Meal) => void;
+    onRandomMeal: () => void;
     meal: Meal | null;
 }
 
-export const MealDetailModal: React.FC<MealDetailModalProps> = ({ isOpen, onClose, onEdit, meal }) => {
+export const MealDetailModal: React.FC<MealDetailModalProps> = ({ isOpen, onClose, onEdit, onPlanMeal, onRandomMeal, meal }) => {
     const { t } = useTranslation();
     const [activeTab, setActiveTab] = useState<'ingredients' | 'instructions'>('ingredients');
 
@@ -142,6 +144,20 @@ export const MealDetailModal: React.FC<MealDetailModalProps> = ({ isOpen, onClos
                             className="px-6 py-2 text-sm font-medium text-gray-700 dark:text-gray-200 bg-gray-100 dark:bg-gray-700 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
                         >
                             {t('common.close', 'Close')}
+                        </button>
+                        <button
+                            onClick={onRandomMeal}
+                            className="flex items-center gap-2 px-6 py-2 text-sm font-medium text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/20 hover:bg-blue-100 dark:hover:bg-blue-900/30 rounded-lg transition-colors"
+                        >
+                            <Dices size={16} />
+                            {t('mealDetail.randomMeal', 'Slumpa ny måltid')}
+                        </button>
+                        <button
+                            onClick={() => meal && onPlanMeal(meal)}
+                            className="flex items-center gap-2 px-6 py-2 text-sm font-medium text-white bg-green-500 rounded-lg hover:bg-green-600 transition-colors"
+                        >
+                            <Calendar size={16} />
+                            {t('mealDetail.planMeal', 'Planera in måltid')}
                         </button>
                         <button 
                             onClick={() => meal && onEdit(meal)}
