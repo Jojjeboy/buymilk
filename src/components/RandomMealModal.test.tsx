@@ -48,7 +48,7 @@ describe('RandomMealModal', () => {
         expect(container.firstChild).toBeNull();
     });
 
-    it('should display a random meal when opened', () => {
+    it('should display a random meal only from suggestions and not existing meals', () => {
         render(
             <RandomMealModal
                 isOpen={true}
@@ -59,13 +59,23 @@ describe('RandomMealModal', () => {
             />
         );
 
-        const allMeals = [...mockMeals, ...mockSuggestions];
-        const mealNames = allMeals.map(m => m.name);
-        const displayedMeal = screen.getByText((content) => {
-            return mealNames.some(name => content.includes(name));
-        });
+        expect(screen.getByText('Beef Stew')).toBeInTheDocument();
+        expect(screen.queryByText('Pasta Carbonara')).not.toBeInTheDocument();
+        expect(screen.queryByText('Chicken Curry')).not.toBeInTheDocument();
+    });
 
-        expect(displayedMeal).toBeInTheDocument();
+    it('should exclude suggestion if it already exists in saved meals', () => {
+        render(
+            <RandomMealModal
+                isOpen={true}
+                onClose={mockOnClose}
+                onSelect={mockOnSelect}
+                meals={[{ id: '1', name: 'Beef Stew', description: '', tags: [], ingredients: [], imageUrl: '', createdAt: '' }]}
+                mealSuggestions={mockSuggestions}
+            />
+        );
+
+        expect(screen.getByText(/Inga måltider matchar filtren/i)).toBeInTheDocument();
     });
 
     it('should call onClose when close button is clicked', () => {

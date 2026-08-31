@@ -17,7 +17,8 @@ import {
     BookOpen, 
     AlertCircle, 
     Calendar, 
-    Dices
+    Dices,
+    Trash2
 } from 'lucide-react';
 import { useMealPlan } from '../hooks/useMealPlan';
 import { RecipeDetailModal } from './RecipeDetailModal';
@@ -43,6 +44,7 @@ export const MealPlanView: React.FC = () => {
     const [isConfirmAddIngredientsOpen, setIsConfirmAddIngredientsOpen] = useState(false);
     const [recipeViewMeal, setRecipeViewMeal] = useState<Meal | null>(null);
     const [modalSlot, setModalSlot] = useState<{ date: Date; type: MealType } | null>(null);
+    const [promptSaveMealName, setPromptSaveMealName] = useState<string | null>(null);
     const [randomMealModal, setRandomMealModal] = useState<{ isOpen: boolean; date: Date | null; type: MealType | null }>({ 
         isOpen: false, 
         date: null, 
@@ -93,6 +95,11 @@ export const MealPlanView: React.FC = () => {
         if (success) {
             showToast(t('mealplan.savedToFavorites', 'Måltid sparad till favoriter'), 'success');
         }
+    };
+
+    const handleClearMeal = async (date: Date, type: MealType) => {
+        await handleMealChange(date, type, '');
+        showToast(t('toasts.mealDeleted', 'Måltid borttagen'), 'info');
     };
 
     const handleViewRecipe = (mealText: string) => {
@@ -342,6 +349,17 @@ export const MealPlanView: React.FC = () => {
                                     <BookOpen className="w-4 h-4" />
                                 </button>
                             )}
+                            <button
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    handleClearMeal(date, type);
+                                }}
+                                className="p-1.5 rounded-lg text-gray-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-950/30 transition-colors"
+                                title={t('mealplan.deleteMeal', 'Ta bort måltid')}
+                                aria-label={t('mealplan.deleteMeal', 'Ta bort måltid')}
+                            >
+                                <Trash2 className="w-4 h-4" />
+                            </button>
                         </div>
                     </div>
                 )}
@@ -521,10 +539,36 @@ export const MealPlanView: React.FC = () => {
                 onClose={() => setModalSlot(null)}
                 initialValue={modalSlot ? getMealText(modalSlot.date, modalSlot.type) : ''}
                 meals={meals}
-                onSave={(mealName) => {
+                onSave={async (mealName) => {
                     if (modalSlot) {
-                        handleMealChange(modalSlot.date, modalSlot.type, mealName);
+                        const targetDate = modalSlot.date;
+                        const targetType = modalSlot.type;
+                        const trimmed = mealName.trim();
+                        await handleMealChange(targetDate, targetType, trimmed);
+                        setModalSlot(null);
+
+                        if (trimmed) {
+                            const exists = meals.some(m => m.name.trim().toLowerCase() === trimmed.toLowerCase());
+                            if (!exists) {
+                                setPromptSaveMealName(trimmed);
+                            }
+                        }
                     }
+                }}
+            />
+
+            <Modal
+                isOpen={!!promptSaveMealName}
+                onClose={() => setPromptSaveMealName(null)}
+                title={t('mealplan.saveNewMealTitle', 'Spara som ny måltid?')}
+                message={t('mealplan.saveNewMealPrompt', `Vill du även spara "${promptSaveMealName}" bland dina måltider?`, { mealName: promptSaveMealName })}
+                confirmText={t('common.save', 'Spara')}
+                cancelText={t('common.cancel', 'Avbryt')}
+                onConfirm={async () => {
+                    if (promptSaveMealName) {
+                        await onSaveToLibraryWrapper(promptSaveMealName);
+                    }
+                    setPromptSaveMealName(null);
                 }}
             />
 

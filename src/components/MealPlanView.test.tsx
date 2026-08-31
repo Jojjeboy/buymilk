@@ -97,4 +97,109 @@ describe('MealPlanView', () => {
             ])
         }));
     });
+
+    it('clears a planned meal when the delete icon is clicked', async () => {
+        vi.mocked(useApp).mockReturnValue({
+            mealPlans: [
+                {
+                    id: 'plan-123',
+                    weekNumber: 33,
+                    year: 2026,
+                    days: [
+                        {
+                            date: '2026-08-16',
+                            meals: [
+                                {
+                                    type: 'lunch',
+                                    plannedMeal: { id: 'm1', customTitle: 'Pasta Carbonara' }
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ],
+            meals: [],
+            addMeal: mockAddMeal,
+            addMealPlan: mockAddMealPlan,
+            updateMealPlan: mockUpdateMealPlan,
+        } as unknown as ReturnType<typeof useApp>);
+
+        render(<MealPlanView />);
+
+        expect(screen.getByText('Pasta Carbonara')).toBeInTheDocument();
+
+        // Find the delete button for the planned meal
+        const deleteButton = screen.getByTitle('Ta bort måltid');
+        expect(deleteButton).toBeInTheDocument();
+
+        await act(async () => {
+            fireEvent.click(deleteButton);
+        });
+
+        expect(mockUpdateMealPlan).toHaveBeenCalledTimes(1);
+        expect(mockUpdateMealPlan).toHaveBeenCalledWith('plan-123', {
+            days: [
+                {
+                    date: '2026-08-16',
+                    meals: []
+                }
+            ]
+        });
+        expect(mockShowToast).toHaveBeenCalledWith('Måltid borttagen', 'info');
+    });
+
+    it('filters favorites in edit modal and prompts to save new meal to library', async () => {
+        vi.mocked(useApp).mockReturnValue({
+            mealPlans: [],
+            meals: [
+                { id: '1', name: 'Pasta Carbonara', description: '', tags: [], ingredients: [], imageUrl: '', createdAt: '' },
+                { id: '2', name: 'Pannkakor', description: '', tags: [], ingredients: [], imageUrl: '', createdAt: '' },
+                { id: '3', name: 'Tacos', description: '', tags: [], ingredients: [], imageUrl: '', createdAt: '' }
+            ],
+            addMeal: mockAddMeal,
+            addMealPlan: mockAddMealPlan,
+            updateMealPlan: mockUpdateMealPlan,
+        } as unknown as ReturnType<typeof useApp>);
+
+        render(<MealPlanView />);
+
+        // Open edit modal for Sunday lunch
+        const buttons = screen.getAllByText('Vad ska ätas?');
+        fireEvent.click(buttons[0]);
+
+        // Initially all meals are shown in favorites
+        expect(screen.getByText('Pasta Carbonara')).toBeInTheDocument();
+        expect(screen.getByText('Pannkakor')).toBeInTheDocument();
+        expect(screen.getByText('Tacos')).toBeInTheDocument();
+
+        // Filter favorites
+        const input = screen.getByPlaceholderText('Vad ska ätas?');
+        fireEvent.change(input, { target: { value: 'pan' } });
+
+        // Pannkakor matches, Tacos does not
+        expect(screen.getByText('Pannkakor')).toBeInTheDocument();
+        expect(screen.queryByText('Tacos')).not.toBeInTheDocument();
+
+        // Type a brand new meal name that does not exist
+        fireEvent.change(input, { target: { value: 'Lax med potatis' } });
+        expect(screen.getByText(/Inga måltider matchar filtren/i)).toBeInTheDocument();
+
+        // Click save
+        const saveButton = screen.getByText('Spara');
+        await act(async () => {
+            fireEvent.click(saveButton);
+        });
+
+        // Prompt modal should appear asking to save to library
+        expect(screen.getByText('Spara som ny måltid?')).toBeInTheDocument();
+        expect(screen.getByText(/Vill du även spara "Lax med potatis" bland dina måltider\?/i)).toBeInTheDocument();
+
+        // Confirm saving to library
+        const confirmSaveBtn = screen.getAllByText('Spara')[0];
+        await act(async () => {
+            fireEvent.click(confirmSaveBtn);
+        });
+
+        expect(mockAddMeal).toHaveBeenCalledWith('Lax med potatis');
+    });
 });

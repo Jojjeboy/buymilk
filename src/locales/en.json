@@ -226,6 +226,7 @@
     "itemDeleted": "Removed from list",
     "itemUpdated": "Updated",
     "mealPlanned": "Meal planned",
+    "mealDeleted": "Meal removed",
     "error": "An error occurred"
   },
   "views": {
@@ -276,7 +277,9 @@
     "planMealDescription": "Select day and meal type for {{mealName}}",
     "selectDay": "Select Day",
     "selectMealType": "Select Meal Type",
-    "noMealsMatch": "No meals match the filters."
+    "noMealsMatch": "No meals match the filters.",
+    "saveNewMealTitle": "Save as new meal?",
+    "saveNewMealPrompt": "Would you also like to save \"{{mealName}}\" to your meal library?"
   },
   "placeholders": {
     "newMeal": "Add new meal..."

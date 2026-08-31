@@ -226,6 +226,7 @@
     "itemDeleted": "Borttagen från listan",
     "itemUpdated": "Uppdaterad",
     "mealPlanned": "Måltid planerad",
+    "mealDeleted": "Måltid borttagen",
     "error": "Ett fel uppstod"
   },
   "views": {
@@ -276,7 +277,9 @@
     "planMealDescription": "Välj dag och måltidstyp för {{mealName}}",
     "selectDay": "Välj dag",
     "selectMealType": "Välj måltidstyp",
-    "noMealsMatch": "Inga måltider matchar filtren."
+    "noMealsMatch": "Inga måltider matchar filtren.",
+    "saveNewMealTitle": "Spara som ny måltid?",
+    "saveNewMealPrompt": "Vill du även spara \"{{mealName}}\" bland dina måltider?"
   },
   "placeholders": {
     "newMeal": "Lägg till ny måltid..."

@@ -21,9 +21,12 @@ const getFilteredMeals = (
     mealSuggestions: Meal[],
     filters?: { tags?: string[]; ingredients?: string[]; mealType?: MealType }
 ): Meal[] => {
-    const allMeals = [...meals, ...mealSuggestions];
+    const existingMealNames = new Set(meals.map(m => m.name.trim().toLowerCase()));
+    const suggestionsOnly = mealSuggestions.filter(
+        suggestion => !existingMealNames.has(suggestion.name.trim().toLowerCase())
+    );
     
-    return allMeals.filter(meal => {
+    return suggestionsOnly.filter(meal => {
         if (filters?.tags && filters.tags.length > 0) {
             if (!meal.tags || meal.tags.length === 0) return false;
             const hasMatchingTag = meal.tags.some(tag => 

@@ -27,6 +27,7 @@ export const useMealPlan = () => {
         const dateStr = formatDate(date);
 
         if (!plan) {
+            if (!text.trim()) return;
             const newPlanId = uuidv4();
             const monday = new Date(date);
             const day = monday.getDay();
@@ -55,22 +56,27 @@ export const useMealPlan = () => {
         const dayIndex = updatedDays.findIndex(d => d.date === dateStr);
         
         if (dayIndex >= 0) {
-            const day = updatedDays[dayIndex];
-            const mealIndex = day.meals.findIndex(m => m.type === type);
-            const mealData: PlannedMeal = {
-                id: mealIndex >= 0 ? day.meals[mealIndex].plannedMeal.id : uuidv4(),
-                customTitle: text
-            };
-
-            if (mealIndex >= 0) {
-                day.meals[mealIndex] = { type, plannedMeal: mealData };
+            const day = { ...updatedDays[dayIndex], meals: [...updatedDays[dayIndex].meals] };
+            if (!text.trim()) {
+                day.meals = day.meals.filter(m => m.type !== type);
             } else {
-                day.meals.push({ type, plannedMeal: mealData });
+                const mealIndex = day.meals.findIndex(m => m.type === type);
+                const mealData: PlannedMeal = {
+                    id: mealIndex >= 0 ? day.meals[mealIndex].plannedMeal.id : uuidv4(),
+                    customTitle: text.trim()
+                };
+
+                if (mealIndex >= 0) {
+                    day.meals[mealIndex] = { type, plannedMeal: mealData };
+                } else {
+                    day.meals.push({ type, plannedMeal: mealData });
+                }
             }
-        } else {
+            updatedDays[dayIndex] = day;
+        } else if (text.trim()) {
             const mealData: PlannedMeal = {
                 id: uuidv4(),
-                customTitle: text
+                customTitle: text.trim()
             };
             updatedDays.push({
                 date: dateStr,

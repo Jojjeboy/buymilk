@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { Modal } from './Modal';
 import { Meal } from '../types';
 import { CheckCircle2, Utensils } from 'lucide-react';
@@ -27,6 +27,12 @@ export const MealPlanEditModal: React.FC<MealPlanEditModalProps> = ({
             setValue(initialValue);
         }
     }, [isOpen, initialValue]);
+
+    const filteredMeals = useMemo(() => {
+        const query = value.trim().toLowerCase();
+        if (!query) return meals;
+        return meals.filter(meal => meal.name.toLowerCase().includes(query));
+    }, [meals, value]);
 
     if (!isOpen) return null;
 
@@ -62,12 +68,17 @@ export const MealPlanEditModal: React.FC<MealPlanEditModalProps> = ({
                         {t('common.favorites', 'Favoriter')}
                     </label>
                     <div className="max-h-64 overflow-y-auto custom-scrollbar space-y-2 pr-2">
-                        {meals.length === 0 ? (
-                            <p className="text-center text-gray-500 py-4 text-sm">{t('common.noMeals', 'Inga sparade måltider hittades.')}</p>
+                        {filteredMeals.length === 0 ? (
+                            <p className="text-center text-gray-500 py-4 text-sm">
+                                {meals.length === 0 
+                                    ? t('common.noMeals', 'Inga sparade måltider hittades.')
+                                    : t('mealplan.noMealsMatch', 'Inga måltider matchar filtren.')}
+                            </p>
                         ) : (
-                            meals.map(meal => (
+                            filteredMeals.map(meal => (
                                 <button
                                     key={meal.id}
+                                    type="button"
                                     onClick={() => setValue(meal.name)}
                                     className={`w-full flex items-center justify-between p-3 rounded-lg border transition-all text-left group ${
                                         value.toLowerCase() === meal.name.toLowerCase() 
