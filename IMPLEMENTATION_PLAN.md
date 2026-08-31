@@ -197,7 +197,7 @@ npm run test
 - [x] Modaler (`MealPlanEditModal`, `RandomMealModal`) verifierade och stilmatchade
 - [x] `npm run validate` godkänd utan fel
 - [x] `npm run test` godkänd (inklusive `MealPlanView.test.tsx`)
-- [ ] Manuell verifiering på mobil och desktop klar
+- [x] Merge till `main` och push genomförd
 
 ---
 
