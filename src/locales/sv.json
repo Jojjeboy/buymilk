@@ -246,8 +246,37 @@
     "noInstructions": "Inga instruktioner för tillagning listade."
   },
   "mealplan": {
+    "title": "Måltidsschema",
+    "rollingView": "Rullande 7-dagarsvy",
+    "weekInfo": "Vecka {{weekNumber}}",
+    "today": "Idag",
+    "whatToEat": "Vad ska ätas?",
+    "lunch": "Lunch",
+    "dinner": "Middag",
+    "snack": "Mellanmål",
+    "addMeal": "Lägg till måltid",
+    "randomMeal": "Slumpa måltid",
+    "copyWeek": "Kopiera vecka",
+    "generateList": "Skapa inköpslista",
+    "dayList": "Lista",
+    "exportCalendar": "Exportera till kalender (.ics)",
+    "exportJson": "Exportera till JSON",
+    "exportTitle": "Exportera måltidsplan",
+    "exportMessage": "Här är din måltidsplan för de valda dagarna i JSON-format. Du kan enkelt kopiera detta och använda i andra appar.",
+    "copiedToClipboard": "JSON kopierad till urklipp",
+    "viewRecipe": "Visa recept",
+    "editMeal": "Redigera måltid",
+    "deleteMeal": "Ta bort måltid",
+    "saveToFavorites": "Spara till favoriter",
+    "savedToFavorites": "Måltid sparad till favoriter",
+    "duplicateWarning": "Måltiden förekommer flera gånger denna vecka",
     "addIngredientsTitle": "Lägg till ingredienser",
-    "addIngredientsMessage": "Vill du lägga till alla ingredienser från de planerade måltiderna i din inköpslista?"
+    "addIngredientsMessage": "Vill du lägga till alla ingredienser från de planerade måltiderna i din inköpslista?",
+    "planMealTitle": "Planera in måltid",
+    "planMealDescription": "Välj dag och måltidstyp för {{mealName}}",
+    "selectDay": "Välj dag",
+    "selectMealType": "Välj måltidstyp",
+    "noMealsMatch": "Inga måltider matchar filtren."
   },
   "placeholders": {
     "newMeal": "Lägg till ny måltid..."
@@ -363,14 +392,7 @@
       "totalTodos": "Att göra"
     }
   },
-  "mealplan": {
-    "randomMeal": "Slumpa måltid",
-    "planMealTitle": "Planera in måltid",
-    "planMealDescription": "Välj dag och måltidstyp för {{mealName}}",
-    "selectDay": "Välj dag",
-    "selectMealType": "Välj måltidstyp",
-    "noMealsMatch": "Inga måltider matchar filtren."
-  },
+
   "mealDetail": {
     "planMeal": "Planera in måltid",
     "randomMeal": "Slumpa ny måltid"

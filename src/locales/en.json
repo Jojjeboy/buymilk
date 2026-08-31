@@ -246,8 +246,37 @@
     "noInstructions": "No preparation instructions listed."
   },
   "mealplan": {
+    "title": "Meal Plan",
+    "rollingView": "Rolling 7-day view",
+    "weekInfo": "Week {{weekNumber}}",
+    "today": "Today",
+    "whatToEat": "What to eat?",
+    "lunch": "Lunch",
+    "dinner": "Dinner",
+    "snack": "Snack",
+    "addMeal": "Add Meal",
+    "randomMeal": "Random Meal",
+    "copyWeek": "Copy Week",
+    "generateList": "Create Shopping List",
+    "dayList": "List",
+    "exportCalendar": "Export to Calendar (.ics)",
+    "exportJson": "Export to JSON",
+    "exportTitle": "Export Meal Plan",
+    "exportMessage": "Here is your meal plan for the selected days in JSON format. You can easily copy this and use in other apps.",
+    "copiedToClipboard": "JSON copied to clipboard",
+    "viewRecipe": "View Recipe",
+    "editMeal": "Edit Meal",
+    "deleteMeal": "Delete Meal",
+    "saveToFavorites": "Save to Favorites",
+    "savedToFavorites": "Meal saved to favorites",
+    "duplicateWarning": "This meal appears multiple times this week",
     "addIngredientsTitle": "Add Ingredients",
-    "addIngredientsMessage": "Do you want to add all ingredients from the planned meals to your shopping list?"
+    "addIngredientsMessage": "Do you want to add all ingredients from the planned meals to your shopping list?",
+    "planMealTitle": "Plan Meal",
+    "planMealDescription": "Select day and meal type for {{mealName}}",
+    "selectDay": "Select Day",
+    "selectMealType": "Select Meal Type",
+    "noMealsMatch": "No meals match the filters."
   },
   "placeholders": {
     "newMeal": "Add new meal..."
@@ -363,14 +392,7 @@
       "totalTodos": "To-dos"
     }
   },
-  "mealplan": {
-    "randomMeal": "Random Meal",
-    "planMealTitle": "Plan Meal",
-    "planMealDescription": "Select day and meal type for {{mealName}}",
-    "selectDay": "Select Day",
-    "selectMealType": "Select Meal Type",
-    "noMealsMatch": "No meals match the filters."
-  },
+
   "mealDetail": {
     "planMeal": "Plan Meal",
     "randomMeal": "Random Meal"
