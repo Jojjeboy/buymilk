@@ -1,5 +1,30 @@
 [
   {
+    "hash": "4dec80e895e13f600036623f9b092bc30678af7b",
+    "date": "2026-08-31 15:40:13 +0200",
+    "message": "docs: finalize implementation plan status to 100% completed"
+  },
+  {
+    "hash": "b4be2502882fb88c2158cc760280cda85563c19d",
+    "date": "2026-08-31 15:39:20 +0200",
+    "message": "docs: complete implementation plan checklist"
+  },
+  {
+    "hash": "500470c4590221c1b884a69a73b5477d7e381bf0",
+    "date": "2026-08-31 15:37:54 +0200",
+    "message": "feat: simplify MealPlanView UI with color-coded meal types and streamlined actions"
+  },
+  {
+    "hash": "8a018379c904c4f026dd6c8beb002b74a26b92a9",
+    "date": "2026-08-29 07:01:56 +0200",
+    "message": "feat: add meal randomizer and planning features"
+  },
+  {
+    "hash": "725e0cbb6c1273510d2ba981f80fd817faffa090",
+    "date": "2026-08-29 06:28:35 +0200",
+    "message": "docs: update roadmap and mark calendar integration as implemented"
+  },
+  {
     "hash": "c3ab5fbfd4e2910e4236497e6ded784f840689ad",
     "date": "2026-08-27 16:23:22 +0200",
     "message": "feat: add random meal suggestion feature"
@@ -73,30 +98,5 @@
     "hash": "ef1a302c35f7d828e75b0e0957166ce4b6e491b7",
     "date": "2026-08-27 09:32:23 +0200",
     "message": "feat(grocery-list): improve next meal banner logic and localization"
-  },
-  {
-    "hash": "2ea57abb03ba488105ad12efa31465bc3cbad0ed",
-    "date": "2026-08-26 15:43:19 +0200",
-    "message": "feat(meals): improve meal lookup and detail modal navigation"
-  },
-  {
-    "hash": "f79683213fbf5427863839d060ebaf14147462f9",
-    "date": "2026-08-26 15:31:32 +0200",
-    "message": "feat(grocery-list): add meal detail view to grocery list"
-  },
-  {
-    "hash": "7ac605cfde365a82ab6bc816b3c5188ecab85706",
-    "date": "2026-08-26 15:22:57 +0200",
-    "message": "feat(meals): add meal detail view and improve card interactions"
-  },
-  {
-    "hash": "7a109e701e5eb782f72ab133b640f829b0c02465",
-    "date": "2026-08-26 15:12:06 +0200",
-    "message": "chore: update commit history in commits.json"
-  },
-  {
-    "hash": "faa1c3127f2771ed8e96950e131553172fffdc6b",
-    "date": "2026-08-23 08:07:55 +0200",
-    "message": "style(MealEditModal): add scrolling to modal content"
   }
 ]
