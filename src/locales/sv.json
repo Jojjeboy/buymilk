@@ -2,9 +2,12 @@
   "nav": {
     "home": "Hem",
     "todos": "Att göra",
-    "meals": "Måltider",
-    "mealplan": "Måltidsplan",
-    "settings": "Inställningar"
+    "meals": "Recept",
+    "mealplan": "Matsedel",
+    "settings": "Inställningar",
+    "shopping": "Inköp",
+    "more": "Mer",
+    "viewMealPlan": "Visa matsedeln →"
   },
   "app": {
     "title": "BuyMilk",
@@ -471,5 +474,16 @@
     "select": "Välj",
     "save": "Spara",
     "cancel": "Avbryt"
+  },
+  "quickItems": {
+    "title": "Snabbval",
+    "milk": "Mjölk",
+    "butter": "Smör",
+    "eggs": "Ägg",
+    "bananas": "Bananer",
+    "bread": "Bröd",
+    "toiletPaper": "Toapapper",
+    "coffee": "Kaffe",
+    "tomatoes": "Tomater"
   }
 }

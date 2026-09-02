@@ -1,11 +1,19 @@
  import React from 'react';
 import { render, screen, fireEvent, act, waitFor } from '@testing-library/react';
+import { MemoryRouter } from 'react-router-dom';
 import '@testing-library/jest-dom';
 import { GroceryListView } from './GroceryListView';
 import { useApp } from '../context/AppContext';
 import { useToast } from '../context/ToastContext';
 import { useVoiceInput } from '../hooks/useVoiceInput';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
+
+// Mock react-router-dom navigate
+const mockNavigate = vi.fn();
+vi.mock('react-router-dom', async () => {
+    const actual = await vi.importActual('react-router-dom');
+    return { ...actual, useNavigate: () => mockNavigate };
+});
 
 // Mock the hooks
 vi.mock('../context/AppContext');
@@ -63,7 +71,7 @@ describe('GroceryListView Voice Input', () => {
             hasSupport: true,
         });
 
-        render(<GroceryListView />);
+        render(<MemoryRouter><GroceryListView /></MemoryRouter>);
         
         expect(screen.getByTitle('Voice Input')).toBeInTheDocument();
     });
@@ -78,7 +86,7 @@ describe('GroceryListView Voice Input', () => {
             hasSupport: false,
         });
 
-        render(<GroceryListView />);
+        render(<MemoryRouter><GroceryListView /></MemoryRouter>);
         
         expect(screen.queryByTitle('Voice Input')).not.toBeInTheDocument();
     });
@@ -94,7 +102,7 @@ describe('GroceryListView Voice Input', () => {
             hasSupport: true,
         });
 
-        render(<GroceryListView />);
+        render(<MemoryRouter><GroceryListView /></MemoryRouter>);
         
         const micButton = screen.getByTitle('Voice Input');
         fireEvent.click(micButton);
@@ -113,7 +121,7 @@ describe('GroceryListView Voice Input', () => {
             hasSupport: true,
         });
 
-        render(<GroceryListView />);
+        render(<MemoryRouter><GroceryListView /></MemoryRouter>);
         
         const micButton = screen.getByTitle('Stop Listening');
         fireEvent.click(micButton);
@@ -122,7 +130,7 @@ describe('GroceryListView Voice Input', () => {
     });
 
     it('updates the input field when the transcript changes', async () => {
-        const { rerender } = render(<GroceryListView />);
+        const { rerender } = render(<MemoryRouter><GroceryListView /></MemoryRouter>);
         
         const input = screen.getByPlaceholderText('lists.addItemPlaceholder');
         expect(input).toHaveValue('');
@@ -131,7 +139,7 @@ describe('GroceryListView Voice Input', () => {
         mockTranscript = 'Milk';
 
         await act(async () => {
-            rerender(<GroceryListView key="updated" />);
+            rerender(<MemoryRouter><GroceryListView key="updated" /></MemoryRouter>);
         });
         
         await waitFor(() => {

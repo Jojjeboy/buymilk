@@ -76,17 +76,17 @@ Gör det enkelt och inbjudande att spara nya recept i ett enda sammanhängande f
 
 Optimera appens layout så att den är blixtsnabb att använda på mobilen med en hand.
 
-- [ ] **4.1 Mobil Bottennavigering (Bottom Tab Bar)**
-  - [ ] Skapa en fast meny i botten på mobilen för de tre primära flödena:
+- [x] **4.1 Mobil Bottennavigering (Bottom Tab Bar)**
+  - [x] Skapa en fast meny i botten på mobilen för de tre primära flödena:
     1. **Inköp** 🛒 (`/`)
     2. **Matsedel** 📅 (`/mealplan`)
     3. **Recept** 📖 (`/meals`)
-    4. **Mer / Inställningar** ⚙️ (`/settings` eller meny)
-  - [ ] Behåll desktop-sidomenyn intakt för större skärmar.
-- [ ] **4.2 Snabbfavoriter i inköpslistan**
-  - [ ] Lägg till en horisontell scroll-rad ovanför inmatningsfältet med "Vanliga varor" (t.ex. *Mjölk*, *Smör*, *Ägg*, *Bananer*) för 1-klicks-tillägg utan att behöva skriva.
-- [ ] **4.3 Tydligare länkning mellan Inköpslista och Matsedel**
-  - [ ] Gör "Nästa måltid"-bannern i inköpslistan klickbar för att snabbt hoppa till veckans matsedel eller se kvällens recept.
+    4. **Mer / Inställningar** ⚙️ (öppnar drawer med resten)
+  - [x] Behåll desktop-sidomenyn intakt för större skärmar.
+- [x] **4.2 Snabbfavoriter i inköpslistan**
+  - [x] Lägg till en horisontell scroll-rad ovanför inmatningsfältet med "Vanliga varor" (t.ex. *Mjölk*, *Smör*, *Ägg*, *Bananer*) för 1-klicks-tillägg utan att behöva skriva.
+- [x] **4.3 Tydligare länkning mellan Inköpslista och Matsedel**
+  - [x] Gör "Nästa måltid"-bannern i inköpslistan klickbar för att snabbt hoppa till veckans matsedel eller se kvällens recept.
 
 ---
 

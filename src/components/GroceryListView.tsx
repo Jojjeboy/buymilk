@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { createPortal } from 'react-dom';
 import { useApp } from '../context/AppContext';
 import { useToast } from '../context/ToastContext';
@@ -6,7 +7,7 @@ import type { Item, List, Meal, PlannedMeal } from '../types';
 import { DndContext, closestCenter, KeyboardSensor, PointerSensor, useSensor, useSensors, type DragEndEvent } from '@dnd-kit/core';
 import { arrayMove, SortableContext, sortableKeyboardCoordinates, verticalListSortingStrategy } from '@dnd-kit/sortable';
 import { SortableItem } from './SortableItem';
-import { Plus, RotateCcw, ChevronDown, CloudUpload, Mic, Trash2, Utensils, Braces } from 'lucide-react';
+import { Plus, RotateCcw, ChevronDown, CloudUpload, Mic, Trash2, Utensils, Braces, ArrowRight, Zap } from 'lucide-react';
 import { v4 as uuidv4 } from 'uuid';
 import { Confetti } from './Confetti';
 import { convertToItems } from '../utils/importUtils';
@@ -22,6 +23,7 @@ import { formatDate } from '../utils/dateUtils';
 
 export const GroceryListView: React.FC = React.memo(function GroceryListView() {
     const { t } = useTranslation();
+    const navigate = useNavigate();
     const { meals, lists, defaultListId, updateListItems, deleteItem, updateListAccess, loading, itemHistory, addToHistory, updateMeal } = useApp();
     const { showToast } = useToast();
     const { getPlanForDate } = useMealPlan();
@@ -331,34 +333,42 @@ export const GroceryListView: React.FC = React.memo(function GroceryListView() {
             />
             {showConfetti && <Confetti trigger={true} />}
             {nextMeals.length > 0 && (
-                <div className="mb-6 p-3 bg-blue-50 dark:bg-blue-900/20 border border-blue-100 dark:border-blue-800 rounded-2xl flex items-start gap-3 animate-in fade-in slide-in-from-top-2 duration-300">
-                    <div className="p-2 bg-blue-100 dark:bg-blue-800 text-blue-600 dark:text-blue-300 rounded-xl">
-                        <Utensils size={18} />
-                    </div>
-                    <div className="flex flex-col gap-1">
-                        <span className="text-xs font-bold text-blue-600 dark:text-blue-400 uppercase tracking-wider">
-                            {nextMealLabel}
-                        </span>
-                        <div className="flex flex-wrap gap-x-3 gap-y-1">
-                            {nextMeals.map((meal, idx) => (
-                                <div 
-                                    key={idx} 
-                                    onClick={() => {
-                                        // Try to find by ID first, then by name as fallback
-                                        const fullMeal = meals.find(m => 
-                                            m.id === meal.meal.id || 
-                                            m.name.toLowerCase() === meal.title.toLowerCase()
-                                        );
-                                        if (fullMeal) setViewingMeal(fullMeal);
-                                    }}
-                                    className="text-sm font-medium text-gray-700 dark:text-gray-200 cursor-pointer hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
-                                >
-                                    <span className="opacity-60 capitalize">{meal.type === 'dinner' ? t('meals.dinner', 'Middag') : meal.type === 'lunch' ? t('meals.lunch', 'Lunch') : t('meals.snack', 'Mellanmål')}: </span>
-                                    <span className="underline underline-offset-2 decoration-blue-300 dark:decoration-blue-700">{meal.title}</span>
-                                </div>
-                            ))}
+                <div className="mb-4 bg-blue-50 dark:bg-blue-900/20 border border-blue-100 dark:border-blue-800 rounded-2xl animate-in fade-in slide-in-from-top-2 duration-300 overflow-hidden">
+                    <div className="p-3 flex items-start gap-3">
+                        <div className="p-2 bg-blue-100 dark:bg-blue-800 text-blue-600 dark:text-blue-300 rounded-xl flex-shrink-0">
+                            <Utensils size={18} />
+                        </div>
+                        <div className="flex flex-col gap-1 flex-1 min-w-0">
+                            <span className="text-xs font-bold text-blue-600 dark:text-blue-400 uppercase tracking-wider">
+                                {nextMealLabel}
+                            </span>
+                            <div className="flex flex-wrap gap-x-3 gap-y-1">
+                                {nextMeals.map((meal, idx) => (
+                                    <div
+                                        key={idx}
+                                        onClick={() => {
+                                            const fullMeal = meals.find(m =>
+                                                m.id === meal.meal.id ||
+                                                m.name.toLowerCase() === meal.title.toLowerCase()
+                                            );
+                                            if (fullMeal) setViewingMeal(fullMeal);
+                                        }}
+                                        className="text-sm font-medium text-gray-700 dark:text-gray-200 cursor-pointer hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
+                                    >
+                                        <span className="opacity-60 capitalize">{meal.type === 'dinner' ? t('meals.dinner', 'Middag') : meal.type === 'lunch' ? t('meals.lunch', 'Lunch') : t('meals.snack', 'Mellanmål')}: </span>
+                                        <span className="underline underline-offset-2 decoration-blue-300 dark:decoration-blue-700">{meal.title}</span>
+                                    </div>
+                                ))}
+                            </div>
                         </div>
                     </div>
+                    <button
+                        onClick={() => navigate('/mealplan')}
+                        className="w-full flex items-center justify-center gap-1.5 py-2 text-xs font-semibold text-blue-600 dark:text-blue-400 bg-blue-100/60 dark:bg-blue-800/30 hover:bg-blue-100 dark:hover:bg-blue-800/50 transition-colors border-t border-blue-100 dark:border-blue-800"
+                    >
+                        {t('nav.viewMealPlan', 'Visa matsedeln')}
+                        <ArrowRight size={13} />
+                    </button>
                 </div>
             )}
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
@@ -381,6 +391,54 @@ export const GroceryListView: React.FC = React.memo(function GroceryListView() {
                         </button>
                     </div>
             </div>
+
+            {/* Quick-add items strip */}
+            {(() => {
+                const quickItems = [
+                    { emoji: '🥛', label: t('quickItems.milk', 'Mjölk') },
+                    { emoji: '🧈', label: t('quickItems.butter', 'Smör') },
+                    { emoji: '🥚', label: t('quickItems.eggs', 'Ägg') },
+                    { emoji: '🍌', label: t('quickItems.bananas', 'Bananer') },
+                    { emoji: '🍞', label: t('quickItems.bread', 'Bröd') },
+                    { emoji: '🧻', label: t('quickItems.toiletPaper', 'Toapapper') },
+                    { emoji: '☕', label: t('quickItems.coffee', 'Kaffe') },
+                    { emoji: '🍅', label: t('quickItems.tomatoes', 'Tomater') },
+                ];
+                const activeTexts = new Set(
+                    list.items.filter(i => !i.completed).map(i => i.text.toLowerCase())
+                );
+                return (
+                    <div className="mb-4">
+                        <div className="flex items-center gap-1.5 mb-2">
+                            <Zap size={13} className="text-amber-500" />
+                            <span className="text-[11px] font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                                {t('quickItems.title', 'Snabbval')}
+                            </span>
+                        </div>
+                        <div className="flex gap-2 overflow-x-auto pb-1 custom-scrollbar">
+                            {quickItems.map((item) => {
+                                const alreadyInList = activeTexts.has(item.label.toLowerCase());
+                                return (
+                                    <button
+                                        key={item.label}
+                                        onClick={() => !alreadyInList && handleAddItem(undefined, item.label)}
+                                        disabled={alreadyInList}
+                                        className={`flex-shrink-0 flex flex-col items-center gap-1 px-3 py-2 rounded-xl text-xs font-medium transition-all border ${
+                                            alreadyInList
+                                                ? 'bg-gray-50 dark:bg-gray-800/40 border-gray-100 dark:border-gray-800 text-gray-300 dark:text-gray-600 cursor-default'
+                                                : 'bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-200 hover:border-blue-300 hover:bg-blue-50 dark:hover:bg-blue-900/20 dark:hover:border-blue-700 shadow-sm active:scale-95'
+                                        }`}
+                                    >
+                                        <span className={`text-lg leading-none ${alreadyInList ? 'grayscale opacity-40' : ''}`}>{item.emoji}</span>
+                                        <span className="leading-none whitespace-nowrap">{item.label}</span>
+                                        {alreadyInList && <span className="text-[9px] text-green-500 dark:text-green-400 font-bold">✓</span>}
+                                    </button>
+                                );
+                            })}
+                        </div>
+                    </div>
+                );
+            })()}
 
             <Modal
                 isOpen={clearCompletedModalOpen}

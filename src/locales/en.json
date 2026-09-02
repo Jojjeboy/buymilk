@@ -2,9 +2,12 @@
   "nav": {
     "home": "Home",
     "todos": "To-dos",
-    "meals": "Meals",
+    "meals": "Recipes",
     "mealplan": "Meal Plan",
-    "settings": "Settings"
+    "settings": "Settings",
+    "shopping": "Shopping",
+    "more": "More",
+    "viewMealPlan": "View meal plan →"
   },
   "app": {
     "title": "BuyMilk",
@@ -471,5 +474,16 @@
     "select": "Select",
     "save": "Save",
     "cancel": "Cancel"
+  },
+  "quickItems": {
+    "title": "Quick add",
+    "milk": "Milk",
+    "butter": "Butter",
+    "eggs": "Eggs",
+    "bananas": "Bananas",
+    "bread": "Bread",
+    "toiletPaper": "Toilet paper",
+    "coffee": "Coffee",
+    "tomatoes": "Tomatoes"
   }
 }

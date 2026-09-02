@@ -1,20 +1,21 @@
 import React, { useState } from 'react';
 import { useApp } from '../context/AppContext';
 import { Link } from 'react-router-dom';
-import { Moon, Sun, Menu, X, Eye } from 'lucide-react';
+import { Moon, Sun, Eye } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { Sidebar } from './Sidebar';
 import { OfflineIndicator } from './OfflineIndicator';
 import { SyncIndicator } from './SyncIndicator';
 import { useWakeLock } from '../hooks/useWakeLock';
 import { ShoppingListOverlay } from './ShoppingListOverlay';
+import { BottomNav, MoreDrawer } from './BottomNav';
 
 export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     const { t } = useTranslation();
     const { theme, toggleTheme } = useApp();
     const { isSupported, isLocked, requestWakeLock, releaseWakeLock } = useWakeLock();
     
-    const [isMenuOpen, setIsMenuOpen] = useState(false);
+    const [isMoreOpen, setIsMoreOpen] = useState(false);
     const [isShoppingListViewOpen, setIsShoppingListViewOpen] = useState(false);
 
     return (
@@ -24,97 +25,66 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
                 <Sidebar />
             </aside>
 
-            {/* Mobile Sidebar Overlay/Drawer */}
-            {isMenuOpen && (
-                <div 
-                    className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm md:hidden animate-in fade-in duration-300"
-                    onClick={() => setIsMenuOpen(false)}
-                >
-                    <div 
-                        className="absolute right-0 top-0 bottom-0 w-[280px] bg-white dark:bg-gray-900 animate-in slide-in-from-right duration-300 shadow-2xl"
-                        onClick={e => e.stopPropagation()}
-                    >
-                        <div className="p-4 flex justify-end">
-                            <button 
-                                onClick={() => setIsMenuOpen(false)}
-                                className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
-                            >
-                                <X size={24} />
-                            </button>
-                        </div>
-                        <Sidebar onNavClick={() => setIsMenuOpen(false)} />
-                    </div>
-                </div>
-            )}
+            {/* Main Content Area */}
+            <div className="flex-1 flex flex-col min-h-screen min-w-0 md:ml-72">
+                <OfflineIndicator />
+                <SyncIndicator />
 
-                {/* Main Content Area */}
-                <div className="flex-1 flex flex-col min-h-screen min-w-0 md:ml-72">
-                    <OfflineIndicator />
-                    <SyncIndicator />
-
-                    {/* Mobile Header */}
-                <header className="md:hidden sticky top-0 z-10 glass p-4 flex flex-col gap-4">
-                    <div className="flex justify-between items-center">
-                        <div className="flex items-center gap-6">
-                            <Link to="/" className="flex items-center gap-3 hover:opacity-80 transition-opacity">
-                                <img src="/buymilk/favicon.png" alt="Logo" className="w-16 h-16 rounded-xl shadow-sm" />
-                                <h1 className="text-3xl font-bold text-[#2c6de3]">
-                                    BuyMilk
-                                </h1>
-                            </Link>
-                        </div>
-                        <div className="flex items-center gap-2">
-                            {isSupported && (
-                                 <button
-                                     onClick={() => {
-                                         if (!isShoppingListViewOpen) {
-                                             requestWakeLock();
-                                         } else {
-                                             releaseWakeLock();
-                                         }
-                                         setIsShoppingListViewOpen(!isShoppingListViewOpen);
-                                     }}
-                                     className={`p-2 rounded-full transition-colors ${
-                                         isLocked 
-                                             ? 'bg-yellow-100 dark:bg-yellow-900/30 text-yellow-600 dark:text-yellow-400' 
-                                             : 'text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700'
-                                     }`}
-                                     title={t('settings.wakeLock')}
-                                 >
-                                     <Eye size={22} />
-                                 </button>
-                            )}
+                {/* Mobile Header */}
+                <header className="md:hidden sticky top-0 z-10 glass p-3 flex items-center justify-between border-b border-gray-200/60 dark:border-gray-800/60">
+                    <Link to="/" className="flex items-center gap-2.5 hover:opacity-80 transition-opacity">
+                        <img src="/buymilk/favicon.png" alt="Logo" className="w-9 h-9 rounded-xl shadow-sm" />
+                        <h1 className="text-2xl font-bold text-[#2c6de3]">BuyMilk</h1>
+                    </Link>
+                    <div className="flex items-center gap-1.5">
+                        {isSupported && (
                             <button
-                                onClick={toggleTheme}
-                                className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors text-gray-600 dark:text-gray-300"
-                                aria-label={t('app.toggleTheme')}
+                                onClick={() => {
+                                    if (!isShoppingListViewOpen) {
+                                        requestWakeLock();
+                                    } else {
+                                        releaseWakeLock();
+                                    }
+                                    setIsShoppingListViewOpen(!isShoppingListViewOpen);
+                                }}
+                                className={`p-2 rounded-full transition-colors ${
+                                    isLocked
+                                        ? 'bg-yellow-100 dark:bg-yellow-900/30 text-yellow-600 dark:text-yellow-400'
+                                        : 'text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700'
+                                }`}
+                                title={t('settings.wakeLock')}
                             >
-                                {theme === 'light' ? <Moon size={22} /> : <Sun size={22} />}
+                                <Eye size={20} />
                             </button>
-                            <button
-                                onClick={() => setIsMenuOpen(true)}
-                                className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors text-gray-600 dark:text-gray-300 ml-1"
-                                aria-label="Menu"
-                            >
-                                <Menu size={26} />
-                            </button>
-                        </div>
+                        )}
+                        <button
+                            onClick={toggleTheme}
+                            className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors text-gray-600 dark:text-gray-300"
+                            aria-label={t('app.toggleTheme')}
+                        >
+                            {theme === 'light' ? <Moon size={20} /> : <Sun size={20} />}
+                        </button>
                     </div>
                 </header>
 
-                {/* Main Scrollable Content */}
-                <main className="flex-1 p-4 w-full mx-auto md:p-8 md:max-w-7xl pb-8 min-w-0">
+                {/* Main Scrollable Content — pb-20 on mobile to clear bottom nav */}
+                <main className="flex-1 p-4 w-full mx-auto md:p-8 md:max-w-7xl pb-20 md:pb-8 min-w-0">
                     {children}
                 </main>
-                <ShoppingListOverlay 
-                    isOpen={isShoppingListViewOpen} 
+
+                <ShoppingListOverlay
+                    isOpen={isShoppingListViewOpen}
                     onClose={() => {
                         setIsShoppingListViewOpen(false);
                         releaseWakeLock();
-                    }} 
+                    }}
                     isWakeLockActive={isLocked}
                 />
             </div>
+
+            {/* Mobile Bottom Nav */}
+            <BottomNav onMoreOpen={() => setIsMoreOpen(true)} />
+            <MoreDrawer isOpen={isMoreOpen} onClose={() => setIsMoreOpen(false)} />
         </div>
     );
 };
