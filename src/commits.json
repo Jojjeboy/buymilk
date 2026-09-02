@@ -1,5 +1,10 @@
 [
   {
+    "hash": "3ee29821977890c953b033a1aee96258a872ecd6",
+    "date": "2026-08-31 15:55:56 +0200",
+    "message": "feat(mealplan): add clear meal button, favorites search filter, and save prompt"
+  },
+  {
     "hash": "79bf52384b6dacc71e4096bfdf9b2a508c955aba",
     "date": "2026-08-31 15:46:31 +0200",
     "message": "commits"
@@ -93,10 +98,5 @@
     "hash": "d2e7c7d515d6641c84670b3cfb7ab5f57eeec798",
     "date": "2026-08-27 10:20:28 +0200",
     "message": "ui: relocate clear completed button in GroceryListView"
-  },
-  {
-    "hash": "2c66b514a2089d24f8ff1747a470a3ccc5848255",
-    "date": "2026-08-27 09:58:04 +0200",
-    "message": "style(SortableItem): improve layout responsiveness and alignment"
   }
 ]
