@@ -74,7 +74,7 @@ interface AppContextType {
 
     // Meals
     meals: Meal[];
-    addMeal: (name: string) => Promise<void>;
+    addMeal: (name: string, extraData?: Partial<Meal>) => Promise<string | void>;
     updateMeal: (id: string, updates: Partial<Meal>) => Promise<void>;
     deleteMeal: (id: string) => Promise<void>;
 }
@@ -426,12 +426,15 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         await Promise.all(deletePromises);
     };
 
-    const addMeal = async (name: string) => {
+    const addMeal = async (name: string, extraData?: Partial<Meal>) => {
+        const id = uuidv4();
         await mealsSync.addItem({
-            id: uuidv4(),
+            id,
             name,
-            createdAt: new Date().toISOString()
+            createdAt: new Date().toISOString(),
+            ...extraData
         });
+        return id;
     };
 
     const updateMeal = async (id: string, updates: Partial<Meal>) => {

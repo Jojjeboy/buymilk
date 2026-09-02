@@ -202,4 +202,73 @@ describe('MealPlanView', () => {
 
         expect(mockAddMeal).toHaveBeenCalledWith('Lax med potatis');
     });
+
+    it('opens IngredientSelectionModal when shopping list button is clicked for day and transfers items', async () => {
+        const mockAddItemsToList = vi.fn();
+        vi.mocked(useApp).mockReturnValue({
+            mealPlans: [
+                {
+                    id: 'plan-123',
+                    weekNumber: 33,
+                    year: 2026,
+                    days: [
+                        {
+                            date: '2026-08-16',
+                            meals: [
+                                {
+                                    type: 'dinner',
+                                    plannedMeal: { id: 'm1', customTitle: 'Tacos' }
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ],
+            meals: [
+                {
+                    id: '3',
+                    name: 'Tacos',
+                    description: '',
+                    tags: [],
+                    ingredients: [
+                        { text: 'Köttfärs', amount: '500g' },
+                        { text: 'Tacoskal', amount: '12 st' }
+                    ],
+                    imageUrl: '',
+                    createdAt: ''
+                }
+            ],
+            defaultListId: 'list-1',
+            addItemsToList: mockAddItemsToList,
+            addMeal: mockAddMeal,
+            addMealPlan: mockAddMealPlan,
+            updateMealPlan: mockUpdateMealPlan,
+        } as unknown as ReturnType<typeof useApp>);
+
+        render(<MealPlanView />);
+
+        // Find the "Lista" button for Sunday
+        const listButtons = screen.getAllByText('Lista');
+        fireEvent.click(listButtons[0]);
+
+        // The IngredientSelectionModal should open
+        expect(screen.getByText(/Bocka av varor du redan har hemma/i)).toBeInTheDocument();
+        expect(screen.getByText('Köttfärs')).toBeInTheDocument();
+        expect(screen.getByText('Tacoskal')).toBeInTheDocument();
+
+        // Click transfer button
+        const transferButton = screen.getByRole('button', { name: /Lägg till .* varor i inköpslistan/i });
+        await act(async () => {
+            fireEvent.click(transferButton);
+        });
+
+        expect(mockAddItemsToList).toHaveBeenCalledWith(
+            'list-1',
+            expect.arrayContaining([
+                expect.objectContaining({ text: '500g Köttfärs' }),
+                expect.objectContaining({ text: '12 st Tacoskal' })
+            ])
+        );
+        expect(mockShowToast).toHaveBeenCalledWith(expect.stringContaining('tillagda i inköpslistan'), 'success');
+    });
 });

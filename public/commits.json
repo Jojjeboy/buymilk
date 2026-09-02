@@ -1,5 +1,10 @@
 [
   {
+    "hash": "548beb46773dcae4ce5b83646eff9d341c987df9",
+    "date": "2026-09-02 16:02:28 +0200",
+    "message": "feat: lägg till omfattande dokument för flödesförbättringsplanLägg till FLOWS_IMPROVEMENT_PLAN.md med en strukturerad färdplan för att förbättra BuyMilks användarflöden, inklusive måltidsplanering, matinköp och recepthantering. Dokumentet beskriver fyra faser med specifika uppgifter för att förbättra UX-konsistens och funktionalitet."
+  },
+  {
     "hash": "3ee29821977890c953b033a1aee96258a872ecd6",
     "date": "2026-08-31 15:55:56 +0200",
     "message": "feat(mealplan): add clear meal button, favorites search filter, and save prompt"
@@ -93,10 +98,5 @@
     "hash": "d973e0382dd42037ed007a3d3092f221aa927349",
     "date": "2026-08-27 11:09:47 +0200",
     "message": "refactor: replace Upload icon with Braces for JSON import actions and update modal/overlay visibility logic"
-  },
-  {
-    "hash": "d2e7c7d515d6641c84670b3cfb7ab5f57eeec798",
-    "date": "2026-08-27 10:20:28 +0200",
-    "message": "ui: relocate clear completed button in GroceryListView"
   }
 ]

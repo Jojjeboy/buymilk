@@ -279,9 +279,11 @@ export const GroceryListView: React.FC = React.memo(function GroceryListView() {
         await updateListItems(list.id, newItems);
     };
 
-    const handleSaveMeal = async (id: string, updates: Partial<Meal>) => {
+    const handleSaveMeal = async (mealData: Partial<Meal> & { name: string }, mealId?: string) => {
         try {
-            await updateMeal(id, updates);
+            if (mealId) {
+                await updateMeal(mealId, mealData);
+            }
             setEditingMeal(null);
             showToast(t('toasts.itemUpdated', 'Måltid uppdaterad'), 'success');
         } catch {

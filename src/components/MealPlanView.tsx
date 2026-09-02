@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { Modal } from './Modal';
 import { MealPlanEditModal } from './MealPlanEditModal';
 import { RandomMealModal } from './RandomMealModal';
+import { IngredientSelectionModal, PlannedMealWithIngredients } from './IngredientSelectionModal';
 import { MealType, Item, Meal } from '../types';
 import { 
     ChevronLeft, 
@@ -41,7 +42,15 @@ export const MealPlanView: React.FC = () => {
     const { t } = useTranslation();
     const { addItemsToList, defaultListId } = useApp();
     const [isExportOpen, setIsExportOpen] = useState(false);
-    const [isConfirmAddIngredientsOpen, setIsConfirmAddIngredientsOpen] = useState(false);
+    const [ingredientModalConfig, setIngredientModalConfig] = useState<{
+        isOpen: boolean;
+        title?: string;
+        subtitle?: string;
+        plannedMeals: PlannedMealWithIngredients[];
+    }>({
+        isOpen: false,
+        plannedMeals: []
+    });
     const [recipeViewMeal, setRecipeViewMeal] = useState<Meal | null>(null);
     const [modalSlot, setModalSlot] = useState<{ date: Date; type: MealType } | null>(null);
     const [promptSaveMealName, setPromptSaveMealName] = useState<string | null>(null);
@@ -117,79 +126,96 @@ export const MealPlanView: React.FC = () => {
         setRandomMealModal({ isOpen: false, date: null, type: null });
     };
 
-    const handleAddDayIngredientsToList = async (date: Date) => {
+    const resolveMealIngredients = (mealText: string): PlannedMealWithIngredients => {
+        const trimmed = mealText.trim();
+        const foundMeal = meals.find(m => m.name.toLowerCase() === trimmed.toLowerCase())
+            || mealSuggestions.find(m => m.name.toLowerCase() === trimmed.toLowerCase());
+        
+        return {
+            name: trimmed,
+            ingredients: foundMeal?.ingredients || []
+        };
+    };
+
+    const handleAddDayIngredientsToList = (date: Date) => {
         if (!defaultListId) {
             showToast(t('errors.noList', 'Kunde inte hitta inköpslistan'), 'error');
             return;
         }
 
         const dayMeals = ['lunch', 'dinner'] as const;
-        const itemsToAdd: Item[] = [];
+        const planned: PlannedMealWithIngredients[] = [];
 
         dayMeals.forEach(type => {
-            const mealText = getMealText(date, type);
-            const meal = meals.find(m => m.name.toLowerCase() === mealText.toLowerCase());
-            if (meal && meal.ingredients) {
-                meal.ingredients
-                    .filter(ing => !ing.checkIfExistAtHome)
-                    .forEach(ing => {
-                        itemsToAdd.push({
-                            id: uuidv4(),
-                            text: `${ing.amount ? ing.amount + ' ' : ''}${ing.text}`,
-                            completed: false,
-                        });
-                    });
+            const mealText = getMealText(date, type).trim();
+            if (mealText) {
+                planned.push(resolveMealIngredients(mealText));
             }
         });
 
-        if (itemsToAdd.length === 0) {
+        if (planned.length === 0) {
             showToast(t('toasts.allAtHome', 'Inga ingredienser att lägga till'), 'info');
+            return;
+        }
+
+        const dateString = date.toLocaleDateString('sv-SE', { weekday: 'long', day: 'numeric', month: 'short' });
+        setIngredientModalConfig({
+            isOpen: true,
+            title: `${t('views.ingredients', 'Ingredienser')} – ${dateString}`,
+            plannedMeals: planned
+        });
+    };
+
+    const handleGenerateWeeklyList = () => {
+        if (!defaultListId) {
+            showToast(t('errors.noList', 'Kunde inte hitta inköpslistan'), 'error');
+            return;
+        }
+
+        const dayMeals = ['lunch', 'dinner'] as const;
+        const planned: PlannedMealWithIngredients[] = [];
+
+        displayDays.forEach(date => {
+            dayMeals.forEach(type => {
+                const mealText = getMealText(date, type).trim();
+                if (mealText) {
+                    planned.push(resolveMealIngredients(mealText));
+                }
+            });
+        });
+
+        if (planned.length === 0) {
+            showToast(t('toasts.allAtHome', 'Inga måltider planerade för veckan'), 'info');
+            return;
+        }
+
+        setIngredientModalConfig({
+            isOpen: true,
+            title: t('mealplan.generateList', 'Skapa inköpslista för veckan'),
+            plannedMeals: planned
+        });
+    };
+
+    const handleConfirmTransferIngredients = async (items: { text: string; amount?: string }[]) => {
+        if (!defaultListId) {
+            showToast(t('errors.noList', 'Kunde inte hitta inköpslistan'), 'error');
+            return;
+        }
+
+        const itemsToAdd: Item[] = items.map(item => ({
+            id: uuidv4(),
+            text: `${item.amount ? item.amount + ' ' : ''}${item.text}`.trim(),
+            completed: false
+        }));
+
+        if (itemsToAdd.length === 0) {
+            showToast(t('toasts.allAtHome', 'Inga ingredienser valda'), 'info');
             return;
         }
 
         try {
             await addItemsToList(defaultListId, itemsToAdd);
             showToast(`${itemsToAdd.length} ${t('common.items', 'artiklar')} tillagda i inköpslistan`, 'success');
-        } catch {
-            showToast(t('toasts.error', 'Ett fel uppstod'), 'error');
-        }
-    };
-
-    const handleGenerateWeeklyList = async () => {
-        if (!defaultListId) {
-            showToast(t('errors.noList', 'Kunde inte hitta inköpslistan'), 'error');
-            return;
-        }
-
-        const itemsToAdd: Item[] = [];
-        const dayMeals = ['lunch', 'dinner'] as const;
-
-        displayDays.forEach(date => {
-            dayMeals.forEach(type => {
-                const mealText = getMealText(date, type);
-                const meal = meals.find(m => m.name.toLowerCase() === mealText.toLowerCase());
-                if (meal && meal.ingredients) {
-                    meal.ingredients
-                        .filter(ing => !ing.checkIfExistAtHome)
-                        .forEach(ing => {
-                            itemsToAdd.push({
-                                id: uuidv4(),
-                                text: `${ing.amount ? ing.amount + ' ' : ''}${ing.text}`,
-                                completed: false,
-                            });
-                        });
-                }
-            });
-        });
-
-        if (itemsToAdd.length === 0) {
-            showToast(t('toasts.allAtHome', 'Inga ingredienser att lägga till för veckan'), 'info');
-            return;
-        }
-
-        try {
-            await addItemsToList(defaultListId, itemsToAdd);
-            showToast(`${itemsToAdd.length} ${t('common.items', 'artiklar')} tillagda för hela veckan`, 'success');
         } catch {
             showToast(t('toasts.error', 'Ett fel uppstod'), 'error');
         }
@@ -418,8 +444,8 @@ export const MealPlanView: React.FC = () => {
                             <CalendarDays className="w-4 h-4" />
                         </button>
                         <button 
-                            onClick={() => setIsConfirmAddIngredientsOpen(true)}
-                            className="p-2 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600 dark:text-emerald-400 hover:bg-emerald-100 dark:hover:bg-emerald-900/50 border border-emerald-200/60 dark:border-emerald-800/40 transition-colors"
+                            onClick={handleGenerateWeeklyList}
+                            className="p-2 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600 dark:text-emerald-400 hover:bg-emerald-100 dark:hover:bg-emerald-900/50 border border-emerald-200/60 dark:border-emerald-800/40 transition-colors cursor-pointer"
                             title={t('mealplan.generateList', 'Generera veckans inköpslista')}
                         >
                             <ShoppingCart className="w-4 h-4" />
@@ -522,16 +548,13 @@ export const MealPlanView: React.FC = () => {
                 </div>
             </Modal>
 
-            <Modal
-                isOpen={isConfirmAddIngredientsOpen}
-                onClose={() => setIsConfirmAddIngredientsOpen(false)}
-                title={t('mealplan.addIngredientsTitle', 'Lägg till ingredienser')}
-                message={t('mealplan.addIngredientsMessage', 'Vill du lägga till alla ingredienser från de planerade måltiderna i din inköpslista?')}
-                confirmText={t('common.confirm', 'Bekräfta')}
-                onConfirm={async () => {
-                    await handleGenerateWeeklyList();
-                    setIsConfirmAddIngredientsOpen(false);
-                }}
+            <IngredientSelectionModal
+                isOpen={ingredientModalConfig.isOpen}
+                onClose={() => setIngredientModalConfig({ isOpen: false, plannedMeals: [] })}
+                title={ingredientModalConfig.title}
+                subtitle={ingredientModalConfig.subtitle}
+                plannedMeals={ingredientModalConfig.plannedMeals}
+                onConfirm={handleConfirmTransferIngredients}
             />
 
             <MealPlanEditModal
@@ -539,6 +562,9 @@ export const MealPlanView: React.FC = () => {
                 onClose={() => setModalSlot(null)}
                 initialValue={modalSlot ? getMealText(modalSlot.date, modalSlot.type) : ''}
                 meals={meals}
+                mealSuggestions={mealSuggestions}
+                mealPlans={mealPlans}
+                onPreviewRecipe={(meal) => setRecipeViewMeal(meal)}
                 onSave={async (mealName) => {
                     if (modalSlot) {
                         const targetDate = modalSlot.date;
@@ -584,6 +610,7 @@ export const MealPlanView: React.FC = () => {
                 onSelect={handleRandomMealSelect}
                 meals={meals}
                 mealSuggestions={mealSuggestions}
+                onPreviewRecipe={(meal) => setRecipeViewMeal(meal)}
             />
         </div>
     );

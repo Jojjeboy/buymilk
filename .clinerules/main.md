@@ -8,7 +8,7 @@
 - **Git Workflow (Feature Branching):** For every new functionality or significant fix, you MUST follow this process:
   1. **Branching:** Create a new feature branch: `git checkout -b feature/description`.
   2. **Development:** Implement changes and ensure `npm run validate` passes locally.
-  3. **Push:** Commit and push the feature branch: `git push origin feature/description`.
+  3. **Commit & Push:** Always generate and write commit messages in **Swedish** (t.ex. `feat: lägg till ny receptredigerare`, `fix: justera tabb-layout på mobilen`). Push the feature branch: `git push origin feature/description`.
   4. **CI Verification:** Use `gh run list` or check GitHub to ensure the CI build passes.
   5. **Merge:** Once verified, merge into main:
      - `git checkout main`
@@ -17,6 +17,7 @@
   6. **Cleanup:** Delete the feature branch locally and remotely:
      - `git branch -d feature/description`
      - `git push origin --delete feature/description`
+- **Commit Messages:** All git commit messages MUST ALWAYS be written in Swedish.
 - Do not assume a change is safe without running this validation.
 
 ## General Workflow
