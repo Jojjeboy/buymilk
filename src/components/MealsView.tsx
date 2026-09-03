@@ -2,6 +2,7 @@ import React, { useState, useMemo } from 'react';
 import { useApp } from '../context/AppContext';
 import { useToast } from '../context/ToastContext';
 import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router-dom';
 import { 
     Utensils, 
     Plus, 
@@ -29,6 +30,7 @@ export const MealsView: React.FC = () => {
     const { showToast } = useToast();
     const { t } = useTranslation();
     const { handleMealChange } = useMealPlan();
+    const navigate = useNavigate();
     
     const [searchQuery, setSearchQuery] = useState('');
     const [selectedTag, setSelectedTag] = useState<string | null>(null);
@@ -198,6 +200,15 @@ export const MealsView: React.FC = () => {
                     >
                         <Plus className="w-4 h-4" />
                         <span>{t('meals.createRecipe', 'Skapa recept')}</span>
+                    </button>
+                    
+                    <button
+                        onClick={() => navigate('/ingredients')}
+                        className="flex items-center gap-2 px-4 py-2.5 text-xs font-semibold text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-900/20 hover:bg-emerald-100 dark:hover:bg-emerald-900/30 rounded-xl transition-all border border-emerald-200/60 dark:border-emerald-800/40 cursor-pointer"
+                        title={t('meals.searchByIngredient', 'Sök på ingrediens')}
+                    >
+                        <Search className="w-4 h-4" />
+                        <span>{t('meals.searchByIngredient', 'Sök ingrediens')}</span>
                     </button>
                 </div>
             </div>

@@ -9,6 +9,7 @@ import { StatisticsView } from './components/StatisticsView'
 import { SettingsView } from './components/SettingsView'
 import { HistoryView } from './components/HistoryView'
 import { MealsView } from './components/MealsView'
+import { IngredientSearchView } from './components/IngredientSearchView'
 import { ToastProvider } from './context/ToastContext'
 import { ToastContainer } from './components/ToastContainer'
 import { UpdatePrompt } from './components/UpdatePrompt'
@@ -56,6 +57,10 @@ const router = createHashRouter([
             {
                 path: "/meals",
                 element: <MealsView />,
+            },
+            {
+                path: "/ingredients",
+                element: <IngredientSearchView />,
             },
             {
                 path: "/settings",

@@ -2,6 +2,7 @@ import React, { useState, useMemo } from 'react';
 import { useToast } from '../context/ToastContext';
 import { useApp } from '../context/AppContext';
 import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router-dom';
 import { Modal } from './Modal';
 import { MealPlanEditModal } from './MealPlanEditModal';
 import { RandomMealModal } from './RandomMealModal';
@@ -19,7 +20,8 @@ import {
     AlertCircle, 
     Calendar, 
     Dices,
-    Trash2
+    Trash2,
+    Search
 } from 'lucide-react';
 import { useMealPlan } from '../hooks/useMealPlan';
 import { RecipeDetailModal } from './RecipeDetailModal';
@@ -41,6 +43,7 @@ export const MealPlanView: React.FC = () => {
     const { showToast } = useToast();
     const { t } = useTranslation();
     const { addItemsToList, defaultListId } = useApp();
+    const navigate = useNavigate();
     const [isExportOpen, setIsExportOpen] = useState(false);
     const [ingredientModalConfig, setIngredientModalConfig] = useState<{
         isOpen: boolean;
@@ -436,6 +439,13 @@ export const MealPlanView: React.FC = () => {
 
                     {/* Action Buttons */}
                     <div className="flex items-center gap-1.5">
+                        <button 
+                            onClick={() => navigate('/ingredients')}
+                            className="p-2 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600 dark:text-emerald-400 hover:bg-emerald-100 dark:hover:bg-emerald-900/50 border border-emerald-200/60 dark:border-emerald-800/40 transition-colors"
+                            title={t('meals.searchByIngredient', 'Sök på ingrediens')}
+                        >
+                            <Search className="w-4 h-4" />
+                        </button>
                         <button 
                             onClick={handleCopyPreviousWeek}
                             className="p-2 rounded-xl bg-blue-50 dark:bg-blue-950/40 text-blue-600 dark:text-blue-400 hover:bg-blue-100 dark:hover:bg-blue-900/50 border border-blue-200/60 dark:border-blue-800/40 transition-colors"

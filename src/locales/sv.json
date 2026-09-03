@@ -249,6 +249,8 @@
     "noIngredients": "Inga ingredienser listade.",
     "noInstructions": "Inga instruktioner för tillagning listade.",
     "createRecipe": "Skapa recept",
+    "searchByIngredient": "Sök ingrediens",
+    "createRecipe": "Skapa recept",
     "editRecipe": "Redigera recept",
     "newRecipeTitle": "Skapa nytt recept",
     "editRecipeTitle": "Redigera recept",
@@ -462,6 +464,16 @@
   "mealDetail": {
     "planMeal": "Planera in måltid",
     "randomMeal": "Slumpa ny måltid"
+  },
+  "ingredientSearch": {
+    "title": "Sök på ingrediens",
+    "subtitle": "Hitta recept som innehåller specifika ingredienser",
+    "placeholder": "Sök på ingrediens...",
+    "noResults": "Inga recept hittades för '{{query}}'",
+    "foundResults": "Hittade {{count}} recept",
+    "tryDifferent": "Försök söka på en annan ingrediens",
+    "startSearching": "Börja söka på ingrediens",
+    "enterIngredient": "Ange en ingrediens för att hitta recept som innehåller den"
   },
   "mealTypes": {
     "lunch": "Lunch",

@@ -249,6 +249,8 @@
     "noIngredients": "No ingredients listed.",
     "noInstructions": "No preparation instructions listed.",
     "createRecipe": "Create Recipe",
+    "searchByIngredient": "Search by Ingredient",
+    "createRecipe": "Create Recipe",
     "editRecipe": "Edit Recipe",
     "newRecipeTitle": "Create New Recipe",
     "editRecipeTitle": "Edit Recipe",
@@ -462,6 +464,16 @@
   "mealDetail": {
     "planMeal": "Plan Meal",
     "randomMeal": "Random Meal"
+  },
+  "ingredientSearch": {
+    "title": "Search by Ingredient",
+    "subtitle": "Find recipes containing specific ingredients",
+    "placeholder": "Search by ingredient...",
+    "noResults": "No recipes found for '{{query}}'",
+    "foundResults": "Found {{count}} recipe(s)",
+    "tryDifferent": "Try searching for a different ingredient",
+    "startSearching": "Start searching by ingredient",
+    "enterIngredient": "Enter an ingredient name to find recipes that contain it"
   },
   "mealTypes": {
     "lunch": "Lunch",
