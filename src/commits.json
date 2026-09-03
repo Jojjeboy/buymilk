@@ -1,5 +1,10 @@
 [
   {
+    "hash": "c493b48823482e01ceaac573e3b87a302eb7d1b9",
+    "date": "2026-09-03 14:41:03 +0200",
+    "message": "feat: slutför ingredienssökvy med mealSuggestions och enhetstester"
+  },
+  {
     "hash": "6aaa694429a5bebb74ca45389463f2899114e17c",
     "date": "2026-09-03 13:24:30 +0200",
     "message": "docs: update ingredient search view progress and commits history"
@@ -93,10 +98,5 @@
     "hash": "c3ab5fbfd4e2910e4236497e6ded784f840689ad",
     "date": "2026-08-27 16:23:22 +0200",
     "message": "feat: add random meal suggestion feature"
-  },
-  {
-    "hash": "dc2c1733ea67ed9ab22aaa3703db350ab6447ec9",
-    "date": "2026-08-27 16:18:08 +0200",
-    "message": "mc"
   }
 ]
