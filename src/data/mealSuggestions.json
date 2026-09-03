@@ -4703,5 +4703,4035 @@
       "Vardag"
     ],
     "createdAt": "2026-08-27T00:00:00Z"
+  },
+  {
+    "id": "sug-117",
+    "name": "Krämig Kycklingpasta med Soltorkade Tomater och Spenat",
+    "description": "En snabblagad och smakrik pastarätt med kycklingfilé, soltorkade tomater och färsk babyspenat i en krämig sås.",
+    "imageUrl": "https://images.unsplash.com/photo-1621996346565-e3d5d6281288?auto=format&fit=crop&w=800&q=80",
+    "ingredients": [
+      {
+        "text": "Kycklingfilé",
+        "amount": "400g"
+      },
+      {
+        "text": "Pasta (t.ex. penne eller tagliatelle)",
+        "amount": "300g"
+      },
+      {
+        "text": "Soltorkade tomater (strimlade)",
+        "amount": "1 dl"
+      },
+      {
+        "text": "Färsk babyspenat",
+        "amount": "70g"
+      },
+      {
+        "text": "Matlagningsgrädde",
+        "amount": "2.5 dl"
+      },
+      {
+        "text": "Vitlöksklyfta (hackad)",
+        "amount": "2 st"
+      },
+      {
+        "text": "Parmesanost (riven)",
+        "amount": "1 dl"
+      }
+    ],
+    "instructions": [
+      "Koka pastan enligt anvisningen på förpackningen.",
+      "Skär kycklingfiléerna i strimlor och stek i en panna tills de fått fin färg och är genomstekta.",
+      "Tillsätt vitlök och soltorkade tomater och låt fräsa med i någon minut.",
+      "Häll på gräddfil/grädde och låt sjuda i 5 minuter.",
+      "Vänd ner babyspenat och riven parmesan precis före servering och blanda med pastan."
+    ],
+    "tags": [
+      "Kyckling",
+      "Pasta",
+      "Krämigt",
+      "Vardag"
+    ],
+    "createdAt": "2026-09-03T00:00:00Z"
+  },
+  {
+    "id": "sug-118",
+    "name": "Laxsida i Ugn med Ört- och Citrontäcke",
+    "description": "Lättlagad och saftig laxfilé som tillagas i ugn med fräscha örter, citron och dijonsenap.",
+    "imageUrl": "https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?auto=format&fit=crop&w=800&q=80",
+    "ingredients": [
+      {
+        "text": "Laxfilé",
+        "amount": "500g"
+      },
+      {
+        "text": "Citron (skal och saft)",
+        "amount": "1 st"
+      },
+      {
+        "text": "Färsk dill och gräslök (hackad)",
+        "amount": "0.5 dl"
+      },
+      {
+        "text": "Dijonsenap",
+        "amount": "1 msk"
+      },
+      {
+        "text": "Olivolja",
+        "amount": "2 msk"
+      },
+      {
+        "text": "Pressgurka eller kokt potatis till servering",
+        "amount": "4 port"
+      }
+    ],
+    "instructions": [
+      "Sätt ugnen på 175 grader.",
+      "Lägg laxen med skinnet nedåt i en smord ugnssäker form.",
+      "Blanda olivolja, dijonsenap, citronskal, citronsaft och hackade örter i en skål.",
+      "Bred blandningen över laxen och krydda med salt och svartpeppar.",
+      "Baka i ugnen i ca 15–20 minuter tills laxen är genomstekt. Servera med kokt potatis."
+    ],
+    "tags": [
+      "Fisk",
+      "Lax",
+      "Hälsosamt",
+      "Enkelt"
+    ],
+    "createdAt": "2026-09-03T00:00:00Z"
+  },
+  {
+    "id": "sug-119",
+    "name": "Linsgryta med Kokosmjölk och Curry",
+    "description": "En värmande och näringsrik vegetarisk gryta baserad på röda linser, kokosmjölk och kryddig curry.",
+    "imageUrl": "https://images.unsplash.com/photo-1546833999-b9f581a1996d?auto=format&fit=crop&w=800&q=80",
+    "ingredients": [
+      {
+        "text": "Röda linser (sköljda)",
+        "amount": "2 dl"
+      },
+      {
+        "text": "Kokosmjölk",
+        "amount": "400ml"
+      },
+      {
+        "text": "Krossade tomater",
+        "amount": "400g"
+      },
+      {
+        "text": "Gul lök (hackad)",
+        "amount": "1 st"
+      },
+      {
+        "text": "Vitlöksklyftor (pressade)",
+        "amount": "2 st"
+      },
+      {
+        "text": "Ingefära (riven)",
+        "amount": "1 msk"
+      },
+      {
+        "text": "Yellow curry powder",
+        "amount": "1.5 msk"
+      },
+      {
+        "text": "Basmatiris",
+        "amount": "4 port"
+      }
+    ],
+    "instructions": [
+      "Fräs lök, vitlök och ingefära i olja i en kastrull tills löken är mjuk.",
+      "Tillsätt curry och låt fräsa med i 30 sekunder under omrörning.",
+      "Rör i röda linser, krossade tomater och kokosmjölk.",
+      "Låt koka under lock på låg värme i ca 15–20 minuter tills linserna är mjuka.",
+      "Smaka av med salt, peppar och lite citronsaft. Servera med kokt basmatiris."
+    ],
+    "tags": [
+      "Vegetariskt",
+      "Gryta",
+      "Linser",
+      "Snabbt"
+    ],
+    "createdAt": "2026-09-03T00:00:00Z"
+  },
+   {
+    "id": "sug-120",
+    "name": "Kycklinggryta med Kokosmjölk och Ingefära",
+    "description": "Smakrik kycklinggryta med asiatiska toner.",
+    "imageUrl": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=800&q=80",
+    "ingredients": [
+      {
+        "text": "Halloumi",
+        "amount": "200g"
+      },
+      {
+        "text": "Vitlöksklyfta",
+        "amount": "2 st"
+      },
+      {
+        "text": "Nötfärs",
+        "amount": "500g"
+      },
+      {
+        "text": "Röda linser",
+        "amount": "2 dl"
+      },
+      {
+        "text": "Krossade tomater",
+        "amount": "400g"
+      }
+    ],
+    "instructions": [
+      "Förbered ingredienserna genom att hacka och mäta upp alla komponenter.",
+      "Värm en panna eller kastrull och brynt/tillaga huvudingrediensen.",
+      "Tillsätt vätska och kryddor och låt sjuda i ca 10–15 minuter.",
+      "Smaka av med salt, peppar och fräscha örter. Servera varmt."
+    ],
+    "tags": [
+      "Kyckling",
+      "Krämigt",
+      "Klassiker"
+    ],
+    "createdAt": "2026-09-03T00:00:00Z"
+  },
+  {
+    "id": "sug-121",
+    "name": "Ugnsbakad Kycklingfilé med Rotsaker",
+    "description": "Mör kycklingfilé serverad med rostade rotsaker.",
+    "imageUrl": "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?auto=format&fit=crop&w=800&q=80",
+    "ingredients": [
+      {
+        "text": "Ris",
+        "amount": "4 port"
+      },
+      {
+        "text": "Torskfilé",
+        "amount": "400g"
+      },
+      {
+        "text": "Pasta",
+        "amount": "300g"
+      },
+      {
+        "text": "Matlagningsgrädde",
+        "amount": "2.5 dl"
+      },
+      {
+        "text": "Kokosmjölk",
+        "amount": "400ml"
+      }
+    ],
+    "instructions": [
+      "Förbered ingredienserna genom att hacka och mäta upp alla komponenter.",
+      "Värm en panna eller kastrull och brynt/tillaga huvudingrediensen.",
+      "Tillsätt vätska och kryddor och låt sjuda i ca 10–15 minuter.",
+      "Smaka av med salt, peppar och fräscha örter. Servera varmt."
+    ],
+    "tags": [
+      "Kyckling",
+      "Helg",
+      "Enkelt"
+    ],
+    "createdAt": "2026-09-03T00:00:00Z"
+  },
+  {
+    "id": "sug-122",
+    "name": "Kycklingsallad med Avokado och Bacon",
+    "description": "Fräsch och mättande sallad med krispigt bacon.",
+    "imageUrl": "https://images.unsplash.com/photo-1540420773420-3366772f4999?auto=format&fit=crop&w=800&q=80",
+    "ingredients": [
+      {
+        "text": "Krossade tomater",
+        "amount": "400g"
+      },
+      {
+        "text": "Vitlöksklyfta",
+        "amount": "2 st"
+      },
+      {
+        "text": "Röda linser",
+        "amount": "2 dl"
+      },
+      {
+        "text": "Halloumi",
+        "amount": "200g"
+      },
+      {
+        "text": "Torskfilé",
+        "amount": "400g"
+      }
+    ],
+    "instructions": [
+      "Förbered ingredienserna genom att hacka och mäta upp alla komponenter.",
+      "Värm en panna eller kastrull och brynt/tillaga huvudingrediensen.",
+      "Tillsätt vätska och kryddor och låt sjuda i ca 10–15 minuter.",
+      "Smaka av med salt, peppar och fräscha örter. Servera varmt."
+    ],
+    "tags": [
+      "Kyckling",
+      "Klassiker",
+      "Helg"
+    ],
+    "createdAt": "2026-09-03T00:00:00Z"
+  },
+  {
+    "id": "sug-123",
+    "name": "Kyckling Tacos med Picklad Rödlök",
+    "description": "Klassiska tacos med kryddig kycklingfärs.",
+    "imageUrl": "https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?auto=format&fit=crop&w=800&q=80",
+    "ingredients": [
+      {
+        "text": "Potatis",
+        "amount": "800g"
+      },
+      {
+        "text": "Halloumi",
+        "amount": "200g"
+      },
+      {
+        "text": "Morot",
+        "amount": "2 st"
+      },
+      {
+        "text": "Pasta",
+        "amount": "300g"
+      },
+      {
+        "text": "Krossade tomater",
+        "amount": "400g"
+      }
+    ],
+    "instructions": [
+      "Förbered ingredienserna genom att hacka och mäta upp alla komponenter.",
+      "Värm en panna eller kastrull och brynt/tillaga huvudingrediensen.",
+      "Tillsätt vätska och kryddor och låt sjuda i ca 10–15 minuter.",
+      "Smaka av med salt, peppar och fräscha örter. Servera varmt."
+    ],
+    "tags": [
+      "Kyckling",
+      "Snabbt",
+      "Krämigt"
+    ],
+    "createdAt": "2026-09-03T00:00:00Z"
+  },
+  {
+    "id": "sug-124",
+    "name": "Thailändsk Kycklingwok med Cashewnötter",
+    "description": "Snabblagad wok med krispiga grönsaker och nötsmak.",
+    "imageUrl": "https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?auto=format&fit=crop&w=800&q=80",
+    "ingredients": [
+      {
+        "text": "Kycklingfilé",
+        "amount": "400g"
+      },
+      {
+        "text": "Paprika",
+        "amount": "1 st"
+      },
+      {
+        "text": "Matlagningsgrädde",
+        "amount": "2.5 dl"
+      },
+      {
+        "text": "Nötfärs",
+        "amount": "500g"
+      },
+      {
+        "text": "Halloumi",
+        "amount": "200g"
+      }
+    ],
+    "instructions": [
+      "Förbered ingredienserna genom att hacka och mäta upp alla komponenter.",
+      "Värm en panna eller kastrull och brynt/tillaga huvudingrediensen.",
+      "Tillsätt vätska och kryddor och låt sjuda i ca 10–15 minuter.",
+      "Smaka av med salt, peppar och fräscha örter. Servera varmt."
+    ],
+    "tags": [
+      "Kyckling",
+      "Hälsosamt",
+      "Vardag"
+    ],
+    "createdAt": "2026-09-03T00:00:00Z"
+  },
+  {
+    "id": "sug-125",
+    "name": "Biff Stroganoff med Ris",
+    "description": "Klassisk gräddig biff stroganoff med champinjoner.",
+    "imageUrl": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=800&q=80",
+    "ingredients": [
+      {
+        "text": "Nötfärs",
+        "amount": "500g"
+      },
+      {
+        "text": "Röda linser",
+        "amount": "2 dl"
+      },
+      {
+        "text": "Gul lök",
+        "amount": "1 st"
+      },
+      {
+        "text": "Vitlöksklyfta",
+        "amount": "2 st"
+      },
+      {
+        "text": "Potatis",
+        "amount": "800g"
+      }
+    ],
+    "instructions": [
+      "Förbered ingredienserna genom att hacka och mäta upp alla komponenter.",
+      "Värm en panna eller kastrull och brynt/tillaga huvudingrediensen.",
+      "Tillsätt vätska och kryddor och låt sjuda i ca 10–15 minuter.",
+      "Smaka av med salt, peppar och fräscha örter. Servera varmt."
+    ],
+    "tags": [
+      "Kött",
+      "Vardag",
+      "Enkelt"
+    ],
+    "createdAt": "2026-09-03T00:00:00Z"
+  },
+  {
+    "id": "sug-126",
+    "name": "Köttfärssås med Spaghetti",
+    "description": "Klassisk italiensk köttfärssås som fått sjuda länge.",
+    "imageUrl": "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?auto=format&fit=crop&w=800&q=80",
+    "ingredients": [
+      {
+        "text": "Laxfilé",
+        "amount": "400g"
+      },
+      {
+        "text": "Krossade tomater",
+        "amount": "400g"
+      },
+      {
+        "text": "Torskfilé",
+        "amount": "400g"
+      },
+      {
+        "text": "Pasta",
+        "amount": "300g"
+      },
+      {
+        "text": "Matlagningsgrädde",
+        "amount": "2.5 dl"
+      }
+    ],
+    "instructions": [
+      "Förbered ingredienserna genom att hacka och mäta upp alla komponenter.",
+      "Värm en panna eller kastrull och brynt/tillaga huvudingrediensen.",
+      "Tillsätt vätska och kryddor och låt sjuda i ca 10–15 minuter.",
+      "Smaka av med salt, peppar och fräscha örter. Servera varmt."
+    ],
+    "tags": [
+      "Kött",
+      "Helg",
+      "Hälsosamt"
+    ],
+    "createdAt": "2026-09-03T00:00:00Z"
+  },
+  {
+    "id": "sug-127",
+    "name": "Köttbullar med Potatismos och Lingon",
+    "description": "Svenska husmansklassiker när den är som bäst.",
+    "imageUrl": "https://images.unsplash.com/photo-1540420773420-3366772f4999?auto=format&fit=crop&w=800&q=80",
+    "ingredients": [
+      {
+        "text": "Potatis",
+        "amount": "800g"
+      },
+      {
+        "text": "Morot",
+        "amount": "2 st"
+      },
+      {
+        "text": "Gul lök",
+        "amount": "1 st"
+      },
+      {
+        "text": "Torskfilé",
+        "amount": "400g"
+      },
+      {
+        "text": "Ris",
+        "amount": "4 port"
+      }
+    ],
+    "instructions": [
+      "Förbered ingredienserna genom att hacka och mäta upp alla komponenter.",
+      "Värm en panna eller kastrull och brynt/tillaga huvudingrediensen.",
+      "Tillsätt vätska och kryddor och låt sjuda i ca 10–15 minuter.",
+      "Smaka av med salt, peppar och fräscha örter. Servera varmt."
+    ],
+    "tags": [
+      "Kött",
+      "Familjefavorit",
+      "Hälsosamt"
+    ],
+    "createdAt": "2026-09-03T00:00:00Z"
+  },
+  {
+    "id": "sug-128",
+    "name": "Pannbiff med Lök och Skysås",
+    "description": "Traditionell pannbiff med karamelliserad lök.",
+    "imageUrl": "https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?auto=format&fit=crop&w=800&q=80",
+    "ingredients": [
+      {
+        "text": "Paprika",
+        "amount": "1 st"
+      },
+      {
+        "text": "Laxfilé",
+        "amount": "400g"
+      },
+      {
+        "text": "Halloumi",
+        "amount": "200g"
+      },
+      {
+        "text": "Vitlöksklyfta",
+        "amount": "2 st"
+      },
+      {
+        "text": "Matlagningsgrädde",
+        "amount": "2.5 dl"
+      }
+    ],
+    "instructions": [
+      "Förbered ingredienserna genom att hacka och mäta upp alla komponenter.",
+      "Värm en panna eller kastrull och brynt/tillaga huvudingrediensen.",
+      "Tillsätt vätska och kryddor och låt sjuda i ca 10–15 minuter.",
+      "Smaka av med salt, peppar och fräscha örter. Servera varmt."
+    ],
+    "tags": [
+      "Kött",
+      "Helg",
+      "Krämigt"
+    ],
+    "createdAt": "2026-09-03T00:00:00Z"
+  },
+  {
+    "id": "sug-129",
+    "name": "Chili con Carne med Vitlöksbröd",
+    "description": "Fyllig och kryddig chili med vita och röda bönor.",
+    "imageUrl": "https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?auto=format&fit=crop&w=800&q=80",
+    "ingredients": [
+      {
+        "text": "Potatis",
+        "amount": "800g"
+      },
+      {
+        "text": "Matlagningsgrädde",
+        "amount": "2.5 dl"
+      },
+      {
+        "text": "Kokosmjölk",
+        "amount": "400ml"
+      },
+      {
+        "text": "Paprika",
+        "amount": "1 st"
+      },
+      {
+        "text": "Ris",
+        "amount": "4 port"
+      }
+    ],
+    "instructions": [
+      "Förbered ingredienserna genom att hacka och mäta upp alla komponenter.",
+      "Värm en panna eller kastrull och brynt/tillaga huvudingrediensen.",
+      "Tillsätt vätska och kryddor och låt sjuda i ca 10–15 minuter.",
+      "Smaka av med salt, peppar och fräscha örter. Servera varmt."
+    ],
+    "tags": [
+      "Kött",
+      "Klassiker",
+      "Enkelt"
+    ],
+    "createdAt": "2026-09-03T00:00:00Z"
+  },
+  {
+    "id": "sug-130",
+    "name": "Torskrygg med Skirat Smör och Pepparrot",
+    "description": "Delikat torsk med klassiska tillbehör.",
+    "imageUrl": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=800&q=80",
+    "ingredients": [
+      {
+        "text": "Nötfärs",
+        "amount": "500g"
+      },
+      {
+        "text": "Kycklingfilé",
+        "amount": "400g"
+      },
+      {
+        "text": "Paprika",
+        "amount": "1 st"
+      },
+      {
+        "text": "Morot",
+        "amount": "2 st"
+      },
+      {
+        "text": "Torskfilé",
+        "amount": "400g"
+      }
+    ],
+    "instructions": [
+      "Förbered ingredienserna genom att hacka och mäta upp alla komponenter.",
+      "Värm en panna eller kastrull och brynt/tillaga huvudingrediensen.",
+      "Tillsätt vätska och kryddor och låt sjuda i ca 10–15 minuter.",
+      "Smaka av med salt, peppar och fräscha örter. Servera varmt."
+    ],
+    "tags": [
+      "Fisk",
+      "Klassiker",
+      "Vardag"
+    ],
+    "createdAt": "2026-09-03T00:00:00Z"
+  },
+  {
+    "id": "sug-131",
+    "name": "Lax i Ugn med Dillsås och Kokt Potatismos",
+    "description": "Saftig lax med krämig dillsås.",
+    "imageUrl": "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?auto=format&fit=crop&w=800&q=80",
+    "ingredients": [
+      {
+        "text": "Laxfilé",
+        "amount": "400g"
+      },
+      {
+        "text": "Halloumi",
+        "amount": "200g"
+      },
+      {
+        "text": "Torskfilé",
+        "amount": "400g"
+      },
+      {
+        "text": "Kycklingfilé",
+        "amount": "400g"
+      },
+      {
+        "text": "Nötfärs",
+        "amount": "500g"
+      }
+    ],
+    "instructions": [
+      "Förbered ingredienserna genom att hacka och mäta upp alla komponenter.",
+      "Värm en panna eller kastrull och brynt/tillaga huvudingrediensen.",
+      "Tillsätt vätska och kryddor och låt sjuda i ca 10–15 minuter.",
+      "Smaka av med salt, peppar och fräscha örter. Servera varmt."
+    ],
+    "tags": [
+      "Fisk",
+      "Klassiker",
+      "Vardag"
+    ],
+    "createdAt": "2026-09-03T00:00:00Z"
+  },
+  {
+    "id": "sug-132",
+    "name": "Fisksoppa med Saffran och Aioli",
+    "description": "Lyxig soppa med torsk, lax och räkor.",
+    "imageUrl": "https://images.unsplash.com/photo-1540420773420-3366772f4999?auto=format&fit=crop&w=800&q=80",
+    "ingredients": [
+      {
+        "text": "Potatis",
+        "amount": "800g"
+      },
+      {
+        "text": "Krossade tomater",
+        "amount": "400g"
+      },
+      {
+        "text": "Nötfärs",
+        "amount": "500g"
+      },
+      {
+        "text": "Torskfilé",
+        "amount": "400g"
+      },
+      {
+        "text": "Kycklingfilé",
+        "amount": "400g"
+      }
+    ],
+    "instructions": [
+      "Förbered ingredienserna genom att hacka och mäta upp alla komponenter.",
+      "Värm en panna eller kastrull och brynt/tillaga huvudingrediensen.",
+      "Tillsätt vätska och kryddor och låt sjuda i ca 10–15 minuter.",
+      "Smaka av med salt, peppar och fräscha örter. Servera varmt."
+    ],
+    "tags": [
+      "Fisk",
+      "Klassiker",
+      "Snabbt"
+    ],
+    "createdAt": "2026-09-03T00:00:00Z"
+  },
+  {
+    "id": "sug-133",
+    "name": "Sprödbakad Torsk med Remouladsås",
+    "description": "Frasig fiskfilé serverad med kall remouladsås.",
+    "imageUrl": "https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?auto=format&fit=crop&w=800&q=80",
+    "ingredients": [
+      {
+        "text": "Pasta",
+        "amount": "300g"
+      },
+      {
+        "text": "Paprika",
+        "amount": "1 st"
+      },
+      {
+        "text": "Potatis",
+        "amount": "800g"
+      },
+      {
+        "text": "Röda linser",
+        "amount": "2 dl"
+      },
+      {
+        "text": "Gul lök",
+        "amount": "1 st"
+      }
+    ],
+    "instructions": [
+      "Förbered ingredienserna genom att hacka och mäta upp alla komponenter.",
+      "Värm en panna eller kastrull och brynt/tillaga huvudingrediensen.",
+      "Tillsätt vätska och kryddor och låt sjuda i ca 10–15 minuter.",
+      "Smaka av med salt, peppar och fräscha örter. Servera varmt."
+    ],
+    "tags": [
+      "Fisk",
+      "Enkelt",
+      "Helg"
+    ],
+    "createdAt": "2026-09-03T00:00:00Z"
+  },
+  {
+    "id": "sug-134",
+    "name": "Laxpasta med Citron och Spenat",
+    "description": "Krämig pastarätt med kallrökt lax och färsk spenat.",
+    "imageUrl": "https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?auto=format&fit=crop&w=800&q=80",
+    "ingredients": [
+      {
+        "text": "Laxfilé",
+        "amount": "400g"
+      },
+      {
+        "text": "Matlagningsgrädde",
+        "amount": "2.5 dl"
+      },
+      {
+        "text": "Kycklingfilé",
+        "amount": "400g"
+      },
+      {
+        "text": "Pasta",
+        "amount": "300g"
+      },
+      {
+        "text": "Kokosmjölk",
+        "amount": "400ml"
+      }
+    ],
+    "instructions": [
+      "Förbered ingredienserna genom att hacka och mäta upp alla komponenter.",
+      "Värm en panna eller kastrull och brynt/tillaga huvudingrediensen.",
+      "Tillsätt vätska och kryddor och låt sjuda i ca 10–15 minuter.",
+      "Smaka av med salt, peppar och fräscha örter. Servera varmt."
+    ],
+    "tags": [
+      "Fisk",
+      "Hälsosamt",
+      "Snabbt"
+    ],
+    "createdAt": "2026-09-03T00:00:00Z"
+  },
+  {
+    "id": "sug-135",
+    "name": "Vegetarisk Lasagne med Spenat och Fetaost",
+    "description": "Krämig lasagne full av smak från färsk spenat.",
+    "imageUrl": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=800&q=80",
+    "ingredients": [
+      {
+        "text": "Matlagningsgrädde",
+        "amount": "2.5 dl"
+      },
+      {
+        "text": "Laxfilé",
+        "amount": "400g"
+      },
+      {
+        "text": "Vitlöksklyfta",
+        "amount": "2 st"
+      },
+      {
+        "text": "Kycklingfilé",
+        "amount": "400g"
+      },
+      {
+        "text": "Potatis",
+        "amount": "800g"
+      }
+    ],
+    "instructions": [
+      "Förbered ingredienserna genom att hacka och mäta upp alla komponenter.",
+      "Värm en panna eller kastrull och brynt/tillaga huvudingrediensen.",
+      "Tillsätt vätska och kryddor och låt sjuda i ca 10–15 minuter.",
+      "Smaka av med salt, peppar och fräscha örter. Servera varmt."
+    ],
+    "tags": [
+      "Vegetariskt",
+      "Vardag",
+      "Familjefavorit"
+    ],
+    "createdAt": "2026-09-03T00:00:00Z"
+  },
+  {
+    "id": "sug-136",
+    "name": "Halloumitacos med Mango Salsa",
+    "description": "Fräscha tacos med stekt halloumi och söt mango.",
+    "imageUrl": "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?auto=format&fit=crop&w=800&q=80",
+    "ingredients": [
+      {
+        "text": "Kycklingfilé",
+        "amount": "400g"
+      },
+      {
+        "text": "Krossade tomater",
+        "amount": "400g"
+      },
+      {
+        "text": "Torskfilé",
+        "amount": "400g"
+      },
+      {
+        "text": "Paprika",
+        "amount": "1 st"
+      },
+      {
+        "text": "Matlagningsgrädde",
+        "amount": "2.5 dl"
+      }
+    ],
+    "instructions": [
+      "Förbered ingredienserna genom att hacka och mäta upp alla komponenter.",
+      "Värm en panna eller kastrull och brynt/tillaga huvudingrediensen.",
+      "Tillsätt vätska och kryddor och låt sjuda i ca 10–15 minuter.",
+      "Smaka av med salt, peppar och fräscha örter. Servera varmt."
+    ],
+    "tags": [
+      "Vegetariskt",
+      "Snabbt",
+      "Familjefavorit"
+    ],
+    "createdAt": "2026-09-03T00:00:00Z"
+  },
+  {
+    "id": "sug-137",
+    "name": "Grönsakswok med Tofu och Nudlar",
+    "description": "Snabb asiatisk wok med knaprig tofu.",
+    "imageUrl": "https://images.unsplash.com/photo-1540420773420-3366772f4999?auto=format&fit=crop&w=800&q=80",
+    "ingredients": [
+      {
+        "text": "Laxfilé",
+        "amount": "400g"
+      },
+      {
+        "text": "Nötfärs",
+        "amount": "500g"
+      },
+      {
+        "text": "Paprika",
+        "amount": "1 st"
+      },
+      {
+        "text": "Halloumi",
+        "amount": "200g"
+      },
+      {
+        "text": "Potatis",
+        "amount": "800g"
+      }
+    ],
+    "instructions": [
+      "Förbered ingredienserna genom att hacka och mäta upp alla komponenter.",
+      "Värm en panna eller kastrull och brynt/tillaga huvudingrediensen.",
+      "Tillsätt vätska och kryddor och låt sjuda i ca 10–15 minuter.",
+      "Smaka av med salt, peppar och fräscha örter. Servera varmt."
+    ],
+    "tags": [
+      "Vegetariskt",
+      "Enkelt",
+      "Familjefavorit"
+    ],
+    "createdAt": "2026-09-03T00:00:00Z"
+  },
+  {
+    "id": "sug-138",
+    "name": "Krämig Svamprisotto med Parmesan",
+    "description": "Klassisk italiensk risotto med skogssvamp.",
+    "imageUrl": "https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?auto=format&fit=crop&w=800&q=80",
+    "ingredients": [
+      {
+        "text": "Röda linser",
+        "amount": "2 dl"
+      },
+      {
+        "text": "Kycklingfilé",
+        "amount": "400g"
+      },
+      {
+        "text": "Paprika",
+        "amount": "1 st"
+      },
+      {
+        "text": "Matlagningsgrädde",
+        "amount": "2.5 dl"
+      },
+      {
+        "text": "Vitlöksklyfta",
+        "amount": "2 st"
+      }
+    ],
+    "instructions": [
+      "Förbered ingredienserna genom att hacka och mäta upp alla komponenter.",
+      "Värm en panna eller kastrull och brynt/tillaga huvudingrediensen.",
+      "Tillsätt vätska och kryddor och låt sjuda i ca 10–15 minuter.",
+      "Smaka av med salt, peppar och fräscha örter. Servera varmt."
+    ],
+    "tags": [
+      "Vegetariskt",
+      "Krämigt",
+      "Helg"
+    ],
+    "createdAt": "2026-09-03T00:00:00Z"
+  },
+  {
+    "id": "sug-139",
+    "name": "Sötpotatissoppa med Röd Curry",
+    "description": "Värmande soppa med len sötpotatis och kokosmjölk.",
+    "imageUrl": "https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?auto=format&fit=crop&w=800&q=80",
+    "ingredients": [
+      {
+        "text": "Halloumi",
+        "amount": "200g"
+      },
+      {
+        "text": "Potatis",
+        "amount": "800g"
+      },
+      {
+        "text": "Ris",
+        "amount": "4 port"
+      },
+      {
+        "text": "Vitlöksklyfta",
+        "amount": "2 st"
+      },
+      {
+        "text": "Paprika",
+        "amount": "1 st"
+      }
+    ],
+    "instructions": [
+      "Förbered ingredienserna genom att hacka och mäta upp alla komponenter.",
+      "Värm en panna eller kastrull och brynt/tillaga huvudingrediensen.",
+      "Tillsätt vätska och kryddor och låt sjuda i ca 10–15 minuter.",
+      "Smaka av med salt, peppar och fräscha örter. Servera varmt."
+    ],
+    "tags": [
+      "Vegetariskt",
+      "Hälsosamt",
+      "Vardag"
+    ],
+    "createdAt": "2026-09-03T00:00:00Z"
+  },
+  {
+    "id": "sug-140",
+    "name": "Kycklinggryta med Kokosmjölk och Ingefära (Variant 2)",
+    "description": "Smakrik kycklinggryta med asiatiska toner.",
+    "imageUrl": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=800&q=80",
+    "ingredients": [
+      {
+        "text": "Gul lök",
+        "amount": "1 st"
+      },
+      {
+        "text": "Torskfilé",
+        "amount": "400g"
+      },
+      {
+        "text": "Paprika",
+        "amount": "1 st"
+      },
+      {
+        "text": "Matlagningsgrädde",
+        "amount": "2.5 dl"
+      },
+      {
+        "text": "Kycklingfilé",
+        "amount": "400g"
+      }
+    ],
+    "instructions": [
+      "Förbered ingredienserna genom att hacka och mäta upp alla komponenter.",
+      "Värm en panna eller kastrull och brynt/tillaga huvudingrediensen.",
+      "Tillsätt vätska och kryddor och låt sjuda i ca 10–15 minuter.",
+      "Smaka av med salt, peppar och fräscha örter. Servera varmt."
+    ],
+    "tags": [
+      "Kyckling",
+      "Familjefavorit",
+      "Helg"
+    ],
+    "createdAt": "2026-09-03T00:00:00Z"
+  },
+  {
+    "id": "sug-141",
+    "name": "Ugnsbakad Kycklingfilé med Rotsaker (Variant 2)",
+    "description": "Mör kycklingfilé serverad med rostade rotsaker.",
+    "imageUrl": "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?auto=format&fit=crop&w=800&q=80",
+    "ingredients": [
+      {
+        "text": "Kycklingfilé",
+        "amount": "400g"
+      },
+      {
+        "text": "Potatis",
+        "amount": "800g"
+      },
+      {
+        "text": "Vitlöksklyfta",
+        "amount": "2 st"
+      },
+      {
+        "text": "Torskfilé",
+        "amount": "400g"
+      },
+      {
+        "text": "Paprika",
+        "amount": "1 st"
+      }
+    ],
+    "instructions": [
+      "Förbered ingredienserna genom att hacka och mäta upp alla komponenter.",
+      "Värm en panna eller kastrull och brynt/tillaga huvudingrediensen.",
+      "Tillsätt vätska och kryddor och låt sjuda i ca 10–15 minuter.",
+      "Smaka av med salt, peppar och fräscha örter. Servera varmt."
+    ],
+    "tags": [
+      "Kyckling",
+      "Enkelt",
+      "Klassiker"
+    ],
+    "createdAt": "2026-09-03T00:00:00Z"
+  },
+  {
+    "id": "sug-142",
+    "name": "Kycklingsallad med Avokado och Bacon (Variant 2)",
+    "description": "Fräsch och mättande sallad med krispigt bacon.",
+    "imageUrl": "https://images.unsplash.com/photo-1540420773420-3366772f4999?auto=format&fit=crop&w=800&q=80",
+    "ingredients": [
+      {
+        "text": "Laxfilé",
+        "amount": "400g"
+      },
+      {
+        "text": "Krossade tomater",
+        "amount": "400g"
+      },
+      {
+        "text": "Röda linser",
+        "amount": "2 dl"
+      },
+      {
+        "text": "Potatis",
+        "amount": "800g"
+      },
+      {
+        "text": "Pasta",
+        "amount": "300g"
+      }
+    ],
+    "instructions": [
+      "Förbered ingredienserna genom att hacka och mäta upp alla komponenter.",
+      "Värm en panna eller kastrull och brynt/tillaga huvudingrediensen.",
+      "Tillsätt vätska och kryddor och låt sjuda i ca 10–15 minuter.",
+      "Smaka av med salt, peppar och fräscha örter. Servera varmt."
+    ],
+    "tags": [
+      "Kyckling",
+      "Enkelt",
+      "Hälsosamt"
+    ],
+    "createdAt": "2026-09-03T00:00:00Z"
+  },
+  {
+    "id": "sug-143",
+    "name": "Kyckling Tacos med Picklad Rödlök (Variant 2)",
+    "description": "Klassiska tacos med kryddig kycklingfärs.",
+    "imageUrl": "https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?auto=format&fit=crop&w=800&q=80",
+    "ingredients": [
+      {
+        "text": "Pasta",
+        "amount": "300g"
+      },
+      {
+        "text": "Gul lök",
+        "amount": "1 st"
+      },
+      {
+        "text": "Matlagningsgrädde",
+        "amount": "2.5 dl"
+      },
+      {
+        "text": "Paprika",
+        "amount": "1 st"
+      },
+      {
+        "text": "Kokosmjölk",
+        "amount": "400ml"
+      }
+    ],
+    "instructions": [
+      "Förbered ingredienserna genom att hacka och mäta upp alla komponenter.",
+      "Värm en panna eller kastrull och brynt/tillaga huvudingrediensen.",
+      "Tillsätt vätska och kryddor och låt sjuda i ca 10–15 minuter.",
+      "Smaka av med salt, peppar och fräscha örter. Servera varmt."
+    ],
+    "tags": [
+      "Kyckling",
+      "Snabbt",
+      "Hälsosamt"
+    ],
+    "createdAt": "2026-09-03T00:00:00Z"
+  },
+  {
+    "id": "sug-144",
+    "name": "Thailändsk Kycklingwok med Cashewnötter (Variant 2)",
+    "description": "Snabblagad wok med krispiga grönsaker och nötsmak.",
+    "imageUrl": "https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?auto=format&fit=crop&w=800&q=80",
+    "ingredients": [
+      {
+        "text": "Röda linser",
+        "amount": "2 dl"
+      },
+      {
+        "text": "Potatis",
+        "amount": "800g"
+      },
+      {
+        "text": "Kycklingfilé",
+        "amount": "400g"
+      },
+      {
+        "text": "Halloumi",
+        "amount": "200g"
+      },
+      {
+        "text": "Pasta",
+        "amount": "300g"
+      }
+    ],
+    "instructions": [
+      "Förbered ingredienserna genom att hacka och mäta upp alla komponenter.",
+      "Värm en panna eller kastrull och brynt/tillaga huvudingrediensen.",
+      "Tillsätt vätska och kryddor och låt sjuda i ca 10–15 minuter.",
+      "Smaka av med salt, peppar och fräscha örter. Servera varmt."
+    ],
+    "tags": [
+      "Kyckling",
+      "Snabbt",
+      "Enkelt"
+    ],
+    "createdAt": "2026-09-03T00:00:00Z"
+  },
+  {
+    "id": "sug-145",
+    "name": "Biff Stroganoff med Ris (Variant 2)",
+    "description": "Klassisk gräddig biff stroganoff med champinjoner.",
+    "imageUrl": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=800&q=80",
+    "ingredients": [
+      {
+        "text": "Potatis",
+        "amount": "800g"
+      },
+      {
+        "text": "Paprika",
+        "amount": "1 st"
+      },
+      {
+        "text": "Laxfilé",
+        "amount": "400g"
+      },
+      {
+        "text": "Vitlöksklyfta",
+        "amount": "2 st"
+      },
+      {
+        "text": "Matlagningsgrädde",
+        "amount": "2.5 dl"
+      }
+    ],
+    "instructions": [
+      "Förbered ingredienserna genom att hacka och mäta upp alla komponenter.",
+      "Värm en panna eller kastrull och brynt/tillaga huvudingrediensen.",
+      "Tillsätt vätska och kryddor och låt sjuda i ca 10–15 minuter.",
+      "Smaka av med salt, peppar och fräscha örter. Servera varmt."
+    ],
+    "tags": [
+      "Kött",
+      "Helg",
+      "Vardag"
+    ],
+    "createdAt": "2026-09-03T00:00:00Z"
+  },
+  {
+    "id": "sug-146",
+    "name": "Köttfärssås med Spaghetti (Variant 2)",
+    "description": "Klassisk italiensk köttfärssås som fått sjuda länge.",
+    "imageUrl": "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?auto=format&fit=crop&w=800&q=80",
+    "ingredients": [
+      {
+        "text": "Ris",
+        "amount": "4 port"
+      },
+      {
+        "text": "Halloumi",
+        "amount": "200g"
+      },
+      {
+        "text": "Kycklingfilé",
+        "amount": "400g"
+      },
+      {
+        "text": "Matlagningsgrädde",
+        "amount": "2.5 dl"
+      },
+      {
+        "text": "Kokosmjölk",
+        "amount": "400ml"
+      }
+    ],
+    "instructions": [
+      "Förbered ingredienserna genom att hacka och mäta upp alla komponenter.",
+      "Värm en panna eller kastrull och brynt/tillaga huvudingrediensen.",
+      "Tillsätt vätska och kryddor och låt sjuda i ca 10–15 minuter.",
+      "Smaka av med salt, peppar och fräscha örter. Servera varmt."
+    ],
+    "tags": [
+      "Kött",
+      "Snabbt",
+      "Helg"
+    ],
+    "createdAt": "2026-09-03T00:00:00Z"
+  },
+  {
+    "id": "sug-147",
+    "name": "Köttbullar med Potatismos och Lingon (Variant 2)",
+    "description": "Svenska husmansklassiker när den är som bäst.",
+    "imageUrl": "https://images.unsplash.com/photo-1540420773420-3366772f4999?auto=format&fit=crop&w=800&q=80",
+    "ingredients": [
+      {
+        "text": "Paprika",
+        "amount": "1 st"
+      },
+      {
+        "text": "Kokosmjölk",
+        "amount": "400ml"
+      },
+      {
+        "text": "Krossade tomater",
+        "amount": "400g"
+      },
+      {
+        "text": "Vitlöksklyfta",
+        "amount": "2 st"
+      },
+      {
+        "text": "Röda linser",
+        "amount": "2 dl"
+      }
+    ],
+    "instructions": [
+      "Förbered ingredienserna genom att hacka och mäta upp alla komponenter.",
+      "Värm en panna eller kastrull och brynt/tillaga huvudingrediensen.",
+      "Tillsätt vätska och kryddor och låt sjuda i ca 10–15 minuter.",
+      "Smaka av med salt, peppar och fräscha örter. Servera varmt."
+    ],
+    "tags": [
+      "Kött",
+      "Helg",
+      "Klassiker"
+    ],
+    "createdAt": "2026-09-03T00:00:00Z"
+  },
+  {
+    "id": "sug-148",
+    "name": "Pannbiff med Lök och Skysås (Variant 2)",
+    "description": "Traditionell pannbiff med karamelliserad lök.",
+    "imageUrl": "https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?auto=format&fit=crop&w=800&q=80",
+    "ingredients": [
+      {
+        "text": "Krossade tomater",
+        "amount": "400g"
+      },
+      {
+        "text": "Röda linser",
+        "amount": "2 dl"
+      },
+      {
+        "text": "Laxfilé",
+        "amount": "400g"
+      },
+      {
+        "text": "Nötfärs",
+        "amount": "500g"
+      },
+      {
+        "text": "Paprika",
+        "amount": "1 st"
+      }
+    ],
+    "instructions": [
+      "Förbered ingredienserna genom att hacka och mäta upp alla komponenter.",
+      "Värm en panna eller kastrull och brynt/tillaga huvudingrediensen.",
+      "Tillsätt vätska och kryddor och låt sjuda i ca 10–15 minuter.",
+      "Smaka av med salt, peppar och fräscha örter. Servera varmt."
+    ],
+    "tags": [
+      "Kött",
+      "Vardag",
+      "Klassiker"
+    ],
+    "createdAt": "2026-09-03T00:00:00Z"
+  },
+  {
+    "id": "sug-149",
+    "name": "Chili con Carne med Vitlöksbröd (Variant 2)",
+    "description": "Fyllig och kryddig chili med vita och röda bönor.",
+    "imageUrl": "https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?auto=format&fit=crop&w=800&q=80",
+    "ingredients": [
+      {
+        "text": "Kycklingfilé",
+        "amount": "400g"
+      },
+      {
+        "text": "Halloumi",
+        "amount": "200g"
+      },
+      {
+        "text": "Paprika",
+        "amount": "1 st"
+      },
+      {
+        "text": "Vitlöksklyfta",
+        "amount": "2 st"
+      },
+      {
+        "text": "Torskfilé",
+        "amount": "400g"
+      }
+    ],
+    "instructions": [
+      "Förbered ingredienserna genom att hacka och mäta upp alla komponenter.",
+      "Värm en panna eller kastrull och brynt/tillaga huvudingrediensen.",
+      "Tillsätt vätska och kryddor och låt sjuda i ca 10–15 minuter.",
+      "Smaka av med salt, peppar och fräscha örter. Servera varmt."
+    ],
+    "tags": [
+      "Kött",
+      "Vardag",
+      "Helg"
+    ],
+    "createdAt": "2026-09-03T00:00:00Z"
+  },
+  {
+    "id": "sug-150",
+    "name": "Torskrygg med Skirat Smör och Pepparrot (Variant 2)",
+    "description": "Delikat torsk med klassiska tillbehör.",
+    "imageUrl": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=800&q=80",
+    "ingredients": [
+      {
+        "text": "Paprika",
+        "amount": "1 st"
+      },
+      {
+        "text": "Kokosmjölk",
+        "amount": "400ml"
+      },
+      {
+        "text": "Krossade tomater",
+        "amount": "400g"
+      },
+      {
+        "text": "Matlagningsgrädde",
+        "amount": "2.5 dl"
+      },
+      {
+        "text": "Torskfilé",
+        "amount": "400g"
+      }
+    ],
+    "instructions": [
+      "Förbered ingredienserna genom att hacka och mäta upp alla komponenter.",
+      "Värm en panna eller kastrull och brynt/tillaga huvudingrediensen.",
+      "Tillsätt vätska och kryddor och låt sjuda i ca 10–15 minuter.",
+      "Smaka av med salt, peppar och fräscha örter. Servera varmt."
+    ],
+    "tags": [
+      "Fisk",
+      "Krämigt",
+      "Klassiker"
+    ],
+    "createdAt": "2026-09-03T00:00:00Z"
+  },
+  {
+    "id": "sug-151",
+    "name": "Lax i Ugn med Dillsås och Kokt Potatismos (Variant 2)",
+    "description": "Saftig lax med krämig dillsås.",
+    "imageUrl": "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?auto=format&fit=crop&w=800&q=80",
+    "ingredients": [
+      {
+        "text": "Halloumi",
+        "amount": "200g"
+      },
+      {
+        "text": "Krossade tomater",
+        "amount": "400g"
+      },
+      {
+        "text": "Laxfilé",
+        "amount": "400g"
+      },
+      {
+        "text": "Paprika",
+        "amount": "1 st"
+      },
+      {
+        "text": "Kokosmjölk",
+        "amount": "400ml"
+      }
+    ],
+    "instructions": [
+      "Förbered ingredienserna genom att hacka och mäta upp alla komponenter.",
+      "Värm en panna eller kastrull och brynt/tillaga huvudingrediensen.",
+      "Tillsätt vätska och kryddor och låt sjuda i ca 10–15 minuter.",
+      "Smaka av med salt, peppar och fräscha örter. Servera varmt."
+    ],
+    "tags": [
+      "Fisk",
+      "Vardag",
+      "Familjefavorit"
+    ],
+    "createdAt": "2026-09-03T00:00:00Z"
+  },
+  {
+    "id": "sug-152",
+    "name": "Fisksoppa med Saffran och Aioli (Variant 2)",
+    "description": "Lyxig soppa med torsk, lax och räkor.",
+    "imageUrl": "https://images.unsplash.com/photo-1540420773420-3366772f4999?auto=format&fit=crop&w=800&q=80",
+    "ingredients": [
+      {
+        "text": "Pasta",
+        "amount": "300g"
+      },
+      {
+        "text": "Matlagningsgrädde",
+        "amount": "2.5 dl"
+      },
+      {
+        "text": "Röda linser",
+        "amount": "2 dl"
+      },
+      {
+        "text": "Gul lök",
+        "amount": "1 st"
+      },
+      {
+        "text": "Morot",
+        "amount": "2 st"
+      }
+    ],
+    "instructions": [
+      "Förbered ingredienserna genom att hacka och mäta upp alla komponenter.",
+      "Värm en panna eller kastrull och brynt/tillaga huvudingrediensen.",
+      "Tillsätt vätska och kryddor och låt sjuda i ca 10–15 minuter.",
+      "Smaka av med salt, peppar och fräscha örter. Servera varmt."
+    ],
+    "tags": [
+      "Fisk",
+      "Familjefavorit",
+      "Helg"
+    ],
+    "createdAt": "2026-09-03T00:00:00Z"
+  },
+  {
+    "id": "sug-153",
+    "name": "Sprödbakad Torsk med Remouladsås (Variant 2)",
+    "description": "Frasig fiskfilé serverad med kall remouladsås.",
+    "imageUrl": "https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?auto=format&fit=crop&w=800&q=80",
+    "ingredients": [
+      {
+        "text": "Morot",
+        "amount": "2 st"
+      },
+      {
+        "text": "Röda linser",
+        "amount": "2 dl"
+      },
+      {
+        "text": "Pasta",
+        "amount": "300g"
+      },
+      {
+        "text": "Kycklingfilé",
+        "amount": "400g"
+      },
+      {
+        "text": "Gul lök",
+        "amount": "1 st"
+      }
+    ],
+    "instructions": [
+      "Förbered ingredienserna genom att hacka och mäta upp alla komponenter.",
+      "Värm en panna eller kastrull och brynt/tillaga huvudingrediensen.",
+      "Tillsätt vätska och kryddor och låt sjuda i ca 10–15 minuter.",
+      "Smaka av med salt, peppar och fräscha örter. Servera varmt."
+    ],
+    "tags": [
+      "Fisk",
+      "Krämigt",
+      "Enkelt"
+    ],
+    "createdAt": "2026-09-03T00:00:00Z"
+  },
+  {
+    "id": "sug-154",
+    "name": "Laxpasta med Citron och Spenat (Variant 2)",
+    "description": "Krämig pastarätt med kallrökt lax och färsk spenat.",
+    "imageUrl": "https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?auto=format&fit=crop&w=800&q=80",
+    "ingredients": [
+      {
+        "text": "Laxfilé",
+        "amount": "400g"
+      },
+      {
+        "text": "Matlagningsgrädde",
+        "amount": "2.5 dl"
+      },
+      {
+        "text": "Ris",
+        "amount": "4 port"
+      },
+      {
+        "text": "Vitlöksklyfta",
+        "amount": "2 st"
+      },
+      {
+        "text": "Torskfilé",
+        "amount": "400g"
+      }
+    ],
+    "instructions": [
+      "Förbered ingredienserna genom att hacka och mäta upp alla komponenter.",
+      "Värm en panna eller kastrull och brynt/tillaga huvudingrediensen.",
+      "Tillsätt vätska och kryddor och låt sjuda i ca 10–15 minuter.",
+      "Smaka av med salt, peppar och fräscha örter. Servera varmt."
+    ],
+    "tags": [
+      "Fisk",
+      "Enkelt",
+      "Helg"
+    ],
+    "createdAt": "2026-09-03T00:00:00Z"
+  },
+  {
+    "id": "sug-155",
+    "name": "Vegetarisk Lasagne med Spenat och Fetaost (Variant 2)",
+    "description": "Krämig lasagne full av smak från färsk spenat.",
+    "imageUrl": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=800&q=80",
+    "ingredients": [
+      {
+        "text": "Matlagningsgrädde",
+        "amount": "2.5 dl"
+      },
+      {
+        "text": "Torskfilé",
+        "amount": "400g"
+      },
+      {
+        "text": "Kycklingfilé",
+        "amount": "400g"
+      },
+      {
+        "text": "Morot",
+        "amount": "2 st"
+      },
+      {
+        "text": "Kokosmjölk",
+        "amount": "400ml"
+      }
+    ],
+    "instructions": [
+      "Förbered ingredienserna genom att hacka och mäta upp alla komponenter.",
+      "Värm en panna eller kastrull och brynt/tillaga huvudingrediensen.",
+      "Tillsätt vätska och kryddor och låt sjuda i ca 10–15 minuter.",
+      "Smaka av med salt, peppar och fräscha örter. Servera varmt."
+    ],
+    "tags": [
+      "Vegetariskt",
+      "Klassiker",
+      "Snabbt"
+    ],
+    "createdAt": "2026-09-03T00:00:00Z"
+  },
+  {
+    "id": "sug-156",
+    "name": "Halloumitacos med Mango Salsa (Variant 2)",
+    "description": "Fräscha tacos med stekt halloumi och söt mango.",
+    "imageUrl": "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?auto=format&fit=crop&w=800&q=80",
+    "ingredients": [
+      {
+        "text": "Vitlöksklyfta",
+        "amount": "2 st"
+      },
+      {
+        "text": "Röda linser",
+        "amount": "2 dl"
+      },
+      {
+        "text": "Paprika",
+        "amount": "1 st"
+      },
+      {
+        "text": "Kokosmjölk",
+        "amount": "400ml"
+      },
+      {
+        "text": "Laxfilé",
+        "amount": "400g"
+      }
+    ],
+    "instructions": [
+      "Förbered ingredienserna genom att hacka och mäta upp alla komponenter.",
+      "Värm en panna eller kastrull och brynt/tillaga huvudingrediensen.",
+      "Tillsätt vätska och kryddor och låt sjuda i ca 10–15 minuter.",
+      "Smaka av med salt, peppar och fräscha örter. Servera varmt."
+    ],
+    "tags": [
+      "Vegetariskt",
+      "Krämigt",
+      "Hälsosamt"
+    ],
+    "createdAt": "2026-09-03T00:00:00Z"
+  },
+  {
+    "id": "sug-157",
+    "name": "Grönsakswok med Tofu och Nudlar (Variant 2)",
+    "description": "Snabb asiatisk wok med knaprig tofu.",
+    "imageUrl": "https://images.unsplash.com/photo-1540420773420-3366772f4999?auto=format&fit=crop&w=800&q=80",
+    "ingredients": [
+      {
+        "text": "Pasta",
+        "amount": "300g"
+      },
+      {
+        "text": "Matlagningsgrädde",
+        "amount": "2.5 dl"
+      },
+      {
+        "text": "Röda linser",
+        "amount": "2 dl"
+      },
+      {
+        "text": "Torskfilé",
+        "amount": "400g"
+      },
+      {
+        "text": "Morot",
+        "amount": "2 st"
+      }
+    ],
+    "instructions": [
+      "Förbered ingredienserna genom att hacka och mäta upp alla komponenter.",
+      "Värm en panna eller kastrull och brynt/tillaga huvudingrediensen.",
+      "Tillsätt vätska och kryddor och låt sjuda i ca 10–15 minuter.",
+      "Smaka av med salt, peppar och fräscha örter. Servera varmt."
+    ],
+    "tags": [
+      "Vegetariskt",
+      "Familjefavorit",
+      "Vardag"
+    ],
+    "createdAt": "2026-09-03T00:00:00Z"
+  },
+  {
+    "id": "sug-158",
+    "name": "Krämig Svamprisotto med Parmesan (Variant 2)",
+    "description": "Klassisk italiensk risotto med skogssvamp.",
+    "imageUrl": "https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?auto=format&fit=crop&w=800&q=80",
+    "ingredients": [
+      {
+        "text": "Paprika",
+        "amount": "1 st"
+      },
+      {
+        "text": "Krossade tomater",
+        "amount": "400g"
+      },
+      {
+        "text": "Potatis",
+        "amount": "800g"
+      },
+      {
+        "text": "Ris",
+        "amount": "4 port"
+      },
+      {
+        "text": "Pasta",
+        "amount": "300g"
+      }
+    ],
+    "instructions": [
+      "Förbered ingredienserna genom att hacka och mäta upp alla komponenter.",
+      "Värm en panna eller kastrull och brynt/tillaga huvudingrediensen.",
+      "Tillsätt vätska och kryddor och låt sjuda i ca 10–15 minuter.",
+      "Smaka av med salt, peppar och fräscha örter. Servera varmt."
+    ],
+    "tags": [
+      "Vegetariskt",
+      "Hälsosamt",
+      "Snabbt"
+    ],
+    "createdAt": "2026-09-03T00:00:00Z"
+  },
+  {
+    "id": "sug-159",
+    "name": "Sötpotatissoppa med Röd Curry (Variant 2)",
+    "description": "Värmande soppa med len sötpotatis och kokosmjölk.",
+    "imageUrl": "https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?auto=format&fit=crop&w=800&q=80",
+    "ingredients": [
+      {
+        "text": "Matlagningsgrädde",
+        "amount": "2.5 dl"
+      },
+      {
+        "text": "Morot",
+        "amount": "2 st"
+      },
+      {
+        "text": "Nötfärs",
+        "amount": "500g"
+      },
+      {
+        "text": "Laxfilé",
+        "amount": "400g"
+      },
+      {
+        "text": "Röda linser",
+        "amount": "2 dl"
+      }
+    ],
+    "instructions": [
+      "Förbered ingredienserna genom att hacka och mäta upp alla komponenter.",
+      "Värm en panna eller kastrull och brynt/tillaga huvudingrediensen.",
+      "Tillsätt vätska och kryddor och låt sjuda i ca 10–15 minuter.",
+      "Smaka av med salt, peppar och fräscha örter. Servera varmt."
+    ],
+    "tags": [
+      "Vegetariskt",
+      "Klassiker",
+      "Vardag"
+    ],
+    "createdAt": "2026-09-03T00:00:00Z"
+  },
+  {
+    "id": "sug-160",
+    "name": "Kycklinggryta med Kokosmjölk och Ingefära (Variant 3)",
+    "description": "Smakrik kycklinggryta med asiatiska toner.",
+    "imageUrl": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=800&q=80",
+    "ingredients": [
+      {
+        "text": "Kokosmjölk",
+        "amount": "400ml"
+      },
+      {
+        "text": "Potatis",
+        "amount": "800g"
+      },
+      {
+        "text": "Pasta",
+        "amount": "300g"
+      },
+      {
+        "text": "Laxfilé",
+        "amount": "400g"
+      },
+      {
+        "text": "Röda linser",
+        "amount": "2 dl"
+      }
+    ],
+    "instructions": [
+      "Förbered ingredienserna genom att hacka och mäta upp alla komponenter.",
+      "Värm en panna eller kastrull och brynt/tillaga huvudingrediensen.",
+      "Tillsätt vätska och kryddor och låt sjuda i ca 10–15 minuter.",
+      "Smaka av med salt, peppar och fräscha örter. Servera varmt."
+    ],
+    "tags": [
+      "Kyckling",
+      "Familjefavorit",
+      "Klassiker"
+    ],
+    "createdAt": "2026-09-03T00:00:00Z"
+  },
+  {
+    "id": "sug-161",
+    "name": "Ugnsbakad Kycklingfilé med Rotsaker (Variant 3)",
+    "description": "Mör kycklingfilé serverad med rostade rotsaker.",
+    "imageUrl": "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?auto=format&fit=crop&w=800&q=80",
+    "ingredients": [
+      {
+        "text": "Morot",
+        "amount": "2 st"
+      },
+      {
+        "text": "Laxfilé",
+        "amount": "400g"
+      },
+      {
+        "text": "Potatis",
+        "amount": "800g"
+      },
+      {
+        "text": "Nötfärs",
+        "amount": "500g"
+      },
+      {
+        "text": "Halloumi",
+        "amount": "200g"
+      }
+    ],
+    "instructions": [
+      "Förbered ingredienserna genom att hacka och mäta upp alla komponenter.",
+      "Värm en panna eller kastrull och brynt/tillaga huvudingrediensen.",
+      "Tillsätt vätska och kryddor och låt sjuda i ca 10–15 minuter.",
+      "Smaka av med salt, peppar och fräscha örter. Servera varmt."
+    ],
+    "tags": [
+      "Kyckling",
+      "Familjefavorit",
+      "Klassiker"
+    ],
+    "createdAt": "2026-09-03T00:00:00Z"
+  },
+  {
+    "id": "sug-162",
+    "name": "Kycklingsallad med Avokado och Bacon (Variant 3)",
+    "description": "Fräsch och mättande sallad med krispigt bacon.",
+    "imageUrl": "https://images.unsplash.com/photo-1540420773420-3366772f4999?auto=format&fit=crop&w=800&q=80",
+    "ingredients": [
+      {
+        "text": "Pasta",
+        "amount": "300g"
+      },
+      {
+        "text": "Gul lök",
+        "amount": "1 st"
+      },
+      {
+        "text": "Vitlöksklyfta",
+        "amount": "2 st"
+      },
+      {
+        "text": "Morot",
+        "amount": "2 st"
+      },
+      {
+        "text": "Röda linser",
+        "amount": "2 dl"
+      }
+    ],
+    "instructions": [
+      "Förbered ingredienserna genom att hacka och mäta upp alla komponenter.",
+      "Värm en panna eller kastrull och brynt/tillaga huvudingrediensen.",
+      "Tillsätt vätska och kryddor och låt sjuda i ca 10–15 minuter.",
+      "Smaka av med salt, peppar och fräscha örter. Servera varmt."
+    ],
+    "tags": [
+      "Kyckling",
+      "Hälsosamt",
+      "Klassiker"
+    ],
+    "createdAt": "2026-09-03T00:00:00Z"
+  },
+  {
+    "id": "sug-163",
+    "name": "Kyckling Tacos med Picklad Rödlök (Variant 3)",
+    "description": "Klassiska tacos med kryddig kycklingfärs.",
+    "imageUrl": "https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?auto=format&fit=crop&w=800&q=80",
+    "ingredients": [
+      {
+        "text": "Ris",
+        "amount": "4 port"
+      },
+      {
+        "text": "Nötfärs",
+        "amount": "500g"
+      },
+      {
+        "text": "Kokosmjölk",
+        "amount": "400ml"
+      },
+      {
+        "text": "Torskfilé",
+        "amount": "400g"
+      },
+      {
+        "text": "Gul lök",
+        "amount": "1 st"
+      }
+    ],
+    "instructions": [
+      "Förbered ingredienserna genom att hacka och mäta upp alla komponenter.",
+      "Värm en panna eller kastrull och brynt/tillaga huvudingrediensen.",
+      "Tillsätt vätska och kryddor och låt sjuda i ca 10–15 minuter.",
+      "Smaka av med salt, peppar och fräscha örter. Servera varmt."
+    ],
+    "tags": [
+      "Kyckling",
+      "Familjefavorit",
+      "Klassiker"
+    ],
+    "createdAt": "2026-09-03T00:00:00Z"
+  },
+  {
+    "id": "sug-164",
+    "name": "Thailändsk Kycklingwok med Cashewnötter (Variant 3)",
+    "description": "Snabblagad wok med krispiga grönsaker och nötsmak.",
+    "imageUrl": "https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?auto=format&fit=crop&w=800&q=80",
+    "ingredients": [
+      {
+        "text": "Potatis",
+        "amount": "800g"
+      },
+      {
+        "text": "Halloumi",
+        "amount": "200g"
+      },
+      {
+        "text": "Nötfärs",
+        "amount": "500g"
+      },
+      {
+        "text": "Matlagningsgrädde",
+        "amount": "2.5 dl"
+      },
+      {
+        "text": "Ris",
+        "amount": "4 port"
+      }
+    ],
+    "instructions": [
+      "Förbered ingredienserna genom att hacka och mäta upp alla komponenter.",
+      "Värm en panna eller kastrull och brynt/tillaga huvudingrediensen.",
+      "Tillsätt vätska och kryddor och låt sjuda i ca 10–15 minuter.",
+      "Smaka av med salt, peppar och fräscha örter. Servera varmt."
+    ],
+    "tags": [
+      "Kyckling",
+      "Vardag",
+      "Hälsosamt"
+    ],
+    "createdAt": "2026-09-03T00:00:00Z"
+  },
+  {
+    "id": "sug-165",
+    "name": "Biff Stroganoff med Ris (Variant 3)",
+    "description": "Klassisk gräddig biff stroganoff med champinjoner.",
+    "imageUrl": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=800&q=80",
+    "ingredients": [
+      {
+        "text": "Röda linser",
+        "amount": "2 dl"
+      },
+      {
+        "text": "Kycklingfilé",
+        "amount": "400g"
+      },
+      {
+        "text": "Matlagningsgrädde",
+        "amount": "2.5 dl"
+      },
+      {
+        "text": "Krossade tomater",
+        "amount": "400g"
+      },
+      {
+        "text": "Potatis",
+        "amount": "800g"
+      }
+    ],
+    "instructions": [
+      "Förbered ingredienserna genom att hacka och mäta upp alla komponenter.",
+      "Värm en panna eller kastrull och brynt/tillaga huvudingrediensen.",
+      "Tillsätt vätska och kryddor och låt sjuda i ca 10–15 minuter.",
+      "Smaka av med salt, peppar och fräscha örter. Servera varmt."
+    ],
+    "tags": [
+      "Kött",
+      "Krämigt",
+      "Familjefavorit"
+    ],
+    "createdAt": "2026-09-03T00:00:00Z"
+  },
+  {
+    "id": "sug-166",
+    "name": "Köttfärssås med Spaghetti (Variant 3)",
+    "description": "Klassisk italiensk köttfärssås som fått sjuda länge.",
+    "imageUrl": "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?auto=format&fit=crop&w=800&q=80",
+    "ingredients": [
+      {
+        "text": "Potatis",
+        "amount": "800g"
+      },
+      {
+        "text": "Pasta",
+        "amount": "300g"
+      },
+      {
+        "text": "Torskfilé",
+        "amount": "400g"
+      },
+      {
+        "text": "Kycklingfilé",
+        "amount": "400g"
+      },
+      {
+        "text": "Paprika",
+        "amount": "1 st"
+      }
+    ],
+    "instructions": [
+      "Förbered ingredienserna genom att hacka och mäta upp alla komponenter.",
+      "Värm en panna eller kastrull och brynt/tillaga huvudingrediensen.",
+      "Tillsätt vätska och kryddor och låt sjuda i ca 10–15 minuter.",
+      "Smaka av med salt, peppar och fräscha örter. Servera varmt."
+    ],
+    "tags": [
+      "Kött",
+      "Helg",
+      "Hälsosamt"
+    ],
+    "createdAt": "2026-09-03T00:00:00Z"
+  },
+  {
+    "id": "sug-167",
+    "name": "Köttbullar med Potatismos och Lingon (Variant 3)",
+    "description": "Svenska husmansklassiker när den är som bäst.",
+    "imageUrl": "https://images.unsplash.com/photo-1540420773420-3366772f4999?auto=format&fit=crop&w=800&q=80",
+    "ingredients": [
+      {
+        "text": "Krossade tomater",
+        "amount": "400g"
+      },
+      {
+        "text": "Morot",
+        "amount": "2 st"
+      },
+      {
+        "text": "Torskfilé",
+        "amount": "400g"
+      },
+      {
+        "text": "Potatis",
+        "amount": "800g"
+      },
+      {
+        "text": "Röda linser",
+        "amount": "2 dl"
+      }
+    ],
+    "instructions": [
+      "Förbered ingredienserna genom att hacka och mäta upp alla komponenter.",
+      "Värm en panna eller kastrull och brynt/tillaga huvudingrediensen.",
+      "Tillsätt vätska och kryddor och låt sjuda i ca 10–15 minuter.",
+      "Smaka av med salt, peppar och fräscha örter. Servera varmt."
+    ],
+    "tags": [
+      "Kött",
+      "Enkelt",
+      "Familjefavorit"
+    ],
+    "createdAt": "2026-09-03T00:00:00Z"
+  },
+  {
+    "id": "sug-168",
+    "name": "Pannbiff med Lök och Skysås (Variant 3)",
+    "description": "Traditionell pannbiff med karamelliserad lök.",
+    "imageUrl": "https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?auto=format&fit=crop&w=800&q=80",
+    "ingredients": [
+      {
+        "text": "Laxfilé",
+        "amount": "400g"
+      },
+      {
+        "text": "Matlagningsgrädde",
+        "amount": "2.5 dl"
+      },
+      {
+        "text": "Kokosmjölk",
+        "amount": "400ml"
+      },
+      {
+        "text": "Pasta",
+        "amount": "300g"
+      },
+      {
+        "text": "Gul lök",
+        "amount": "1 st"
+      }
+    ],
+    "instructions": [
+      "Förbered ingredienserna genom att hacka och mäta upp alla komponenter.",
+      "Värm en panna eller kastrull och brynt/tillaga huvudingrediensen.",
+      "Tillsätt vätska och kryddor och låt sjuda i ca 10–15 minuter.",
+      "Smaka av med salt, peppar och fräscha örter. Servera varmt."
+    ],
+    "tags": [
+      "Kött",
+      "Hälsosamt",
+      "Krämigt"
+    ],
+    "createdAt": "2026-09-03T00:00:00Z"
+  },
+  {
+    "id": "sug-169",
+    "name": "Chili con Carne med Vitlöksbröd (Variant 3)",
+    "description": "Fyllig och kryddig chili med vita och röda bönor.",
+    "imageUrl": "https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?auto=format&fit=crop&w=800&q=80",
+    "ingredients": [
+      {
+        "text": "Paprika",
+        "amount": "1 st"
+      },
+      {
+        "text": "Kokosmjölk",
+        "amount": "400ml"
+      },
+      {
+        "text": "Halloumi",
+        "amount": "200g"
+      },
+      {
+        "text": "Krossade tomater",
+        "amount": "400g"
+      },
+      {
+        "text": "Röda linser",
+        "amount": "2 dl"
+      }
+    ],
+    "instructions": [
+      "Förbered ingredienserna genom att hacka och mäta upp alla komponenter.",
+      "Värm en panna eller kastrull och brynt/tillaga huvudingrediensen.",
+      "Tillsätt vätska och kryddor och låt sjuda i ca 10–15 minuter.",
+      "Smaka av med salt, peppar och fräscha örter. Servera varmt."
+    ],
+    "tags": [
+      "Kött",
+      "Enkelt",
+      "Helg"
+    ],
+    "createdAt": "2026-09-03T00:00:00Z"
+  },
+  {
+    "id": "sug-170",
+    "name": "Torskrygg med Skirat Smör och Pepparrot (Variant 3)",
+    "description": "Delikat torsk med klassiska tillbehör.",
+    "imageUrl": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=800&q=80",
+    "ingredients": [
+      {
+        "text": "Pasta",
+        "amount": "300g"
+      },
+      {
+        "text": "Morot",
+        "amount": "2 st"
+      },
+      {
+        "text": "Matlagningsgrädde",
+        "amount": "2.5 dl"
+      },
+      {
+        "text": "Gul lök",
+        "amount": "1 st"
+      },
+      {
+        "text": "Krossade tomater",
+        "amount": "400g"
+      }
+    ],
+    "instructions": [
+      "Förbered ingredienserna genom att hacka och mäta upp alla komponenter.",
+      "Värm en panna eller kastrull och brynt/tillaga huvudingrediensen.",
+      "Tillsätt vätska och kryddor och låt sjuda i ca 10–15 minuter.",
+      "Smaka av med salt, peppar och fräscha örter. Servera varmt."
+    ],
+    "tags": [
+      "Fisk",
+      "Snabbt",
+      "Krämigt"
+    ],
+    "createdAt": "2026-09-03T00:00:00Z"
+  },
+  {
+    "id": "sug-171",
+    "name": "Lax i Ugn med Dillsås och Kokt Potatismos (Variant 3)",
+    "description": "Saftig lax med krämig dillsås.",
+    "imageUrl": "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?auto=format&fit=crop&w=800&q=80",
+    "ingredients": [
+      {
+        "text": "Kokosmjölk",
+        "amount": "400ml"
+      },
+      {
+        "text": "Röda linser",
+        "amount": "2 dl"
+      },
+      {
+        "text": "Vitlöksklyfta",
+        "amount": "2 st"
+      },
+      {
+        "text": "Nötfärs",
+        "amount": "500g"
+      },
+      {
+        "text": "Paprika",
+        "amount": "1 st"
+      }
+    ],
+    "instructions": [
+      "Förbered ingredienserna genom att hacka och mäta upp alla komponenter.",
+      "Värm en panna eller kastrull och brynt/tillaga huvudingrediensen.",
+      "Tillsätt vätska och kryddor och låt sjuda i ca 10–15 minuter.",
+      "Smaka av med salt, peppar och fräscha örter. Servera varmt."
+    ],
+    "tags": [
+      "Fisk",
+      "Enkelt",
+      "Helg"
+    ],
+    "createdAt": "2026-09-03T00:00:00Z"
+  },
+  {
+    "id": "sug-172",
+    "name": "Fisksoppa med Saffran och Aioli (Variant 3)",
+    "description": "Lyxig soppa med torsk, lax och räkor.",
+    "imageUrl": "https://images.unsplash.com/photo-1540420773420-3366772f4999?auto=format&fit=crop&w=800&q=80",
+    "ingredients": [
+      {
+        "text": "Kokosmjölk",
+        "amount": "400ml"
+      },
+      {
+        "text": "Paprika",
+        "amount": "1 st"
+      },
+      {
+        "text": "Potatis",
+        "amount": "800g"
+      },
+      {
+        "text": "Matlagningsgrädde",
+        "amount": "2.5 dl"
+      },
+      {
+        "text": "Kycklingfilé",
+        "amount": "400g"
+      }
+    ],
+    "instructions": [
+      "Förbered ingredienserna genom att hacka och mäta upp alla komponenter.",
+      "Värm en panna eller kastrull och brynt/tillaga huvudingrediensen.",
+      "Tillsätt vätska och kryddor och låt sjuda i ca 10–15 minuter.",
+      "Smaka av med salt, peppar och fräscha örter. Servera varmt."
+    ],
+    "tags": [
+      "Fisk",
+      "Enkelt",
+      "Hälsosamt"
+    ],
+    "createdAt": "2026-09-03T00:00:00Z"
+  },
+  {
+    "id": "sug-173",
+    "name": "Sprödbakad Torsk med Remouladsås (Variant 3)",
+    "description": "Frasig fiskfilé serverad med kall remouladsås.",
+    "imageUrl": "https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?auto=format&fit=crop&w=800&q=80",
+    "ingredients": [
+      {
+        "text": "Röda linser",
+        "amount": "2 dl"
+      },
+      {
+        "text": "Nötfärs",
+        "amount": "500g"
+      },
+      {
+        "text": "Kokosmjölk",
+        "amount": "400ml"
+      },
+      {
+        "text": "Halloumi",
+        "amount": "200g"
+      },
+      {
+        "text": "Morot",
+        "amount": "2 st"
+      }
+    ],
+    "instructions": [
+      "Förbered ingredienserna genom att hacka och mäta upp alla komponenter.",
+      "Värm en panna eller kastrull och brynt/tillaga huvudingrediensen.",
+      "Tillsätt vätska och kryddor och låt sjuda i ca 10–15 minuter.",
+      "Smaka av med salt, peppar och fräscha örter. Servera varmt."
+    ],
+    "tags": [
+      "Fisk",
+      "Krämigt",
+      "Vardag"
+    ],
+    "createdAt": "2026-09-03T00:00:00Z"
+  },
+  {
+    "id": "sug-174",
+    "name": "Laxpasta med Citron och Spenat (Variant 3)",
+    "description": "Krämig pastarätt med kallrökt lax och färsk spenat.",
+    "imageUrl": "https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?auto=format&fit=crop&w=800&q=80",
+    "ingredients": [
+      {
+        "text": "Laxfilé",
+        "amount": "400g"
+      },
+      {
+        "text": "Krossade tomater",
+        "amount": "400g"
+      },
+      {
+        "text": "Halloumi",
+        "amount": "200g"
+      },
+      {
+        "text": "Morot",
+        "amount": "2 st"
+      },
+      {
+        "text": "Ris",
+        "amount": "4 port"
+      }
+    ],
+    "instructions": [
+      "Förbered ingredienserna genom att hacka och mäta upp alla komponenter.",
+      "Värm en panna eller kastrull och brynt/tillaga huvudingrediensen.",
+      "Tillsätt vätska och kryddor och låt sjuda i ca 10–15 minuter.",
+      "Smaka av med salt, peppar och fräscha örter. Servera varmt."
+    ],
+    "tags": [
+      "Fisk",
+      "Helg",
+      "Hälsosamt"
+    ],
+    "createdAt": "2026-09-03T00:00:00Z"
+  },
+  {
+    "id": "sug-175",
+    "name": "Vegetarisk Lasagne med Spenat och Fetaost (Variant 3)",
+    "description": "Krämig lasagne full av smak från färsk spenat.",
+    "imageUrl": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=800&q=80",
+    "ingredients": [
+      {
+        "text": "Vitlöksklyfta",
+        "amount": "2 st"
+      },
+      {
+        "text": "Nötfärs",
+        "amount": "500g"
+      },
+      {
+        "text": "Paprika",
+        "amount": "1 st"
+      },
+      {
+        "text": "Krossade tomater",
+        "amount": "400g"
+      },
+      {
+        "text": "Laxfilé",
+        "amount": "400g"
+      }
+    ],
+    "instructions": [
+      "Förbered ingredienserna genom att hacka och mäta upp alla komponenter.",
+      "Värm en panna eller kastrull och brynt/tillaga huvudingrediensen.",
+      "Tillsätt vätska och kryddor och låt sjuda i ca 10–15 minuter.",
+      "Smaka av med salt, peppar och fräscha örter. Servera varmt."
+    ],
+    "tags": [
+      "Vegetariskt",
+      "Snabbt",
+      "Klassiker"
+    ],
+    "createdAt": "2026-09-03T00:00:00Z"
+  },
+  {
+    "id": "sug-176",
+    "name": "Halloumitacos med Mango Salsa (Variant 3)",
+    "description": "Fräscha tacos med stekt halloumi och söt mango.",
+    "imageUrl": "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?auto=format&fit=crop&w=800&q=80",
+    "ingredients": [
+      {
+        "text": "Krossade tomater",
+        "amount": "400g"
+      },
+      {
+        "text": "Paprika",
+        "amount": "1 st"
+      },
+      {
+        "text": "Kokosmjölk",
+        "amount": "400ml"
+      },
+      {
+        "text": "Röda linser",
+        "amount": "2 dl"
+      },
+      {
+        "text": "Gul lök",
+        "amount": "1 st"
+      }
+    ],
+    "instructions": [
+      "Förbered ingredienserna genom att hacka och mäta upp alla komponenter.",
+      "Värm en panna eller kastrull och brynt/tillaga huvudingrediensen.",
+      "Tillsätt vätska och kryddor och låt sjuda i ca 10–15 minuter.",
+      "Smaka av med salt, peppar och fräscha örter. Servera varmt."
+    ],
+    "tags": [
+      "Vegetariskt",
+      "Krämigt",
+      "Familjefavorit"
+    ],
+    "createdAt": "2026-09-03T00:00:00Z"
+  },
+  {
+    "id": "sug-177",
+    "name": "Grönsakswok med Tofu och Nudlar (Variant 3)",
+    "description": "Snabb asiatisk wok med knaprig tofu.",
+    "imageUrl": "https://images.unsplash.com/photo-1540420773420-3366772f4999?auto=format&fit=crop&w=800&q=80",
+    "ingredients": [
+      {
+        "text": "Kokosmjölk",
+        "amount": "400ml"
+      },
+      {
+        "text": "Morot",
+        "amount": "2 st"
+      },
+      {
+        "text": "Matlagningsgrädde",
+        "amount": "2.5 dl"
+      },
+      {
+        "text": "Nötfärs",
+        "amount": "500g"
+      },
+      {
+        "text": "Halloumi",
+        "amount": "200g"
+      }
+    ],
+    "instructions": [
+      "Förbered ingredienserna genom att hacka och mäta upp alla komponenter.",
+      "Värm en panna eller kastrull och brynt/tillaga huvudingrediensen.",
+      "Tillsätt vätska och kryddor och låt sjuda i ca 10–15 minuter.",
+      "Smaka av med salt, peppar och fräscha örter. Servera varmt."
+    ],
+    "tags": [
+      "Vegetariskt",
+      "Familjefavorit",
+      "Klassiker"
+    ],
+    "createdAt": "2026-09-03T00:00:00Z"
+  },
+  {
+    "id": "sug-178",
+    "name": "Krämig Svamprisotto med Parmesan (Variant 3)",
+    "description": "Klassisk italiensk risotto med skogssvamp.",
+    "imageUrl": "https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?auto=format&fit=crop&w=800&q=80",
+    "ingredients": [
+      {
+        "text": "Gul lök",
+        "amount": "1 st"
+      },
+      {
+        "text": "Vitlöksklyfta",
+        "amount": "2 st"
+      },
+      {
+        "text": "Ris",
+        "amount": "4 port"
+      },
+      {
+        "text": "Röda linser",
+        "amount": "2 dl"
+      },
+      {
+        "text": "Matlagningsgrädde",
+        "amount": "2.5 dl"
+      }
+    ],
+    "instructions": [
+      "Förbered ingredienserna genom att hacka och mäta upp alla komponenter.",
+      "Värm en panna eller kastrull och brynt/tillaga huvudingrediensen.",
+      "Tillsätt vätska och kryddor och låt sjuda i ca 10–15 minuter.",
+      "Smaka av med salt, peppar och fräscha örter. Servera varmt."
+    ],
+    "tags": [
+      "Vegetariskt",
+      "Familjefavorit",
+      "Helg"
+    ],
+    "createdAt": "2026-09-03T00:00:00Z"
+  },
+  {
+    "id": "sug-179",
+    "name": "Sötpotatissoppa med Röd Curry (Variant 3)",
+    "description": "Värmande soppa med len sötpotatis och kokosmjölk.",
+    "imageUrl": "https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?auto=format&fit=crop&w=800&q=80",
+    "ingredients": [
+      {
+        "text": "Potatis",
+        "amount": "800g"
+      },
+      {
+        "text": "Laxfilé",
+        "amount": "400g"
+      },
+      {
+        "text": "Nötfärs",
+        "amount": "500g"
+      },
+      {
+        "text": "Vitlöksklyfta",
+        "amount": "2 st"
+      },
+      {
+        "text": "Halloumi",
+        "amount": "200g"
+      }
+    ],
+    "instructions": [
+      "Förbered ingredienserna genom att hacka och mäta upp alla komponenter.",
+      "Värm en panna eller kastrull och brynt/tillaga huvudingrediensen.",
+      "Tillsätt vätska och kryddor och låt sjuda i ca 10–15 minuter.",
+      "Smaka av med salt, peppar och fräscha örter. Servera varmt."
+    ],
+    "tags": [
+      "Vegetariskt",
+      "Vardag",
+      "Klassiker"
+    ],
+    "createdAt": "2026-09-03T00:00:00Z"
+  },
+  {
+    "id": "sug-180",
+    "name": "Kycklinggryta med Kokosmjölk och Ingefära (Variant 4)",
+    "description": "Smakrik kycklinggryta med asiatiska toner.",
+    "imageUrl": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=800&q=80",
+    "ingredients": [
+      {
+        "text": "Morot",
+        "amount": "2 st"
+      },
+      {
+        "text": "Laxfilé",
+        "amount": "400g"
+      },
+      {
+        "text": "Pasta",
+        "amount": "300g"
+      },
+      {
+        "text": "Nötfärs",
+        "amount": "500g"
+      },
+      {
+        "text": "Röda linser",
+        "amount": "2 dl"
+      }
+    ],
+    "instructions": [
+      "Förbered ingredienserna genom att hacka och mäta upp alla komponenter.",
+      "Värm en panna eller kastrull och brynt/tillaga huvudingrediensen.",
+      "Tillsätt vätska och kryddor och låt sjuda i ca 10–15 minuter.",
+      "Smaka av med salt, peppar och fräscha örter. Servera varmt."
+    ],
+    "tags": [
+      "Kyckling",
+      "Hälsosamt",
+      "Enkelt"
+    ],
+    "createdAt": "2026-09-03T00:00:00Z"
+  },
+  {
+    "id": "sug-181",
+    "name": "Ugnsbakad Kycklingfilé med Rotsaker (Variant 4)",
+    "description": "Mör kycklingfilé serverad med rostade rotsaker.",
+    "imageUrl": "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?auto=format&fit=crop&w=800&q=80",
+    "ingredients": [
+      {
+        "text": "Ris",
+        "amount": "4 port"
+      },
+      {
+        "text": "Gul lök",
+        "amount": "1 st"
+      },
+      {
+        "text": "Kokosmjölk",
+        "amount": "400ml"
+      },
+      {
+        "text": "Paprika",
+        "amount": "1 st"
+      },
+      {
+        "text": "Matlagningsgrädde",
+        "amount": "2.5 dl"
+      }
+    ],
+    "instructions": [
+      "Förbered ingredienserna genom att hacka och mäta upp alla komponenter.",
+      "Värm en panna eller kastrull och brynt/tillaga huvudingrediensen.",
+      "Tillsätt vätska och kryddor och låt sjuda i ca 10–15 minuter.",
+      "Smaka av med salt, peppar och fräscha örter. Servera varmt."
+    ],
+    "tags": [
+      "Kyckling",
+      "Enkelt",
+      "Snabbt"
+    ],
+    "createdAt": "2026-09-03T00:00:00Z"
+  },
+  {
+    "id": "sug-182",
+    "name": "Kycklingsallad med Avokado och Bacon (Variant 4)",
+    "description": "Fräsch och mättande sallad med krispigt bacon.",
+    "imageUrl": "https://images.unsplash.com/photo-1540420773420-3366772f4999?auto=format&fit=crop&w=800&q=80",
+    "ingredients": [
+      {
+        "text": "Torskfilé",
+        "amount": "400g"
+      },
+      {
+        "text": "Potatis",
+        "amount": "800g"
+      },
+      {
+        "text": "Gul lök",
+        "amount": "1 st"
+      },
+      {
+        "text": "Halloumi",
+        "amount": "200g"
+      },
+      {
+        "text": "Pasta",
+        "amount": "300g"
+      }
+    ],
+    "instructions": [
+      "Förbered ingredienserna genom att hacka och mäta upp alla komponenter.",
+      "Värm en panna eller kastrull och brynt/tillaga huvudingrediensen.",
+      "Tillsätt vätska och kryddor och låt sjuda i ca 10–15 minuter.",
+      "Smaka av med salt, peppar och fräscha örter. Servera varmt."
+    ],
+    "tags": [
+      "Kyckling",
+      "Familjefavorit",
+      "Klassiker"
+    ],
+    "createdAt": "2026-09-03T00:00:00Z"
+  },
+  {
+    "id": "sug-183",
+    "name": "Kyckling Tacos med Picklad Rödlök (Variant 4)",
+    "description": "Klassiska tacos med kryddig kycklingfärs.",
+    "imageUrl": "https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?auto=format&fit=crop&w=800&q=80",
+    "ingredients": [
+      {
+        "text": "Laxfilé",
+        "amount": "400g"
+      },
+      {
+        "text": "Potatis",
+        "amount": "800g"
+      },
+      {
+        "text": "Krossade tomater",
+        "amount": "400g"
+      },
+      {
+        "text": "Morot",
+        "amount": "2 st"
+      },
+      {
+        "text": "Matlagningsgrädde",
+        "amount": "2.5 dl"
+      }
+    ],
+    "instructions": [
+      "Förbered ingredienserna genom att hacka och mäta upp alla komponenter.",
+      "Värm en panna eller kastrull och brynt/tillaga huvudingrediensen.",
+      "Tillsätt vätska och kryddor och låt sjuda i ca 10–15 minuter.",
+      "Smaka av med salt, peppar och fräscha örter. Servera varmt."
+    ],
+    "tags": [
+      "Kyckling",
+      "Enkelt",
+      "Krämigt"
+    ],
+    "createdAt": "2026-09-03T00:00:00Z"
+  },
+  {
+    "id": "sug-184",
+    "name": "Thailändsk Kycklingwok med Cashewnötter (Variant 4)",
+    "description": "Snabblagad wok med krispiga grönsaker och nötsmak.",
+    "imageUrl": "https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?auto=format&fit=crop&w=800&q=80",
+    "ingredients": [
+      {
+        "text": "Kycklingfilé",
+        "amount": "400g"
+      },
+      {
+        "text": "Nötfärs",
+        "amount": "500g"
+      },
+      {
+        "text": "Halloumi",
+        "amount": "200g"
+      },
+      {
+        "text": "Torskfilé",
+        "amount": "400g"
+      },
+      {
+        "text": "Ris",
+        "amount": "4 port"
+      }
+    ],
+    "instructions": [
+      "Förbered ingredienserna genom att hacka och mäta upp alla komponenter.",
+      "Värm en panna eller kastrull och brynt/tillaga huvudingrediensen.",
+      "Tillsätt vätska och kryddor och låt sjuda i ca 10–15 minuter.",
+      "Smaka av med salt, peppar och fräscha örter. Servera varmt."
+    ],
+    "tags": [
+      "Kyckling",
+      "Enkelt",
+      "Familjefavorit"
+    ],
+    "createdAt": "2026-09-03T00:00:00Z"
+  },
+  {
+    "id": "sug-185",
+    "name": "Biff Stroganoff med Ris (Variant 4)",
+    "description": "Klassisk gräddig biff stroganoff med champinjoner.",
+    "imageUrl": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=800&q=80",
+    "ingredients": [
+      {
+        "text": "Pasta",
+        "amount": "300g"
+      },
+      {
+        "text": "Kycklingfilé",
+        "amount": "400g"
+      },
+      {
+        "text": "Torskfilé",
+        "amount": "400g"
+      },
+      {
+        "text": "Matlagningsgrädde",
+        "amount": "2.5 dl"
+      },
+      {
+        "text": "Röda linser",
+        "amount": "2 dl"
+      }
+    ],
+    "instructions": [
+      "Förbered ingredienserna genom att hacka och mäta upp alla komponenter.",
+      "Värm en panna eller kastrull och brynt/tillaga huvudingrediensen.",
+      "Tillsätt vätska och kryddor och låt sjuda i ca 10–15 minuter.",
+      "Smaka av med salt, peppar och fräscha örter. Servera varmt."
+    ],
+    "tags": [
+      "Kött",
+      "Familjefavorit",
+      "Helg"
+    ],
+    "createdAt": "2026-09-03T00:00:00Z"
+  },
+  {
+    "id": "sug-186",
+    "name": "Köttfärssås med Spaghetti (Variant 4)",
+    "description": "Klassisk italiensk köttfärssås som fått sjuda länge.",
+    "imageUrl": "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?auto=format&fit=crop&w=800&q=80",
+    "ingredients": [
+      {
+        "text": "Laxfilé",
+        "amount": "400g"
+      },
+      {
+        "text": "Kokosmjölk",
+        "amount": "400ml"
+      },
+      {
+        "text": "Krossade tomater",
+        "amount": "400g"
+      },
+      {
+        "text": "Ris",
+        "amount": "4 port"
+      },
+      {
+        "text": "Morot",
+        "amount": "2 st"
+      }
+    ],
+    "instructions": [
+      "Förbered ingredienserna genom att hacka och mäta upp alla komponenter.",
+      "Värm en panna eller kastrull och brynt/tillaga huvudingrediensen.",
+      "Tillsätt vätska och kryddor och låt sjuda i ca 10–15 minuter.",
+      "Smaka av med salt, peppar och fräscha örter. Servera varmt."
+    ],
+    "tags": [
+      "Kött",
+      "Krämigt",
+      "Hälsosamt"
+    ],
+    "createdAt": "2026-09-03T00:00:00Z"
+  },
+  {
+    "id": "sug-187",
+    "name": "Köttbullar med Potatismos och Lingon (Variant 4)",
+    "description": "Svenska husmansklassiker när den är som bäst.",
+    "imageUrl": "https://images.unsplash.com/photo-1540420773420-3366772f4999?auto=format&fit=crop&w=800&q=80",
+    "ingredients": [
+      {
+        "text": "Potatis",
+        "amount": "800g"
+      },
+      {
+        "text": "Laxfilé",
+        "amount": "400g"
+      },
+      {
+        "text": "Röda linser",
+        "amount": "2 dl"
+      },
+      {
+        "text": "Halloumi",
+        "amount": "200g"
+      },
+      {
+        "text": "Paprika",
+        "amount": "1 st"
+      }
+    ],
+    "instructions": [
+      "Förbered ingredienserna genom att hacka och mäta upp alla komponenter.",
+      "Värm en panna eller kastrull och brynt/tillaga huvudingrediensen.",
+      "Tillsätt vätska och kryddor och låt sjuda i ca 10–15 minuter.",
+      "Smaka av med salt, peppar och fräscha örter. Servera varmt."
+    ],
+    "tags": [
+      "Kött",
+      "Enkelt",
+      "Familjefavorit"
+    ],
+    "createdAt": "2026-09-03T00:00:00Z"
+  },
+  {
+    "id": "sug-188",
+    "name": "Pannbiff med Lök och Skysås (Variant 4)",
+    "description": "Traditionell pannbiff med karamelliserad lök.",
+    "imageUrl": "https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?auto=format&fit=crop&w=800&q=80",
+    "ingredients": [
+      {
+        "text": "Vitlöksklyfta",
+        "amount": "2 st"
+      },
+      {
+        "text": "Morot",
+        "amount": "2 st"
+      },
+      {
+        "text": "Gul lök",
+        "amount": "1 st"
+      },
+      {
+        "text": "Krossade tomater",
+        "amount": "400g"
+      },
+      {
+        "text": "Paprika",
+        "amount": "1 st"
+      }
+    ],
+    "instructions": [
+      "Förbered ingredienserna genom att hacka och mäta upp alla komponenter.",
+      "Värm en panna eller kastrull och brynt/tillaga huvudingrediensen.",
+      "Tillsätt vätska och kryddor och låt sjuda i ca 10–15 minuter.",
+      "Smaka av med salt, peppar och fräscha örter. Servera varmt."
+    ],
+    "tags": [
+      "Kött",
+      "Familjefavorit",
+      "Enkelt"
+    ],
+    "createdAt": "2026-09-03T00:00:00Z"
+  },
+  {
+    "id": "sug-189",
+    "name": "Chili con Carne med Vitlöksbröd (Variant 4)",
+    "description": "Fyllig och kryddig chili med vita och röda bönor.",
+    "imageUrl": "https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?auto=format&fit=crop&w=800&q=80",
+    "ingredients": [
+      {
+        "text": "Röda linser",
+        "amount": "2 dl"
+      },
+      {
+        "text": "Laxfilé",
+        "amount": "400g"
+      },
+      {
+        "text": "Ris",
+        "amount": "4 port"
+      },
+      {
+        "text": "Kycklingfilé",
+        "amount": "400g"
+      },
+      {
+        "text": "Morot",
+        "amount": "2 st"
+      }
+    ],
+    "instructions": [
+      "Förbered ingredienserna genom att hacka och mäta upp alla komponenter.",
+      "Värm en panna eller kastrull och brynt/tillaga huvudingrediensen.",
+      "Tillsätt vätska och kryddor och låt sjuda i ca 10–15 minuter.",
+      "Smaka av med salt, peppar och fräscha örter. Servera varmt."
+    ],
+    "tags": [
+      "Kött",
+      "Vardag",
+      "Helg"
+    ],
+    "createdAt": "2026-09-03T00:00:00Z"
+  },
+  {
+    "id": "sug-190",
+    "name": "Torskrygg med Skirat Smör och Pepparrot (Variant 4)",
+    "description": "Delikat torsk med klassiska tillbehör.",
+    "imageUrl": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=800&q=80",
+    "ingredients": [
+      {
+        "text": "Ris",
+        "amount": "4 port"
+      },
+      {
+        "text": "Torskfilé",
+        "amount": "400g"
+      },
+      {
+        "text": "Potatis",
+        "amount": "800g"
+      },
+      {
+        "text": "Halloumi",
+        "amount": "200g"
+      },
+      {
+        "text": "Vitlöksklyfta",
+        "amount": "2 st"
+      }
+    ],
+    "instructions": [
+      "Förbered ingredienserna genom att hacka och mäta upp alla komponenter.",
+      "Värm en panna eller kastrull och brynt/tillaga huvudingrediensen.",
+      "Tillsätt vätska och kryddor och låt sjuda i ca 10–15 minuter.",
+      "Smaka av med salt, peppar och fräscha örter. Servera varmt."
+    ],
+    "tags": [
+      "Fisk",
+      "Helg",
+      "Familjefavorit"
+    ],
+    "createdAt": "2026-09-03T00:00:00Z"
+  },
+  {
+    "id": "sug-191",
+    "name": "Lax i Ugn med Dillsås och Kokt Potatismos (Variant 4)",
+    "description": "Saftig lax med krämig dillsås.",
+    "imageUrl": "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?auto=format&fit=crop&w=800&q=80",
+    "ingredients": [
+      {
+        "text": "Paprika",
+        "amount": "1 st"
+      },
+      {
+        "text": "Halloumi",
+        "amount": "200g"
+      },
+      {
+        "text": "Krossade tomater",
+        "amount": "400g"
+      },
+      {
+        "text": "Potatis",
+        "amount": "800g"
+      },
+      {
+        "text": "Ris",
+        "amount": "4 port"
+      }
+    ],
+    "instructions": [
+      "Förbered ingredienserna genom att hacka och mäta upp alla komponenter.",
+      "Värm en panna eller kastrull och brynt/tillaga huvudingrediensen.",
+      "Tillsätt vätska och kryddor och låt sjuda i ca 10–15 minuter.",
+      "Smaka av med salt, peppar och fräscha örter. Servera varmt."
+    ],
+    "tags": [
+      "Fisk",
+      "Snabbt",
+      "Helg"
+    ],
+    "createdAt": "2026-09-03T00:00:00Z"
+  },
+  {
+    "id": "sug-192",
+    "name": "Fisksoppa med Saffran och Aioli (Variant 4)",
+    "description": "Lyxig soppa med torsk, lax och räkor.",
+    "imageUrl": "https://images.unsplash.com/photo-1540420773420-3366772f4999?auto=format&fit=crop&w=800&q=80",
+    "ingredients": [
+      {
+        "text": "Morot",
+        "amount": "2 st"
+      },
+      {
+        "text": "Vitlöksklyfta",
+        "amount": "2 st"
+      },
+      {
+        "text": "Halloumi",
+        "amount": "200g"
+      },
+      {
+        "text": "Kycklingfilé",
+        "amount": "400g"
+      },
+      {
+        "text": "Gul lök",
+        "amount": "1 st"
+      }
+    ],
+    "instructions": [
+      "Förbered ingredienserna genom att hacka och mäta upp alla komponenter.",
+      "Värm en panna eller kastrull och brynt/tillaga huvudingrediensen.",
+      "Tillsätt vätska och kryddor och låt sjuda i ca 10–15 minuter.",
+      "Smaka av med salt, peppar och fräscha örter. Servera varmt."
+    ],
+    "tags": [
+      "Fisk",
+      "Enkelt",
+      "Snabbt"
+    ],
+    "createdAt": "2026-09-03T00:00:00Z"
+  },
+  {
+    "id": "sug-193",
+    "name": "Sprödbakad Torsk med Remouladsås (Variant 4)",
+    "description": "Frasig fiskfilé serverad med kall remouladsås.",
+    "imageUrl": "https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?auto=format&fit=crop&w=800&q=80",
+    "ingredients": [
+      {
+        "text": "Pasta",
+        "amount": "300g"
+      },
+      {
+        "text": "Paprika",
+        "amount": "1 st"
+      },
+      {
+        "text": "Halloumi",
+        "amount": "200g"
+      },
+      {
+        "text": "Potatis",
+        "amount": "800g"
+      },
+      {
+        "text": "Gul lök",
+        "amount": "1 st"
+      }
+    ],
+    "instructions": [
+      "Förbered ingredienserna genom att hacka och mäta upp alla komponenter.",
+      "Värm en panna eller kastrull och brynt/tillaga huvudingrediensen.",
+      "Tillsätt vätska och kryddor och låt sjuda i ca 10–15 minuter.",
+      "Smaka av med salt, peppar och fräscha örter. Servera varmt."
+    ],
+    "tags": [
+      "Fisk",
+      "Enkelt",
+      "Hälsosamt"
+    ],
+    "createdAt": "2026-09-03T00:00:00Z"
+  },
+  {
+    "id": "sug-194",
+    "name": "Laxpasta med Citron och Spenat (Variant 4)",
+    "description": "Krämig pastarätt med kallrökt lax och färsk spenat.",
+    "imageUrl": "https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?auto=format&fit=crop&w=800&q=80",
+    "ingredients": [
+      {
+        "text": "Gul lök",
+        "amount": "1 st"
+      },
+      {
+        "text": "Pasta",
+        "amount": "300g"
+      },
+      {
+        "text": "Röda linser",
+        "amount": "2 dl"
+      },
+      {
+        "text": "Vitlöksklyfta",
+        "amount": "2 st"
+      },
+      {
+        "text": "Matlagningsgrädde",
+        "amount": "2.5 dl"
+      }
+    ],
+    "instructions": [
+      "Förbered ingredienserna genom att hacka och mäta upp alla komponenter.",
+      "Värm en panna eller kastrull och brynt/tillaga huvudingrediensen.",
+      "Tillsätt vätska och kryddor och låt sjuda i ca 10–15 minuter.",
+      "Smaka av med salt, peppar och fräscha örter. Servera varmt."
+    ],
+    "tags": [
+      "Fisk",
+      "Snabbt",
+      "Krämigt"
+    ],
+    "createdAt": "2026-09-03T00:00:00Z"
+  },
+  {
+    "id": "sug-195",
+    "name": "Vegetarisk Lasagne med Spenat och Fetaost (Variant 4)",
+    "description": "Krämig lasagne full av smak från färsk spenat.",
+    "imageUrl": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=800&q=80",
+    "ingredients": [
+      {
+        "text": "Krossade tomater",
+        "amount": "400g"
+      },
+      {
+        "text": "Gul lök",
+        "amount": "1 st"
+      },
+      {
+        "text": "Matlagningsgrädde",
+        "amount": "2.5 dl"
+      },
+      {
+        "text": "Kokosmjölk",
+        "amount": "400ml"
+      },
+      {
+        "text": "Morot",
+        "amount": "2 st"
+      }
+    ],
+    "instructions": [
+      "Förbered ingredienserna genom att hacka och mäta upp alla komponenter.",
+      "Värm en panna eller kastrull och brynt/tillaga huvudingrediensen.",
+      "Tillsätt vätska och kryddor och låt sjuda i ca 10–15 minuter.",
+      "Smaka av med salt, peppar och fräscha örter. Servera varmt."
+    ],
+    "tags": [
+      "Vegetariskt",
+      "Klassiker",
+      "Enkelt"
+    ],
+    "createdAt": "2026-09-03T00:00:00Z"
+  },
+  {
+    "id": "sug-196",
+    "name": "Halloumitacos med Mango Salsa (Variant 4)",
+    "description": "Fräscha tacos med stekt halloumi och söt mango.",
+    "imageUrl": "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?auto=format&fit=crop&w=800&q=80",
+    "ingredients": [
+      {
+        "text": "Ris",
+        "amount": "4 port"
+      },
+      {
+        "text": "Morot",
+        "amount": "2 st"
+      },
+      {
+        "text": "Pasta",
+        "amount": "300g"
+      },
+      {
+        "text": "Nötfärs",
+        "amount": "500g"
+      },
+      {
+        "text": "Kokosmjölk",
+        "amount": "400ml"
+      }
+    ],
+    "instructions": [
+      "Förbered ingredienserna genom att hacka och mäta upp alla komponenter.",
+      "Värm en panna eller kastrull och brynt/tillaga huvudingrediensen.",
+      "Tillsätt vätska och kryddor och låt sjuda i ca 10–15 minuter.",
+      "Smaka av med salt, peppar och fräscha örter. Servera varmt."
+    ],
+    "tags": [
+      "Vegetariskt",
+      "Snabbt",
+      "Klassiker"
+    ],
+    "createdAt": "2026-09-03T00:00:00Z"
+  },
+  {
+    "id": "sug-197",
+    "name": "Grönsakswok med Tofu och Nudlar (Variant 4)",
+    "description": "Snabb asiatisk wok med knaprig tofu.",
+    "imageUrl": "https://images.unsplash.com/photo-1540420773420-3366772f4999?auto=format&fit=crop&w=800&q=80",
+    "ingredients": [
+      {
+        "text": "Gul lök",
+        "amount": "1 st"
+      },
+      {
+        "text": "Halloumi",
+        "amount": "200g"
+      },
+      {
+        "text": "Laxfilé",
+        "amount": "400g"
+      },
+      {
+        "text": "Matlagningsgrädde",
+        "amount": "2.5 dl"
+      },
+      {
+        "text": "Kycklingfilé",
+        "amount": "400g"
+      }
+    ],
+    "instructions": [
+      "Förbered ingredienserna genom att hacka och mäta upp alla komponenter.",
+      "Värm en panna eller kastrull och brynt/tillaga huvudingrediensen.",
+      "Tillsätt vätska och kryddor och låt sjuda i ca 10–15 minuter.",
+      "Smaka av med salt, peppar och fräscha örter. Servera varmt."
+    ],
+    "tags": [
+      "Vegetariskt",
+      "Vardag",
+      "Hälsosamt"
+    ],
+    "createdAt": "2026-09-03T00:00:00Z"
+  },
+  {
+    "id": "sug-198",
+    "name": "Krämig Svamprisotto med Parmesan (Variant 4)",
+    "description": "Klassisk italiensk risotto med skogssvamp.",
+    "imageUrl": "https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?auto=format&fit=crop&w=800&q=80",
+    "ingredients": [
+      {
+        "text": "Halloumi",
+        "amount": "200g"
+      },
+      {
+        "text": "Nötfärs",
+        "amount": "500g"
+      },
+      {
+        "text": "Pasta",
+        "amount": "300g"
+      },
+      {
+        "text": "Potatis",
+        "amount": "800g"
+      },
+      {
+        "text": "Torskfilé",
+        "amount": "400g"
+      }
+    ],
+    "instructions": [
+      "Förbered ingredienserna genom att hacka och mäta upp alla komponenter.",
+      "Värm en panna eller kastrull och brynt/tillaga huvudingrediensen.",
+      "Tillsätt vätska och kryddor och låt sjuda i ca 10–15 minuter.",
+      "Smaka av med salt, peppar och fräscha örter. Servera varmt."
+    ],
+    "tags": [
+      "Vegetariskt",
+      "Snabbt",
+      "Familjefavorit"
+    ],
+    "createdAt": "2026-09-03T00:00:00Z"
+  },
+  {
+    "id": "sug-199",
+    "name": "Sötpotatissoppa med Röd Curry (Variant 4)",
+    "description": "Värmande soppa med len sötpotatis och kokosmjölk.",
+    "imageUrl": "https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?auto=format&fit=crop&w=800&q=80",
+    "ingredients": [
+      {
+        "text": "Torskfilé",
+        "amount": "400g"
+      },
+      {
+        "text": "Halloumi",
+        "amount": "200g"
+      },
+      {
+        "text": "Pasta",
+        "amount": "300g"
+      },
+      {
+        "text": "Vitlöksklyfta",
+        "amount": "2 st"
+      },
+      {
+        "text": "Röda linser",
+        "amount": "2 dl"
+      }
+    ],
+    "instructions": [
+      "Förbered ingredienserna genom att hacka och mäta upp alla komponenter.",
+      "Värm en panna eller kastrull och brynt/tillaga huvudingrediensen.",
+      "Tillsätt vätska och kryddor och låt sjuda i ca 10–15 minuter.",
+      "Smaka av med salt, peppar och fräscha örter. Servera varmt."
+    ],
+    "tags": [
+      "Vegetariskt",
+      "Vardag",
+      "Klassiker"
+    ],
+    "createdAt": "2026-09-03T00:00:00Z"
+  },
+  {
+    "id": "sug-200",
+    "name": "Kycklinggryta med Kokosmjölk och Ingefära (Variant 5)",
+    "description": "Smakrik kycklinggryta med asiatiska toner.",
+    "imageUrl": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=800&q=80",
+    "ingredients": [
+      {
+        "text": "Krossade tomater",
+        "amount": "400g"
+      },
+      {
+        "text": "Matlagningsgrädde",
+        "amount": "2.5 dl"
+      },
+      {
+        "text": "Vitlöksklyfta",
+        "amount": "2 st"
+      },
+      {
+        "text": "Morot",
+        "amount": "2 st"
+      },
+      {
+        "text": "Ris",
+        "amount": "4 port"
+      }
+    ],
+    "instructions": [
+      "Förbered ingredienserna genom att hacka och mäta upp alla komponenter.",
+      "Värm en panna eller kastrull och brynt/tillaga huvudingrediensen.",
+      "Tillsätt vätska och kryddor och låt sjuda i ca 10–15 minuter.",
+      "Smaka av med salt, peppar och fräscha örter. Servera varmt."
+    ],
+    "tags": [
+      "Kyckling",
+      "Hälsosamt",
+      "Vardag"
+    ],
+    "createdAt": "2026-09-03T00:00:00Z"
+  },
+  {
+    "id": "sug-201",
+    "name": "Ugnsbakad Kycklingfilé med Rotsaker (Variant 5)",
+    "description": "Mör kycklingfilé serverad med rostade rotsaker.",
+    "imageUrl": "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?auto=format&fit=crop&w=800&q=80",
+    "ingredients": [
+      {
+        "text": "Vitlöksklyfta",
+        "amount": "2 st"
+      },
+      {
+        "text": "Nötfärs",
+        "amount": "500g"
+      },
+      {
+        "text": "Paprika",
+        "amount": "1 st"
+      },
+      {
+        "text": "Röda linser",
+        "amount": "2 dl"
+      },
+      {
+        "text": "Morot",
+        "amount": "2 st"
+      }
+    ],
+    "instructions": [
+      "Förbered ingredienserna genom att hacka och mäta upp alla komponenter.",
+      "Värm en panna eller kastrull och brynt/tillaga huvudingrediensen.",
+      "Tillsätt vätska och kryddor och låt sjuda i ca 10–15 minuter.",
+      "Smaka av med salt, peppar och fräscha örter. Servera varmt."
+    ],
+    "tags": [
+      "Kyckling",
+      "Enkelt",
+      "Klassiker"
+    ],
+    "createdAt": "2026-09-03T00:00:00Z"
+  },
+  {
+    "id": "sug-202",
+    "name": "Kycklingsallad med Avokado och Bacon (Variant 5)",
+    "description": "Fräsch och mättande sallad med krispigt bacon.",
+    "imageUrl": "https://images.unsplash.com/photo-1540420773420-3366772f4999?auto=format&fit=crop&w=800&q=80",
+    "ingredients": [
+      {
+        "text": "Paprika",
+        "amount": "1 st"
+      },
+      {
+        "text": "Gul lök",
+        "amount": "1 st"
+      },
+      {
+        "text": "Morot",
+        "amount": "2 st"
+      },
+      {
+        "text": "Potatis",
+        "amount": "800g"
+      },
+      {
+        "text": "Krossade tomater",
+        "amount": "400g"
+      }
+    ],
+    "instructions": [
+      "Förbered ingredienserna genom att hacka och mäta upp alla komponenter.",
+      "Värm en panna eller kastrull och brynt/tillaga huvudingrediensen.",
+      "Tillsätt vätska och kryddor och låt sjuda i ca 10–15 minuter.",
+      "Smaka av med salt, peppar och fräscha örter. Servera varmt."
+    ],
+    "tags": [
+      "Kyckling",
+      "Krämigt",
+      "Helg"
+    ],
+    "createdAt": "2026-09-03T00:00:00Z"
+  },
+  {
+    "id": "sug-203",
+    "name": "Kyckling Tacos med Picklad Rödlök (Variant 5)",
+    "description": "Klassiska tacos med kryddig kycklingfärs.",
+    "imageUrl": "https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?auto=format&fit=crop&w=800&q=80",
+    "ingredients": [
+      {
+        "text": "Ris",
+        "amount": "4 port"
+      },
+      {
+        "text": "Morot",
+        "amount": "2 st"
+      },
+      {
+        "text": "Kokosmjölk",
+        "amount": "400ml"
+      },
+      {
+        "text": "Laxfilé",
+        "amount": "400g"
+      },
+      {
+        "text": "Torskfilé",
+        "amount": "400g"
+      }
+    ],
+    "instructions": [
+      "Förbered ingredienserna genom att hacka och mäta upp alla komponenter.",
+      "Värm en panna eller kastrull och brynt/tillaga huvudingrediensen.",
+      "Tillsätt vätska och kryddor och låt sjuda i ca 10–15 minuter.",
+      "Smaka av med salt, peppar och fräscha örter. Servera varmt."
+    ],
+    "tags": [
+      "Kyckling",
+      "Helg",
+      "Snabbt"
+    ],
+    "createdAt": "2026-09-03T00:00:00Z"
+  },
+  {
+    "id": "sug-204",
+    "name": "Thailändsk Kycklingwok med Cashewnötter (Variant 5)",
+    "description": "Snabblagad wok med krispiga grönsaker och nötsmak.",
+    "imageUrl": "https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?auto=format&fit=crop&w=800&q=80",
+    "ingredients": [
+      {
+        "text": "Gul lök",
+        "amount": "1 st"
+      },
+      {
+        "text": "Morot",
+        "amount": "2 st"
+      },
+      {
+        "text": "Nötfärs",
+        "amount": "500g"
+      },
+      {
+        "text": "Torskfilé",
+        "amount": "400g"
+      },
+      {
+        "text": "Laxfilé",
+        "amount": "400g"
+      }
+    ],
+    "instructions": [
+      "Förbered ingredienserna genom att hacka och mäta upp alla komponenter.",
+      "Värm en panna eller kastrull och brynt/tillaga huvudingrediensen.",
+      "Tillsätt vätska och kryddor och låt sjuda i ca 10–15 minuter.",
+      "Smaka av med salt, peppar och fräscha örter. Servera varmt."
+    ],
+    "tags": [
+      "Kyckling",
+      "Helg",
+      "Vardag"
+    ],
+    "createdAt": "2026-09-03T00:00:00Z"
+  },
+  {
+    "id": "sug-205",
+    "name": "Biff Stroganoff med Ris (Variant 5)",
+    "description": "Klassisk gräddig biff stroganoff med champinjoner.",
+    "imageUrl": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=800&q=80",
+    "ingredients": [
+      {
+        "text": "Matlagningsgrädde",
+        "amount": "2.5 dl"
+      },
+      {
+        "text": "Vitlöksklyfta",
+        "amount": "2 st"
+      },
+      {
+        "text": "Pasta",
+        "amount": "300g"
+      },
+      {
+        "text": "Krossade tomater",
+        "amount": "400g"
+      },
+      {
+        "text": "Laxfilé",
+        "amount": "400g"
+      }
+    ],
+    "instructions": [
+      "Förbered ingredienserna genom att hacka och mäta upp alla komponenter.",
+      "Värm en panna eller kastrull och brynt/tillaga huvudingrediensen.",
+      "Tillsätt vätska och kryddor och låt sjuda i ca 10–15 minuter.",
+      "Smaka av med salt, peppar och fräscha örter. Servera varmt."
+    ],
+    "tags": [
+      "Kött",
+      "Klassiker",
+      "Hälsosamt"
+    ],
+    "createdAt": "2026-09-03T00:00:00Z"
+  },
+  {
+    "id": "sug-206",
+    "name": "Köttfärssås med Spaghetti (Variant 5)",
+    "description": "Klassisk italiensk köttfärssås som fått sjuda länge.",
+    "imageUrl": "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?auto=format&fit=crop&w=800&q=80",
+    "ingredients": [
+      {
+        "text": "Kokosmjölk",
+        "amount": "400ml"
+      },
+      {
+        "text": "Laxfilé",
+        "amount": "400g"
+      },
+      {
+        "text": "Torskfilé",
+        "amount": "400g"
+      },
+      {
+        "text": "Potatis",
+        "amount": "800g"
+      },
+      {
+        "text": "Matlagningsgrädde",
+        "amount": "2.5 dl"
+      }
+    ],
+    "instructions": [
+      "Förbered ingredienserna genom att hacka och mäta upp alla komponenter.",
+      "Värm en panna eller kastrull och brynt/tillaga huvudingrediensen.",
+      "Tillsätt vätska och kryddor och låt sjuda i ca 10–15 minuter.",
+      "Smaka av med salt, peppar och fräscha örter. Servera varmt."
+    ],
+    "tags": [
+      "Kött",
+      "Krämigt",
+      "Snabbt"
+    ],
+    "createdAt": "2026-09-03T00:00:00Z"
+  },
+  {
+    "id": "sug-207",
+    "name": "Köttbullar med Potatismos och Lingon (Variant 5)",
+    "description": "Svenska husmansklassiker när den är som bäst.",
+    "imageUrl": "https://images.unsplash.com/photo-1540420773420-3366772f4999?auto=format&fit=crop&w=800&q=80",
+    "ingredients": [
+      {
+        "text": "Kycklingfilé",
+        "amount": "400g"
+      },
+      {
+        "text": "Paprika",
+        "amount": "1 st"
+      },
+      {
+        "text": "Matlagningsgrädde",
+        "amount": "2.5 dl"
+      },
+      {
+        "text": "Kokosmjölk",
+        "amount": "400ml"
+      },
+      {
+        "text": "Gul lök",
+        "amount": "1 st"
+      }
+    ],
+    "instructions": [
+      "Förbered ingredienserna genom att hacka och mäta upp alla komponenter.",
+      "Värm en panna eller kastrull och brynt/tillaga huvudingrediensen.",
+      "Tillsätt vätska och kryddor och låt sjuda i ca 10–15 minuter.",
+      "Smaka av med salt, peppar och fräscha örter. Servera varmt."
+    ],
+    "tags": [
+      "Kött",
+      "Enkelt",
+      "Helg"
+    ],
+    "createdAt": "2026-09-03T00:00:00Z"
+  },
+  {
+    "id": "sug-208",
+    "name": "Pannbiff med Lök och Skysås (Variant 5)",
+    "description": "Traditionell pannbiff med karamelliserad lök.",
+    "imageUrl": "https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?auto=format&fit=crop&w=800&q=80",
+    "ingredients": [
+      {
+        "text": "Matlagningsgrädde",
+        "amount": "2.5 dl"
+      },
+      {
+        "text": "Ris",
+        "amount": "4 port"
+      },
+      {
+        "text": "Paprika",
+        "amount": "1 st"
+      },
+      {
+        "text": "Laxfilé",
+        "amount": "400g"
+      },
+      {
+        "text": "Gul lök",
+        "amount": "1 st"
+      }
+    ],
+    "instructions": [
+      "Förbered ingredienserna genom att hacka och mäta upp alla komponenter.",
+      "Värm en panna eller kastrull och brynt/tillaga huvudingrediensen.",
+      "Tillsätt vätska och kryddor och låt sjuda i ca 10–15 minuter.",
+      "Smaka av med salt, peppar och fräscha örter. Servera varmt."
+    ],
+    "tags": [
+      "Kött",
+      "Helg",
+      "Familjefavorit"
+    ],
+    "createdAt": "2026-09-03T00:00:00Z"
+  },
+  {
+    "id": "sug-209",
+    "name": "Chili con Carne med Vitlöksbröd (Variant 5)",
+    "description": "Fyllig och kryddig chili med vita och röda bönor.",
+    "imageUrl": "https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?auto=format&fit=crop&w=800&q=80",
+    "ingredients": [
+      {
+        "text": "Paprika",
+        "amount": "1 st"
+      },
+      {
+        "text": "Laxfilé",
+        "amount": "400g"
+      },
+      {
+        "text": "Halloumi",
+        "amount": "200g"
+      },
+      {
+        "text": "Kycklingfilé",
+        "amount": "400g"
+      },
+      {
+        "text": "Potatis",
+        "amount": "800g"
+      }
+    ],
+    "instructions": [
+      "Förbered ingredienserna genom att hacka och mäta upp alla komponenter.",
+      "Värm en panna eller kastrull och brynt/tillaga huvudingrediensen.",
+      "Tillsätt vätska och kryddor och låt sjuda i ca 10–15 minuter.",
+      "Smaka av med salt, peppar och fräscha örter. Servera varmt."
+    ],
+    "tags": [
+      "Kött",
+      "Krämigt",
+      "Klassiker"
+    ],
+    "createdAt": "2026-09-03T00:00:00Z"
+  },
+  {
+    "id": "sug-210",
+    "name": "Torskrygg med Skirat Smör och Pepparrot (Variant 5)",
+    "description": "Delikat torsk med klassiska tillbehör.",
+    "imageUrl": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=800&q=80",
+    "ingredients": [
+      {
+        "text": "Nötfärs",
+        "amount": "500g"
+      },
+      {
+        "text": "Potatis",
+        "amount": "800g"
+      },
+      {
+        "text": "Gul lök",
+        "amount": "1 st"
+      },
+      {
+        "text": "Vitlöksklyfta",
+        "amount": "2 st"
+      },
+      {
+        "text": "Kycklingfilé",
+        "amount": "400g"
+      }
+    ],
+    "instructions": [
+      "Förbered ingredienserna genom att hacka och mäta upp alla komponenter.",
+      "Värm en panna eller kastrull och brynt/tillaga huvudingrediensen.",
+      "Tillsätt vätska och kryddor och låt sjuda i ca 10–15 minuter.",
+      "Smaka av med salt, peppar och fräscha örter. Servera varmt."
+    ],
+    "tags": [
+      "Fisk",
+      "Enkelt",
+      "Krämigt"
+    ],
+    "createdAt": "2026-09-03T00:00:00Z"
+  },
+  {
+    "id": "sug-211",
+    "name": "Lax i Ugn med Dillsås och Kokt Potatismos (Variant 5)",
+    "description": "Saftig lax med krämig dillsås.",
+    "imageUrl": "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?auto=format&fit=crop&w=800&q=80",
+    "ingredients": [
+      {
+        "text": "Vitlöksklyfta",
+        "amount": "2 st"
+      },
+      {
+        "text": "Potatis",
+        "amount": "800g"
+      },
+      {
+        "text": "Röda linser",
+        "amount": "2 dl"
+      },
+      {
+        "text": "Matlagningsgrädde",
+        "amount": "2.5 dl"
+      },
+      {
+        "text": "Torskfilé",
+        "amount": "400g"
+      }
+    ],
+    "instructions": [
+      "Förbered ingredienserna genom att hacka och mäta upp alla komponenter.",
+      "Värm en panna eller kastrull och brynt/tillaga huvudingrediensen.",
+      "Tillsätt vätska och kryddor och låt sjuda i ca 10–15 minuter.",
+      "Smaka av med salt, peppar och fräscha örter. Servera varmt."
+    ],
+    "tags": [
+      "Fisk",
+      "Vardag",
+      "Familjefavorit"
+    ],
+    "createdAt": "2026-09-03T00:00:00Z"
+  },
+  {
+    "id": "sug-212",
+    "name": "Fisksoppa med Saffran och Aioli (Variant 5)",
+    "description": "Lyxig soppa med torsk, lax och räkor.",
+    "imageUrl": "https://images.unsplash.com/photo-1540420773420-3366772f4999?auto=format&fit=crop&w=800&q=80",
+    "ingredients": [
+      {
+        "text": "Laxfilé",
+        "amount": "400g"
+      },
+      {
+        "text": "Matlagningsgrädde",
+        "amount": "2.5 dl"
+      },
+      {
+        "text": "Vitlöksklyfta",
+        "amount": "2 st"
+      },
+      {
+        "text": "Ris",
+        "amount": "4 port"
+      },
+      {
+        "text": "Krossade tomater",
+        "amount": "400g"
+      }
+    ],
+    "instructions": [
+      "Förbered ingredienserna genom att hacka och mäta upp alla komponenter.",
+      "Värm en panna eller kastrull och brynt/tillaga huvudingrediensen.",
+      "Tillsätt vätska och kryddor och låt sjuda i ca 10–15 minuter.",
+      "Smaka av med salt, peppar och fräscha örter. Servera varmt."
+    ],
+    "tags": [
+      "Fisk",
+      "Krämigt",
+      "Helg"
+    ],
+    "createdAt": "2026-09-03T00:00:00Z"
+  },
+  {
+    "id": "sug-213",
+    "name": "Sprödbakad Torsk med Remouladsås (Variant 5)",
+    "description": "Frasig fiskfilé serverad med kall remouladsås.",
+    "imageUrl": "https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?auto=format&fit=crop&w=800&q=80",
+    "ingredients": [
+      {
+        "text": "Torskfilé",
+        "amount": "400g"
+      },
+      {
+        "text": "Halloumi",
+        "amount": "200g"
+      },
+      {
+        "text": "Kokosmjölk",
+        "amount": "400ml"
+      },
+      {
+        "text": "Laxfilé",
+        "amount": "400g"
+      },
+      {
+        "text": "Potatis",
+        "amount": "800g"
+      }
+    ],
+    "instructions": [
+      "Förbered ingredienserna genom att hacka och mäta upp alla komponenter.",
+      "Värm en panna eller kastrull och brynt/tillaga huvudingrediensen.",
+      "Tillsätt vätska och kryddor och låt sjuda i ca 10–15 minuter.",
+      "Smaka av med salt, peppar och fräscha örter. Servera varmt."
+    ],
+    "tags": [
+      "Fisk",
+      "Enkelt",
+      "Familjefavorit"
+    ],
+    "createdAt": "2026-09-03T00:00:00Z"
+  },
+  {
+    "id": "sug-214",
+    "name": "Laxpasta med Citron och Spenat (Variant 5)",
+    "description": "Krämig pastarätt med kallrökt lax och färsk spenat.",
+    "imageUrl": "https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?auto=format&fit=crop&w=800&q=80",
+    "ingredients": [
+      {
+        "text": "Laxfilé",
+        "amount": "400g"
+      },
+      {
+        "text": "Paprika",
+        "amount": "1 st"
+      },
+      {
+        "text": "Krossade tomater",
+        "amount": "400g"
+      },
+      {
+        "text": "Pasta",
+        "amount": "300g"
+      },
+      {
+        "text": "Ris",
+        "amount": "4 port"
+      }
+    ],
+    "instructions": [
+      "Förbered ingredienserna genom att hacka och mäta upp alla komponenter.",
+      "Värm en panna eller kastrull och brynt/tillaga huvudingrediensen.",
+      "Tillsätt vätska och kryddor och låt sjuda i ca 10–15 minuter.",
+      "Smaka av med salt, peppar och fräscha örter. Servera varmt."
+    ],
+    "tags": [
+      "Fisk",
+      "Klassiker",
+      "Krämigt"
+    ],
+    "createdAt": "2026-09-03T00:00:00Z"
+  },
+  {
+    "id": "sug-215",
+    "name": "Vegetarisk Lasagne med Spenat och Fetaost (Variant 5)",
+    "description": "Krämig lasagne full av smak från färsk spenat.",
+    "imageUrl": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=800&q=80",
+    "ingredients": [
+      {
+        "text": "Paprika",
+        "amount": "1 st"
+      },
+      {
+        "text": "Krossade tomater",
+        "amount": "400g"
+      },
+      {
+        "text": "Laxfilé",
+        "amount": "400g"
+      },
+      {
+        "text": "Kycklingfilé",
+        "amount": "400g"
+      },
+      {
+        "text": "Torskfilé",
+        "amount": "400g"
+      }
+    ],
+    "instructions": [
+      "Förbered ingredienserna genom att hacka och mäta upp alla komponenter.",
+      "Värm en panna eller kastrull och brynt/tillaga huvudingrediensen.",
+      "Tillsätt vätska och kryddor och låt sjuda i ca 10–15 minuter.",
+      "Smaka av med salt, peppar och fräscha örter. Servera varmt."
+    ],
+    "tags": [
+      "Vegetariskt",
+      "Klassiker",
+      "Vardag"
+    ],
+    "createdAt": "2026-09-03T00:00:00Z"
+  },
+  {
+    "id": "sug-216",
+    "name": "Halloumitacos med Mango Salsa (Variant 5)",
+    "description": "Fräscha tacos med stekt halloumi och söt mango.",
+    "imageUrl": "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?auto=format&fit=crop&w=800&q=80",
+    "ingredients": [
+      {
+        "text": "Nötfärs",
+        "amount": "500g"
+      },
+      {
+        "text": "Vitlöksklyfta",
+        "amount": "2 st"
+      },
+      {
+        "text": "Pasta",
+        "amount": "300g"
+      },
+      {
+        "text": "Torskfilé",
+        "amount": "400g"
+      },
+      {
+        "text": "Halloumi",
+        "amount": "200g"
+      }
+    ],
+    "instructions": [
+      "Förbered ingredienserna genom att hacka och mäta upp alla komponenter.",
+      "Värm en panna eller kastrull och brynt/tillaga huvudingrediensen.",
+      "Tillsätt vätska och kryddor och låt sjuda i ca 10–15 minuter.",
+      "Smaka av med salt, peppar och fräscha örter. Servera varmt."
+    ],
+    "tags": [
+      "Vegetariskt",
+      "Krämigt",
+      "Vardag"
+    ],
+    "createdAt": "2026-09-03T00:00:00Z"
   }
 ]
