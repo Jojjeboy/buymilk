@@ -184,10 +184,10 @@ export const MealsView: React.FC = () => {
                     </p>
                 </div>
 
-                <div className="flex items-center gap-2">
+                <div className="flex flex-col gap-3">
                     <button 
                         onClick={handleRandomMeal}
-                        className="flex items-center gap-2 px-3.5 py-2.5 text-xs font-semibold text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/20 hover:bg-blue-100 dark:hover:bg-blue-900/30 rounded-xl transition-all border border-blue-200/60 dark:border-blue-800/40 cursor-pointer"
+                        className="w-full flex items-center justify-center gap-2 px-3.5 py-2.5 text-xs font-semibold text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/20 hover:bg-blue-100 dark:hover:bg-blue-900/30 rounded-xl transition-all border border-blue-200/60 dark:border-blue-800/40 cursor-pointer"
                         title={t('views.randomMeal', 'Slumpa måltid')}
                     >
                         <Dices className="w-4 h-4" />
@@ -196,7 +196,7 @@ export const MealsView: React.FC = () => {
 
                     <button
                         onClick={handleCreateNewRecipe}
-                        className="flex items-center gap-2 px-4 py-2.5 text-xs font-bold text-white bg-blue-600 hover:bg-blue-700 rounded-xl shadow-md shadow-blue-600/20 transition-all cursor-pointer"
+                        className="w-full flex items-center justify-center gap-2 px-4 py-2.5 text-xs font-bold text-white bg-blue-600 hover:bg-blue-700 rounded-xl shadow-md shadow-blue-600/20 transition-all cursor-pointer"
                     >
                         <Plus className="w-4 h-4" />
                         <span>{t('meals.createRecipe', 'Skapa recept')}</span>
@@ -204,7 +204,7 @@ export const MealsView: React.FC = () => {
                     
                     <button
                         onClick={() => navigate('/ingredients')}
-                        className="flex items-center gap-2 px-4 py-2.5 text-xs font-semibold text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-900/20 hover:bg-emerald-100 dark:hover:bg-emerald-900/30 rounded-xl transition-all border border-emerald-200/60 dark:border-emerald-800/40 cursor-pointer"
+                        className="w-full flex items-center justify-center gap-2 px-4 py-2.5 text-xs font-semibold text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-900/20 hover:bg-emerald-100 dark:hover:bg-emerald-900/30 rounded-xl transition-all border border-emerald-200/60 dark:border-emerald-800/40 cursor-pointer"
                         title={t('meals.searchByIngredient', 'Sök på ingrediens')}
                     >
                         <Search className="w-4 h-4" />

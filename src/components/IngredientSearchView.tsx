@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useEffect } from 'react';
+import React, { useState, useMemo, useEffect, useRef, useCallback } from 'react';
 import { useApp } from '../context/AppContext';
 import { useTranslation } from 'react-i18next';
 
@@ -22,6 +22,10 @@ export const IngredientSearchView: React.FC = () => {
     const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
     const [isPlanModalOpen, setIsPlanModalOpen] = useState(false);
     const [planningMeal, setPlanningMeal] = useState<Meal | null>(null);
+    
+    // Accessibility refs
+    const searchInputRef = useRef<HTMLInputElement>(null);
+    const firstResultRef = useRef<HTMLDivElement>(null);
 
     // Debounce search input
     useEffect(() => {
@@ -60,7 +64,37 @@ export const IngredientSearchView: React.FC = () => {
 
     const handleClearSearch = () => {
         setSearchQuery('');
+        if (searchInputRef.current) {
+            searchInputRef.current.focus();
+        }
     };
+
+    // Keyboard navigation handlers
+    const handleKeyDown = useCallback((e: React.KeyboardEvent) => {
+        // Escape key clears search and refocuses input
+        if (e.key === 'Escape' && searchQuery) {
+            handleClearSearch();
+            e.preventDefault();
+        }
+        
+        // Down arrow moves focus to first result when results exist
+        if (e.key === 'ArrowDown' && filteredMealsWithMatches.length > 0 && searchQuery) {
+            if (firstResultRef.current) {
+                firstResultRef.current.focus();
+                e.preventDefault();
+            }
+        }
+    }, [searchQuery, filteredMealsWithMatches.length]);
+
+    // Focus first result when search has results
+    useEffect(() => {
+        if (filteredMealsWithMatches.length > 0 && searchQuery && firstResultRef.current) {
+            // Don't auto-focus on initial render, only when user has typed
+            if (searchQuery.length > 0) {
+                // firstResultRef will be set by the first result card
+            }
+        }
+    }, [filteredMealsWithMatches.length, searchQuery]);
 
     const handleViewMealDetails = (meal: Meal) => {
         setSelectedMeal(meal);
@@ -99,41 +133,53 @@ export const IngredientSearchView: React.FC = () => {
     };
 
     return (
-        <div className="space-y-6">
+        <div className="space-y-6" role="main" aria-label={t('ingredientSearch.title', 'Search by Ingredient')}>
             {/* Header */}
-            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+            <header className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                 <div>
                     <h1 className="text-2xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
-                        <Search className="w-6 h-6 text-blue-600 dark:text-blue-400" />
+                        <Search className="w-6 h-6 text-blue-600 dark:text-blue-400" aria-hidden="true" />
                         {t('ingredientSearch.title', 'Search by Ingredient')}
                     </h1>
                     <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
                         {t('ingredientSearch.subtitle', 'Find recipes containing specific ingredients')}
                     </p>
                 </div>
-            </div>
+            </header>
 
             {/* Search Input */}
-            <div className="relative">
-                <Search className="w-5 h-5 text-gray-400 absolute left-4 top-1/2 -translate-y-1/2" />
+            <form 
+                role="search" 
+                aria-label={t('ingredientSearch.title', 'Search by Ingredient')}
+                onSubmit={(e) => e.preventDefault()}
+                className="relative"
+            >
+                <Search className="w-5 h-5 text-gray-400 absolute left-4 top-1/2 -translate-y-1/2" aria-hidden="true" />
                 <input
-                    type="text"
+                    ref={searchInputRef}
+                    type="search"
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
+                    onKeyDown={handleKeyDown}
                     placeholder={t('ingredientSearch.placeholder', 'Search by ingredient...')}
                     autoFocus
+                    aria-label={t('ingredientSearch.placeholder', 'Search by ingredient...')}
+                    aria-autocomplete="list"
+                    aria-controls="search-results"
+                    aria-expanded={filteredMealsWithMatches.length > 0}
                     className="w-full pl-12 pr-12 py-3.5 text-base rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50/50 dark:bg-gray-800 text-gray-900 dark:text-gray-100 placeholder-gray-400 outline-none focus:ring-2 focus:ring-blue-500 font-medium transition-all"
                 />
                 {searchQuery && (
                     <button
                         onClick={handleClearSearch}
+                        type="button"
                         className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 p-1"
                         aria-label={t('common.clear', 'Clear search')}
                     >
-                        <X className="w-5 h-5" />
+                        <X className="w-5 h-5" aria-hidden="true" />
                     </button>
                 )}
-            </div>
+            </form>
 
             {/* Results Summary */}
             {debouncedQuery && (

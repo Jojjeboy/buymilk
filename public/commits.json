@@ -1,5 +1,25 @@
 [
   {
+    "hash": "5c9597576e534c472eb9b524717a61476dd5ee44",
+    "date": "2026-09-03 12:48:16 +0200",
+    "message": "feat: lägg till förbättrad ingredienssökning med snabbåtgärder och matchningsindikatorer"
+  },
+  {
+    "hash": "f9e7a09e55e17153886f0565455d9c76fcd0db31",
+    "date": "2026-09-03 11:14:33 +0200",
+    "message": "fix: lägg till mock för useNavigate i testfiler"
+  },
+  {
+    "hash": "0faaec26685167f9a183cc4a207fa40c64633635",
+    "date": "2026-09-03 11:05:35 +0200",
+    "message": "feat: lägg till ingredienssökvy med routing och navigation"
+  },
+  {
+    "hash": "9f0758f7037c864c4a2fda730a194e8be266460a",
+    "date": "2026-09-03 10:43:54 +0200",
+    "message": "chore: update commits.json and adjust BottomNav active indicator position"
+  },
+  {
     "hash": "f991e6df08c073118fd8067d6b45bc10f5f7aee2",
     "date": "2026-09-03 08:16:21 +0200",
     "message": "chore: update dependencies and add audit fix to validate script"
@@ -78,25 +98,5 @@
     "hash": "8cd01e4e5f2441c6d9cdc9dc33e279a1b6393b0a",
     "date": "2026-08-27 15:58:51 +0200",
     "message": "fix: translate hardcoded strings in MealDetailModal"
-  },
-  {
-    "hash": "3d222f964902f68357969e9fe67d58d71feb9f43",
-    "date": "2026-08-27 15:52:38 +0200",
-    "message": "feat: add edit button to MealDetailModal and update validation rules"
-  },
-  {
-    "hash": "862bbb95bf8c11812f7fad06237b72dbb261296d",
-    "date": "2026-08-27 15:47:52 +0200",
-    "message": "feat(mealplan): add confirmation modal before generating shopping list"
-  },
-  {
-    "hash": "9fb01dd3fefe8ac0022380af1d46f535b3641ca6",
-    "date": "2026-08-27 15:41:51 +0200",
-    "message": "Added .clinerules"
-  },
-  {
-    "hash": "644df39f3847aacd198230da88b642fb016560e2",
-    "date": "2026-08-27 15:38:17 +0200",
-    "message": "feat(ui): enhance shopping list item styling and display"
   }
 ]
