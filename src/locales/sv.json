@@ -482,7 +482,10 @@
     "matching": "matchande",
     "addToShoppingList": "Lägg till i inköpslistan",
     "planMeal": "Planera måltid",
-    "viewDetails": "Visa detaljer"
+    "viewDetails": "Visa detaljer",
+    "discoverRecipes": "Upptäck recept",
+    "randomSelection": "Några slumpmässiga recept för inspiration",
+    "showOthers": "Visa andra"
   },
   "mealTypes": {
     "lunch": "Lunch",

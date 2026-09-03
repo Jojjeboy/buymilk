@@ -2,11 +2,12 @@ import React, { useState, useMemo, useEffect, useRef, useCallback } from 'react'
 import { useApp } from '../context/AppContext';
 import { useTranslation } from 'react-i18next';
 
-import { Search, X, Utensils, Eye, Calendar, ShoppingCart, Tag, Users } from 'lucide-react';
+import { Search, X, Utensils, Eye, Calendar, ShoppingCart, Tag, Users, Dices } from 'lucide-react';
 import { Meal, MealType } from '../types';
 import { useMealPlan } from '../hooks/useMealPlan';
 import { MealDetailModal } from './MealDetailModal';
 import { PlanMealModal } from './PlanMealModal';
+import { RandomMealCard } from './RandomMealCard';
 import { v4 as uuidv4 } from 'uuid';
 
 
@@ -24,6 +25,7 @@ export const IngredientSearchView: React.FC = () => {
     const [planningMeal, setPlanningMeal] = useState<Meal | null>(null);
     const [mealSuggestions, setMealSuggestions] = useState<Meal[]>([]);
     const [isLoadingSuggestions, setIsLoadingSuggestions] = useState(true);
+    const [randomMeals, setRandomMeals] = useState<Meal[]>([]);
     
     // Accessibility refs
     const searchInputRef = useRef<HTMLInputElement>(null);
@@ -62,6 +64,38 @@ export const IngredientSearchView: React.FC = () => {
         });
         return combined;
     }, [meals, mealSuggestions]);
+
+    // Get random meals for display when search is empty
+    const getRandomMeals = useCallback((meals: Meal[], count: number = 6): Meal[] => {
+        if (meals.length === 0) return [];
+        
+        // Prioritize user's own meals, then fall back to suggestions
+        const userMeals = meals.filter(m => !m.id.startsWith('sug-'));
+        const suggestionMeals = meals.filter(m => m.id.startsWith('sug-'));
+        
+        // If we have user meals, use only those
+        if (userMeals.length >= count) {
+            return userMeals.sort(() => 0.5 - Math.random()).slice(0, count);
+        }
+        
+        // If we have some user meals but not enough, combine with suggestions
+        if (userMeals.length > 0) {
+            const remaining = count - userMeals.length;
+            const shuffledUser = userMeals.sort(() => 0.5 - Math.random());
+            const shuffledSuggestions = suggestionMeals.sort(() => 0.5 - Math.random()).slice(0, remaining);
+            return [...shuffledUser, ...shuffledSuggestions].sort(() => 0.5 - Math.random());
+        }
+        
+        // If no user meals, use suggestions
+        return suggestionMeals.sort(() => 0.5 - Math.random()).slice(0, count);
+    }, []);
+
+    // Update random meals when allMeals changes
+    useEffect(() => {
+        if (allMeals.length > 0) {
+            setRandomMeals(getRandomMeals(allMeals, 6));
+        }
+    }, [allMeals, getRandomMeals]);
 
     // Filter meals by ingredient search and calculate match info
     const filteredMealsWithMatches = useMemo(() => {
@@ -178,6 +212,15 @@ export const IngredientSearchView: React.FC = () => {
     const handleViewMealDetails = (meal: Meal) => {
         setSelectedMeal(meal);
         setIsDetailModalOpen(true);
+    };
+
+    const handleOpenRandomMealDetails = (meal: Meal) => {
+        setSelectedMeal(meal);
+        setIsDetailModalOpen(true);
+    };
+
+    const handleRefreshRandomMeals = () => {
+        setRandomMeals(getRandomMeals(allMeals, 6));
     };
 
     const handlePlanMeal = (meal: Meal) => {
@@ -464,18 +507,37 @@ export const IngredientSearchView: React.FC = () => {
                     </div>
                 )}
 
-                {/* Empty State - No Search but Has Meals */}
+                {/* Empty State - No Search but Has Meals - Show Random Recipe Cards */}
                 {!debouncedQuery && allMeals.length > 0 && (
-                    <div className="text-center py-12 px-6">
-                        <div className="w-16 h-16 rounded-full bg-blue-50 dark:bg-blue-900/20 flex items-center justify-center mx-auto mb-4">
-                            <Search className="w-8 h-8 text-blue-600 dark:text-blue-400" />
+                    <div className="space-y-6">
+                        <div className="text-center">
+                            <h3 className="text-xl font-bold text-gray-900 dark:text-white">
+                                {t('ingredientSearch.discoverRecipes', 'Upptäck recept')}
+                            </h3>
+                            <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+                                {t('ingredientSearch.randomSelection', 'Några slumpmässiga recept för inspiration')}
+                            </p>
                         </div>
-                        <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
-                            {t('ingredientSearch.startSearching', 'Start searching by ingredient')}
-                        </h3>
-                        <p className="text-sm text-gray-500 dark:text-gray-400">
-                            {t('ingredientSearch.enterIngredient', 'Enter an ingredient name to find recipes that contain it')}
-                        </p>
+
+                        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+                            {randomMeals.map(meal => (
+                                <RandomMealCard
+                                    key={meal.id}
+                                    meal={meal}
+                                    onClick={() => handleOpenRandomMealDetails(meal)}
+                                />
+                            ))}
+                        </div>
+
+                        <div className="text-center">
+                            <button
+                                onClick={handleRefreshRandomMeals}
+                                className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/20 hover:bg-blue-100 dark:hover:bg-blue-900/30 rounded-xl transition-colors"
+                            >
+                                <Dices className="w-4 h-4" />
+                                {t('ingredientSearch.showOthers', 'Visa andra')}
+                            </button>
+                        </div>
                     </div>
                 )}
             </div>

@@ -478,7 +478,10 @@
     "matching": "matching",
     "addToShoppingList": "Add to shopping list",
     "planMeal": "Plan meal",
-    "viewDetails": "View details"
+    "viewDetails": "View details",
+    "discoverRecipes": "Discover recipes",
+    "randomSelection": "Some random recipes for inspiration",
+    "showOthers": "Show others"
   },
   "mealTypes": {
     "lunch": "Lunch",
