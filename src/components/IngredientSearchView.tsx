@@ -95,24 +95,28 @@ export const IngredientSearchView: React.FC = () => {
     const getRandomMeals = useCallback((meals: Meal[], count: number = 6): Meal[] => {
         if (meals.length === 0) return [];
         
-        // Prioritize user's own meals, then fall back to suggestions
+        // Separate user's own meals and suggestions
         const userMeals = meals.filter(m => m?.id && !m.id.startsWith('sug-'));
         const suggestionMeals = meals.filter(m => m?.id && m.id.startsWith('sug-'));
         
-        // If we have user meals, use only those
-        if (userMeals.length >= count) {
-            return userMeals.sort(() => 0.5 - Math.random()).slice(0, count);
-        }
-        
-        // If we have some user meals but not enough, combine with suggestions
-        if (userMeals.length > 0) {
-            const remaining = count - userMeals.length;
-            const shuffledUser = userMeals.sort(() => 0.5 - Math.random());
-            const shuffledSuggestions = suggestionMeals.sort(() => 0.5 - Math.random()).slice(0, remaining);
+        // Always include a mix of user meals and suggestions if both exist
+        if (userMeals.length > 0 && suggestionMeals.length > 0) {
+            // Take half user meals and half suggestions (or as close as possible)
+            const userCount = Math.ceil(count / 2);
+            const suggestionCount = count - userCount;
+            
+            const shuffledUser = userMeals.sort(() => 0.5 - Math.random()).slice(0, userCount);
+            const shuffledSuggestions = suggestionMeals.sort(() => 0.5 - Math.random()).slice(0, suggestionCount);
+            
             return [...shuffledUser, ...shuffledSuggestions].sort(() => 0.5 - Math.random());
         }
         
-        // If no user meals, use suggestions
+        // If only user meals, use those
+        if (userMeals.length > 0) {
+            return userMeals.sort(() => 0.5 - Math.random()).slice(0, count);
+        }
+        
+        // If only suggestions, use those
         return suggestionMeals.sort(() => 0.5 - Math.random()).slice(0, count);
     }, []);
 
