@@ -1,5 +1,10 @@
 [
   {
+    "hash": "da50332e8c3a3467b106edf3589e29b05f02524b",
+    "date": "2026-09-03 08:03:23 +0200",
+    "message": "docs: update commit history and add QuickItem, QuickItemsSettings interfaces"
+  },
+  {
     "hash": "98fe48fb0979a652d59cdb0bdbac302a66353eae",
     "date": "2026-09-02 16:43:31 +0200",
     "message": "chore: update browserslist and related dependencies to latest versions"
@@ -93,10 +98,5 @@
     "hash": "b8089f386cf39a310266bdc7b3e02f903fefb359",
     "date": "2026-08-27 14:55:41 +0200",
     "message": "feat(grocery-list): prepend new items and group completed items"
-  },
-  {
-    "hash": "e8e081e5ffd2921da08c2bc05db9d90cd723d87b",
-    "date": "2026-08-27 14:48:35 +0200",
-    "message": "feat(layout): integrate ShoppingListOverlay with wake lock control"
   }
 ]
