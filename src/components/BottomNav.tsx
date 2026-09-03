@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next';
 
 interface BottomNavProps {
     onMoreOpen?: () => void;
+    onNavigate?: () => void;
     style?: React.CSSProperties;
 }
 
@@ -32,6 +33,7 @@ export const MoreDrawer: React.FC<MoreDrawerProps> = ({ isOpen, onClose }) => {
         <>
             {/* Backdrop */}
             <div
+                data-testid="drawer-backdrop"
                 className="fixed inset-0 z-40 bg-black/40 backdrop-blur-sm md:hidden animate-in fade-in duration-200"
                 onClick={onClose}
             />
@@ -68,7 +70,7 @@ export const MoreDrawer: React.FC<MoreDrawerProps> = ({ isOpen, onClose }) => {
     );
 };
 
-export const BottomNav: React.FC<BottomNavProps> = ({ onMoreOpen, style }) => {
+export const BottomNav: React.FC<BottomNavProps> = ({ onMoreOpen, onNavigate, style }) => {
     const { t } = useTranslation();
 
     const primaryTabs = [
@@ -104,6 +106,7 @@ export const BottomNav: React.FC<BottomNavProps> = ({ onMoreOpen, style }) => {
                             key={tab.path}
                             to={tab.path}
                             end={tab.exact}
+                            onClick={onNavigate}
                             className={({ isActive }) =>
                                 `flex-1 flex flex-col items-center justify-center gap-0.5 transition-all duration-200 relative ${
                                     isActive

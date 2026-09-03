@@ -85,7 +85,7 @@ export const Layout: React.FC = () => {
             </div>
 
             {/* Mobile Bottom Nav */}
-            <BottomNav onMoreOpen={() => setIsMoreOpen(true)} style={{ zIndex: 110 }} />
+            <BottomNav onMoreOpen={() => setIsMoreOpen(true)} onNavigate={() => setIsMoreOpen(false)} style={{ zIndex: 110 }} />
             <MoreDrawer isOpen={isMoreOpen} onClose={() => setIsMoreOpen(false)} />
             <ToastContainer />
             <UpdatePrompt />
