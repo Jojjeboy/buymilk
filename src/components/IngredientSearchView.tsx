@@ -8,7 +8,6 @@ import { useMealPlan } from '../hooks/useMealPlan';
 import { MealDetailModal } from './MealDetailModal';
 import { PlanMealModal } from './PlanMealModal';
 import { v4 as uuidv4 } from 'uuid';
-import mealSuggestions from '../data/mealSuggestions.json';
 
 
 export const IngredientSearchView: React.FC = () => {
@@ -23,9 +22,26 @@ export const IngredientSearchView: React.FC = () => {
     const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
     const [isPlanModalOpen, setIsPlanModalOpen] = useState(false);
     const [planningMeal, setPlanningMeal] = useState<Meal | null>(null);
+    const [mealSuggestions, setMealSuggestions] = useState<Meal[]>([]);
+    const [isLoadingSuggestions, setIsLoadingSuggestions] = useState(true);
     
     // Accessibility refs
     const searchInputRef = useRef<HTMLInputElement>(null);
+
+    // Load meal suggestions asynchronously
+    useEffect(() => {
+        const loadMealSuggestions = async () => {
+            try {
+                const suggestions = await import('../data/mealSuggestions.json');
+                setMealSuggestions(suggestions.default);
+            } catch (error) {
+                console.error('Failed to load meal suggestions:', error);
+            } finally {
+                setIsLoadingSuggestions(false);
+            }
+        };
+        loadMealSuggestions();
+    }, []);
 
     // Debounce search input
     useEffect(() => {
@@ -45,7 +61,7 @@ export const IngredientSearchView: React.FC = () => {
             }
         });
         return combined;
-    }, [meals]);
+    }, [meals, mealSuggestions]);
 
     // Filter meals by ingredient search and calculate match info
     const filteredMealsWithMatches = useMemo(() => {
@@ -261,7 +277,16 @@ export const IngredientSearchView: React.FC = () => {
             </form>
 
             {/* Results Summary */}
-            {debouncedQuery && (
+            {isLoadingSuggestions && (
+                <div className="flex items-center justify-center py-8">
+                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></div>
+                    <span className="ml-3 text-gray-600 dark:text-gray-400">
+                        {t('common.loading')}
+                    </span>
+                </div>
+            )}
+            
+            {debouncedQuery && !isLoadingSuggestions && (
                 <div 
                     id="results-summary" 
                     className="text-sm text-gray-500 dark:text-gray-400"
@@ -295,7 +320,7 @@ export const IngredientSearchView: React.FC = () => {
                                 onClick={() => handleViewMealDetails(meal)}
                                 onFocus={() => setFocusedResultIndex(index)}
                                 onBlur={() => setFocusedResultIndex(null)}
-                                className={`bg-white dark:bg-gray-900/70 p-4 rounded-2xl border border-gray-200/80 dark:border-gray-800 shadow-xs hover:shadow-md hover:border-blue-300/20 dark:hover:border-blue-700/20 transition-all ${
+                                className={`bg-white dark:bg-gray-900/70 p-4 rounded-2xl border border-gray-200/80 dark:border-gray-800 shadow-xs hover:shadow-md hover:border-blue-300/20 dark:hover:border-blue-700/20 transition-all overflow-hidden ${
                                     focusedResultIndex === index 
                                         ? 'ring-2 ring-blue-500 dark:ring-blue-400 outline-none' 
                                         : ''
@@ -317,7 +342,7 @@ export const IngredientSearchView: React.FC = () => {
                                     
                                     {/* Recipe Info */}
                                     <div className="flex-1 min-w-0">
-                                        <h3 className="font-semibold text-gray-900 dark:text-white  truncate">
+                                        <h3 className="font-semibold text-gray-900 dark:text-white break-words">
                                             {meal.name}
                                         </h3>
                                         
@@ -355,30 +380,13 @@ export const IngredientSearchView: React.FC = () => {
                                             )}
                                         </div>
 
-                                        {/* Tags */}
-                                        {meal.tags && meal.tags.length > 0 && (
-                                            <div className="flex items-center gap-1.5 mt-2 flex-wrap">
-                                                {meal.tags.slice(0, 3).map((tag, index) => (
-                                                    <span
-                                                        key={index}
-                                                        className="px-2 py-0.5 bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 text-xs rounded-full font-medium"
-                                                    >
-                                                        {tag}
-                                                    </span>
-                                                ))}
-                                                {meal.tags.length > 3 && (
-                                                    <span className="text-xs text-gray-400">+{meal.tags.length - 3}</span>
-                                                )}
-                                            </div>
-                                        )}
-
                                         {/* Matching Ingredients Preview */}
                                         {matchingIngredients.length > 0 && (
                                             <div className="mt-2">
                                                 <p className="text-xs text-emerald-600 dark:text-emerald-400 font-medium mb-1">
                                                     {t('ingredientSearch.matching')}:
                                                 </p>
-                                                <p className="text-xs text-gray-500 dark:text-gray-400 line-clamp-2">
+                                                <p className="text-xs text-gray-500 dark:text-gray-400 line-clamp-2 break-words">
                                                     {matchingIngredients.map(i => i.text).join(', ')}
                                                 </p>
                                             </div>

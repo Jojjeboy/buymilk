@@ -162,6 +162,7 @@
     "logout": "Logga ut",
     "used": "Använd {{count}} gånger",
     "syncing": "Synkar ändringar...",
+    "loading": "Laddar...",
     "back": "Tillbaka",
     "select": "Välj",
     "clear": "Rensa"

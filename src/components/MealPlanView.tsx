@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { useToast } from '../context/ToastContext';
 import { useApp } from '../context/AppContext';
 import { useTranslation } from 'react-i18next';
@@ -28,7 +28,6 @@ import { RecipeDetailModal } from './RecipeDetailModal';
 import { exportMealPlanToICS } from '../utils/calendarUtils';
 import { v4 as uuidv4 } from 'uuid';
 import { getISOWeek, formatDate, getDayName } from '../utils/dateUtils';
-import mealSuggestions from '../data/mealSuggestions.json';
 
 export const MealPlanView: React.FC = () => {
     const { 
@@ -57,11 +56,25 @@ export const MealPlanView: React.FC = () => {
     const [recipeViewMeal, setRecipeViewMeal] = useState<Meal | null>(null);
     const [modalSlot, setModalSlot] = useState<{ date: Date; type: MealType } | null>(null);
     const [promptSaveMealName, setPromptSaveMealName] = useState<string | null>(null);
-    const [randomMealModal, setRandomMealModal] = useState<{ isOpen: boolean; date: Date | null; type: MealType | null }>({ 
-        isOpen: false, 
-        date: null, 
-        type: null 
+    const [randomMealModal, setRandomMealModal] = useState<{ isOpen: boolean; date: Date | null; type: MealType | null }>({
+        isOpen: false,
+        date: null,
+        type: null
     });
+    const [mealSuggestions, setMealSuggestions] = useState<Meal[]>([]);
+
+    // Load meal suggestions asynchronously
+    useEffect(() => {
+        const loadMealSuggestions = async () => {
+            try {
+                const suggestions = await import('../data/mealSuggestions.json');
+                setMealSuggestions(suggestions.default);
+            } catch (error) {
+                console.error('Failed to load meal suggestions:', error);
+            }
+        };
+        loadMealSuggestions();
+    }, []);
 
     const [startDate, setStartDate] = useState(() => {
         const d = new Date();

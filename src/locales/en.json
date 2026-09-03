@@ -161,7 +161,8 @@
     "guest": "Guest",
     "logout": "Log out",
     "used": "Used {{count}} times",
-    "syncing": "Syncing changes..."
+    "syncing": "Syncing changes...",
+    "loading": "Loading..."
   },
   "settings": {
     "title": "Settings",

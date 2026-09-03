@@ -145,7 +145,7 @@ describe('IngredientSearchView', () => {
             if (laxMeal) {
                 expect(screen.getByText(laxMeal.name)).toBeInTheDocument();
             }
-        });
+        }, { timeout: 5000 });
     });
 
     it('clears the search when the clear button is clicked', async () => {

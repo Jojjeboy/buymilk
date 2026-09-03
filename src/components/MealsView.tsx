@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { useApp } from '../context/AppContext';
 import { useToast } from '../context/ToastContext';
 import { useTranslation } from 'react-i18next';
@@ -22,7 +22,6 @@ import { PlanMealModal } from './PlanMealModal';
 import { IngredientSelectionModal } from './IngredientSelectionModal';
 import { v4 as uuidv4 } from 'uuid';
 import { Item, Meal, MealType } from '../types';
-import mealSuggestions from '../data/mealSuggestions.json';
 import { useMealPlan } from '../hooks/useMealPlan';
 
 export const MealsView: React.FC = () => {
@@ -51,6 +50,21 @@ export const MealsView: React.FC = () => {
         mealName: '',
         ingredients: []
     });
+    
+    const [mealSuggestions, setMealSuggestions] = useState<Meal[]>([]);
+
+    // Load meal suggestions asynchronously
+    useEffect(() => {
+        const loadMealSuggestions = async () => {
+            try {
+                const suggestions = await import('../data/mealSuggestions.json');
+                setMealSuggestions(suggestions.default);
+            } catch (error) {
+                console.error('Failed to load meal suggestions:', error);
+            }
+        };
+        loadMealSuggestions();
+    }, []);
 
     // Extract all unique tags across saved meals
     const allTags = useMemo(() => {
