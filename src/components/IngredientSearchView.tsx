@@ -579,6 +579,8 @@ export const IngredientSearchView: React.FC = () => {
                     isOpen={isDetailModalOpen}
                     onClose={() => setIsDetailModalOpen(false)}
                     onEdit={handleStartEdit}
+                    onPlanMeal={handlePlanMeal}
+                    onAddToShoppingList={handleAddToShoppingList}
                 />
             )}
 
