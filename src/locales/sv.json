@@ -473,7 +473,11 @@
     "foundResults": "Hittade {{count}} recept",
     "tryDifferent": "Försök söka på en annan ingrediens",
     "startSearching": "Börja söka på ingrediens",
-    "enterIngredient": "Ange en ingrediens för att hitta recept som innehåller den"
+    "enterIngredient": "Ange en ingrediens för att hitta recept som innehåller den",
+    "matching": "matchande",
+    "addToShoppingList": "Lägg till i inköpslistan",
+    "planMeal": "Planera måltid",
+    "viewDetails": "Visa detaljer"
   },
   "mealTypes": {
     "lunch": "Lunch",

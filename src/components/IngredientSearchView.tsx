@@ -1,17 +1,27 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import { useApp } from '../context/AppContext';
 import { useTranslation } from 'react-i18next';
-import { useNavigate } from 'react-router-dom';
-import { Search, X, Utensils } from 'lucide-react';
+
+import { Search, X, Utensils, Eye, Calendar, ShoppingCart, Tag, Users } from 'lucide-react';
+import { Meal, MealType } from '../types';
+import { useMealPlan } from '../hooks/useMealPlan';
+import { MealDetailModal } from './MealDetailModal';
+import { PlanMealModal } from './PlanMealModal';
+import { v4 as uuidv4 } from 'uuid';
 
 
 export const IngredientSearchView: React.FC = () => {
-    const { meals } = useApp();
+    const { meals, addItemsToList, defaultListId } = useApp();
     const { t } = useTranslation();
-    const navigate = useNavigate();
+
+    const { handleMealChange } = useMealPlan();
 
     const [searchQuery, setSearchQuery] = useState('');
     const [debouncedQuery, setDebouncedQuery] = useState('');
+    const [selectedMeal, setSelectedMeal] = useState<Meal | null>(null);
+    const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
+    const [isPlanModalOpen, setIsPlanModalOpen] = useState(false);
+    const [planningMeal, setPlanningMeal] = useState<Meal | null>(null);
 
     // Debounce search input
     useEffect(() => {
@@ -21,32 +31,71 @@ export const IngredientSearchView: React.FC = () => {
         return () => clearTimeout(timer);
     }, [searchQuery]);
 
-    // Filter meals by ingredient search
-    const filteredMeals = useMemo(() => {
+    // Filter meals by ingredient search and calculate match info
+    const filteredMealsWithMatches = useMemo(() => {
         const query = debouncedQuery.trim().toLowerCase();
-        
+
         if (!query) return [];
-        
-        return meals.filter(meal => {
-            // Search in ingredients
-            const hasIngredient = meal.ingredients?.some(ingredient => 
+
+        return meals.map(meal => {
+            // Count matching ingredients
+            const matchingIngredients = meal.ingredients?.filter(ingredient =>
                 ingredient.text.toLowerCase().includes(query)
-            );
-            
-            // Also search in meal name and description as fallback
+            ) || [];
+
+            // Check if meal matches search
+            const hasIngredient = matchingIngredients.length > 0;
             const hasInName = meal.name.toLowerCase().includes(query);
             const hasInDescription = meal.description?.toLowerCase().includes(query);
-            
-            return hasIngredient || hasInName || hasInDescription;
-        });
+            const matchesSearch = hasIngredient || hasInName || hasInDescription;
+
+            return {
+                meal,
+                matchesSearch,
+                matchingIngredients,
+                matchCount: matchingIngredients.length
+            };
+        }).filter(item => item.matchesSearch);
     }, [meals, debouncedQuery]);
 
     const handleClearSearch = () => {
         setSearchQuery('');
     };
 
-    const handleViewMealDetails = () => {
-        navigate('/meals');
+    const handleViewMealDetails = (meal: Meal) => {
+        setSelectedMeal(meal);
+        setIsDetailModalOpen(true);
+    };
+
+    const handlePlanMeal = (meal: Meal) => {
+        setPlanningMeal(meal);
+        setIsPlanModalOpen(true);
+    };
+
+    const handleSavePlannedMeal = (date: Date, type: MealType) => {
+        if (planningMeal) {
+            handleMealChange(date, type, planningMeal.name);
+            setIsPlanModalOpen(false);
+            setPlanningMeal(null);
+        }
+    };
+
+    const handleAddToShoppingList = async (meal: Meal) => {
+        if (!defaultListId) return;
+
+        try {
+            const itemsToAdd = meal.ingredients?.map(ingredient => ({
+                id: uuidv4(),
+                text: `${ingredient.amount ? ingredient.amount + ' ' : ''}${ingredient.text}`.trim(),
+                completed: false
+            })) || [];
+
+            if (itemsToAdd.length > 0) {
+                await addItemsToList(defaultListId, itemsToAdd);
+            }
+        } catch (error) {
+            console.error('Failed to add items to shopping list:', error);
+        }
     };
 
     return (
@@ -89,21 +138,20 @@ export const IngredientSearchView: React.FC = () => {
             {/* Results Summary */}
             {debouncedQuery && (
                 <div className="text-sm text-gray-500 dark:text-gray-400">
-                    {filteredMeals.length > 0 
-                        ? t('ingredientSearch.foundResults', { count: filteredMeals.length })
+                    {filteredMealsWithMatches.length > 0 
+                        ? t('ingredientSearch.foundResults', { count: filteredMealsWithMatches.length })
                         : t('ingredientSearch.noResults', { query: debouncedQuery })}
                 </div>
             )}
 
             {/* Search Results */}
             <div className="space-y-4">
-                {filteredMeals.length > 0 ? (
+                {filteredMealsWithMatches.length > 0 ? (
                     <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-                        {filteredMeals.map((meal) => (
+                        {filteredMealsWithMatches.map(({ meal, matchingIngredients, matchCount }) => (
                             <div 
                                 key={meal.id}
-                                onClick={handleViewMealDetails}
-                                className="bg-white dark:bg-gray-900/70 p-4 rounded-2xl border border-gray-200/80 dark:border-gray-800 shadow-xs hover:shadow-md hover:border-blue-300/20 dark:hover:border-blue-700/20 transition-all cursor-pointer group"
+                                className="bg-white dark:bg-gray-900/70 p-4 rounded-2xl border border-gray-200/80 dark:border-gray-800 shadow-xs hover:shadow-md hover:border-blue-300/20 dark:hover:border-blue-700/20 transition-all "
                             >
                                 <div className="flex items-start gap-4">
                                     {/* Recipe Icon */}
@@ -121,7 +169,7 @@ export const IngredientSearchView: React.FC = () => {
                                     
                                     {/* Recipe Info */}
                                     <div className="flex-1 min-w-0">
-                                        <h3 className="font-semibold text-gray-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors truncate">
+                                        <h3 className="font-semibold text-gray-900 dark:text-white  truncate">
                                             {meal.name}
                                         </h3>
                                         
@@ -142,14 +190,76 @@ export const IngredientSearchView: React.FC = () => {
                                             </div>
                                         )}
 
-                                        {/* Ingredients Preview */}
-                                        {meal.ingredients && meal.ingredients.length > 0 && (
+                                        {/* Match Info & Servings */}
+                                        <div className="flex items-center gap-2 mt-1 flex-wrap">
+                                            {matchCount > 0 && (
+                                                <span className="px-2 py-0.5 bg-emerald-50 dark:bg-emerald-900/20 text-emerald-700 dark:text-emerald-300 text-xs rounded-full font-medium flex items-center gap-1">
+                                                    <Tag className="w-3 h-3" />
+                                                    {matchCount} {t('ingredientSearch.matching')}
+                                                </span>
+                                            )}
+
+                                            {meal.servings && (
+                                                <span className="px-2 py-0.5 bg-purple-50 dark:bg-purple-900/20 text-purple-700 dark:text-purple-300 text-xs rounded-full font-medium flex items-center gap-1">
+                                                    <Users className="w-3 h-3" />
+                                                    {meal.servings}
+                                                </span>
+                                            )}
+                                        </div>
+
+                                        {/* Tags */}
+                                        {meal.tags && meal.tags.length > 0 && (
+                                            <div className="flex items-center gap-1.5 mt-2 flex-wrap">
+                                                {meal.tags.slice(0, 3).map((tag, index) => (
+                                                    <span
+                                                        key={index}
+                                                        className="px-2 py-0.5 bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 text-xs rounded-full font-medium"
+                                                    >
+                                                        {tag}
+                                                    </span>
+                                                ))}
+                                                {meal.tags.length > 3 && (
+                                                    <span className="text-xs text-gray-400">+{meal.tags.length - 3}</span>
+                                                )}
+                                            </div>
+                                        )}
+
+                                        {/* Matching Ingredients Preview */}
+                                        {matchingIngredients.length > 0 && (
                                             <div className="mt-2">
+                                                <p className="text-xs text-emerald-600 dark:text-emerald-400 font-medium mb-1">
+                                                    {t('ingredientSearch.matching')}:
+                                                </p>
                                                 <p className="text-xs text-gray-500 dark:text-gray-400 line-clamp-2">
-                                                    {meal.ingredients.map(i => i.text).join(', ')}
+                                                    {matchingIngredients.map(i => i.text).join(', ')}
                                                 </p>
                                             </div>
                                         )}
+                                    </div>
+
+                                    {/* Action Buttons */}
+                                    <div className="flex items-center justify-end gap-2 px-4 pb-4">
+                                        <button
+                                            onClick={() => handleAddToShoppingList(meal)}
+                                            className="p-2 rounded-lg bg-emerald-50 dark:bg-emerald-900/20 text-emerald-600 dark:text-emerald-400 hover:bg-emerald-100 dark:hover:bg-emerald-900/30 transition-colors"
+                                            title={t('ingredientSearch.addToShoppingList')}
+                                        >
+                                            <ShoppingCart className="w-4 h-4" />
+                                        </button>
+                                        <button
+                                            onClick={() => handlePlanMeal(meal)}
+                                            className="p-2 rounded-lg bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 hover:bg-blue-100 dark:hover:bg-blue-900/30 transition-colors"
+                                            title={t('ingredientSearch.planMeal')}
+                                        >
+                                            <Calendar className="w-4 h-4" />
+                                        </button>
+                                        <button
+                                            onClick={() => handleViewMealDetails(meal)}
+                                            className="p-2 rounded-lg bg-indigo-50 dark:bg-indigo-900/20 text-indigo-600 dark:text-indigo-400 hover:bg-indigo-100 dark:hover:bg-indigo-900/30 transition-colors"
+                                            title={t('ingredientSearch.viewDetails')}
+                                        >
+                                            <Eye className="w-4 h-4" />
+                                        </button>
                                     </div>
                                 </div>
                             </div>
@@ -201,6 +311,27 @@ export const IngredientSearchView: React.FC = () => {
                     </div>
                 )}
             </div>
+
+            {/* Modals */}
+            {selectedMeal && (
+                <MealDetailModal
+                    meal={selectedMeal}
+                    isOpen={isDetailModalOpen}
+                    onClose={() => setIsDetailModalOpen(false)}
+                />
+            )}
+
+            {planningMeal && (
+                <PlanMealModal
+                    isOpen={isPlanModalOpen}
+                    onClose={() => {
+                        setIsPlanModalOpen(false);
+                        setPlanningMeal(null);
+                    }}
+                    onSave={handleSavePlannedMeal}
+                    meal={planningMeal}
+                />
+            )}
         </div>
     );
 };

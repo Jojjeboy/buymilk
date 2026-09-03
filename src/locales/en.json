@@ -473,7 +473,11 @@
     "foundResults": "Found {{count}} recipe(s)",
     "tryDifferent": "Try searching for a different ingredient",
     "startSearching": "Start searching by ingredient",
-    "enterIngredient": "Enter an ingredient name to find recipes that contain it"
+    "enterIngredient": "Enter an ingredient name to find recipes that contain it",
+    "matching": "matching",
+    "addToShoppingList": "Add to shopping list",
+    "planMeal": "Plan meal",
+    "viewDetails": "View details"
   },
   "mealTypes": {
     "lunch": "Lunch",
