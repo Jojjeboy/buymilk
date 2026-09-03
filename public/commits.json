@@ -1,5 +1,10 @@
 [
   {
+    "hash": "f991e6df08c073118fd8067d6b45bc10f5f7aee2",
+    "date": "2026-09-03 08:16:21 +0200",
+    "message": "chore: update dependencies and add audit fix to validate script"
+  },
+  {
     "hash": "da50332e8c3a3467b106edf3589e29b05f02524b",
     "date": "2026-09-03 08:03:23 +0200",
     "message": "docs: update commit history and add QuickItem, QuickItemsSettings interfaces"
@@ -93,10 +98,5 @@
     "hash": "644df39f3847aacd198230da88b642fb016560e2",
     "date": "2026-08-27 15:38:17 +0200",
     "message": "feat(ui): enhance shopping list item styling and display"
-  },
-  {
-    "hash": "b8089f386cf39a310266bdc7b3e02f903fefb359",
-    "date": "2026-08-27 14:55:41 +0200",
-    "message": "feat(grocery-list): prepend new items and group completed items"
   }
 ]

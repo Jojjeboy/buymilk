@@ -3,12 +3,11 @@ import { useNavigate } from 'react-router-dom';
 import { createPortal } from 'react-dom';
 import { useApp } from '../context/AppContext';
 import { useToast } from '../context/ToastContext';
-import type { Item, List, Meal, PlannedMeal, QuickItem } from '../types';
-import { getQuickItemsByKeys } from '../utils/quickItems';
+import type { Item, List, Meal, PlannedMeal } from '../types';
 import { DndContext, closestCenter, KeyboardSensor, PointerSensor, useSensor, useSensors, type DragEndEvent } from '@dnd-kit/core';
 import { arrayMove, SortableContext, sortableKeyboardCoordinates, verticalListSortingStrategy } from '@dnd-kit/sortable';
 import { SortableItem } from './SortableItem';
-import { Plus, RotateCcw, ChevronDown, CloudUpload, Mic, Trash2, Utensils, Braces, ArrowRight, Zap } from 'lucide-react';
+import { Plus, RotateCcw, ChevronDown, CloudUpload, Mic, Trash2, Utensils, Braces, ArrowRight } from 'lucide-react';
 import { v4 as uuidv4 } from 'uuid';
 import { Confetti } from './Confetti';
 import { convertToItems } from '../utils/importUtils';
@@ -25,7 +24,7 @@ import { formatDate } from '../utils/dateUtils';
 export const GroceryListView: React.FC = React.memo(function GroceryListView() {
     const { t } = useTranslation();
     const navigate = useNavigate();
-    const { meals, lists, defaultListId, updateListItems, deleteItem, updateListAccess, loading, itemHistory, addToHistory, updateMeal, quickItemsSettings } = useApp();
+    const { meals, lists, defaultListId, updateListItems, deleteItem, updateListAccess, loading, itemHistory, addToHistory, updateMeal } = useApp();
     const { showToast } = useToast();
     const { getPlanForDate } = useMealPlan();
     const { isListening, transcript, startListening, stopListening, hasSupport } = useVoiceInput();
@@ -38,7 +37,6 @@ export const GroceryListView: React.FC = React.memo(function GroceryListView() {
     const [importModalOpen, setImportModalOpen] = useState(false);
     const [completedAccordionOpen, setCompletedAccordionOpen] = useState(false);
     const [clearCompletedModalOpen, setClearCompletedModalOpen] = useState(false);
-    const [showQuickItems, setShowQuickItems] = useState(false);
 
     const list: List | undefined = lists.find((l) => l.id === defaultListId);
 
@@ -335,16 +333,25 @@ export const GroceryListView: React.FC = React.memo(function GroceryListView() {
             />
             {showConfetti && <Confetti trigger={true} />}
             {nextMeals.length > 0 && (
-                <div className="mb-4 bg-blue-50 dark:bg-blue-900/20 border border-blue-100 dark:border-blue-800 rounded-2xl animate-in fade-in slide-in-from-top-2 duration-300 overflow-hidden">
-                    <div className="p-3 flex items-start gap-3">
-                        <div className="p-2 bg-blue-100 dark:bg-blue-800 text-blue-600 dark:text-blue-300 rounded-xl flex-shrink-0">
-                            <Utensils size={18} />
+                <div className="mb-2 bg-blue-50 dark:bg-blue-900/20 border border-blue-100 dark:border-blue-800 rounded-lg animate-in fade-in slide-in-from-top-2 duration-300 overflow-hidden">
+                    <div className="p-2 flex items-start gap-2">
+                        <div className="p-1.5 bg-blue-100 dark:bg-blue-800 text-blue-600 dark:text-blue-300 rounded-lg flex-shrink-0">
+                            <Utensils size={16} />
                         </div>
-                        <div className="flex flex-col gap-1 flex-1 min-w-0">
-                            <span className="text-xs font-bold text-blue-600 dark:text-blue-400 uppercase tracking-wider">
-                                {nextMealLabel}
-                            </span>
-                            <div className="flex flex-wrap gap-x-3 gap-y-1">
+                        <div className="flex flex-col gap-0.5 flex-1 min-w-0">
+                            <div className="flex justify-between items-start">
+                                <span className="text-xs font-bold text-blue-600 dark:text-blue-400 uppercase tracking-wider">
+                                    {nextMealLabel}
+                                </span>
+                                <button
+                                    onClick={() => navigate('/mealplan')}
+                                    className="text-xs font-semibold text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 transition-colors flex items-center gap-0.5"
+                                >
+                                    {t('nav.viewMealPlan', 'Visa matsedeln')}
+                                    <ArrowRight size={12} />
+                                </button>
+                            </div>
+                            <div className="flex flex-wrap gap-x-2 gap-y-0.5">
                                 {nextMeals.map((meal, idx) => (
                                     <div
                                         key={idx}
@@ -355,7 +362,7 @@ export const GroceryListView: React.FC = React.memo(function GroceryListView() {
                                             );
                                             if (fullMeal) setViewingMeal(fullMeal);
                                         }}
-                                        className="text-sm font-medium text-gray-700 dark:text-gray-200 cursor-pointer hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
+                                        className="text-xs font-medium text-gray-700 dark:text-gray-200 cursor-pointer hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
                                     >
                                         <span className="opacity-60 capitalize">{meal.type === 'dinner' ? t('meals.dinner', 'Middag') : meal.type === 'lunch' ? t('meals.lunch', 'Lunch') : t('meals.snack', 'Mellanmål')}: </span>
                                         <span className="underline underline-offset-2 decoration-blue-300 dark:decoration-blue-700">{meal.title}</span>
@@ -364,13 +371,6 @@ export const GroceryListView: React.FC = React.memo(function GroceryListView() {
                             </div>
                         </div>
                     </div>
-                    <button
-                        onClick={() => navigate('/mealplan')}
-                        className="w-full flex items-center justify-center gap-1.5 py-2 text-xs font-semibold text-blue-600 dark:text-blue-400 bg-blue-100/60 dark:bg-blue-800/30 hover:bg-blue-100 dark:hover:bg-blue-800/50 transition-colors border-t border-blue-100 dark:border-blue-800"
-                    >
-                        {t('nav.viewMealPlan', 'Visa matsedeln')}
-                        <ArrowRight size={13} />
-                    </button>
                 </div>
             )}
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
@@ -502,7 +502,7 @@ export const GroceryListView: React.FC = React.memo(function GroceryListView() {
 
             {/* Floating Persistent Bottom Bar */}
             {!importModalOpen && document.body && createPortal(
-                <div className="fixed bottom-0 left-0 right-0 md:left-72 bg-gradient-to-t from-white via-white/95 to-white/0 dark:from-gray-900 dark:via-gray-900/95 dark:to-gray-900/0 pt-10 pb-6 px-4 z-[100] transition-all duration-300 pointer-events-none">
+                <div className="fixed bottom-[50px] left-0 right-0 md:left-72 bg-gradient-to-t from-white via-white/95 to-white/0 dark:from-gray-900 dark:via-gray-900/95 dark:to-gray-900/0 pt-10 pb-6 px-4 z-[100] transition-all duration-300 pointer-events-none">
                     <div className="max-w-4xl mx-auto pointer-events-auto">
                             <div className="relative group">
                                 <form onSubmit={handleAddItem} className="flex gap-3 items-center bg-white dark:bg-gray-800 p-2 rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.12)] border border-gray-100 dark:border-gray-700 focus-within:ring-2 focus-within:ring-blue-500/50 transition-all">
@@ -555,14 +555,6 @@ export const GroceryListView: React.FC = React.memo(function GroceryListView() {
                                         )}
                                     </div>
                                      <div className="flex gap-2">
-                                         <button
-                                             type="button"
-                                             onClick={() => setShowQuickItems(!showQuickItems)}
-                                             className="p-3 rounded-xl transition-all active:scale-95 bg-gray-100 dark:bg-gray-700 text-gray-500 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600"
-                                             title={t('quickItems.title', 'Snabbval')}
-                                         >
-                                             <Zap size={22} strokeWidth={2.5} />
-                                         </button>
                                          {hasSupport && (
                                              <button
                                                  type="button"
@@ -587,47 +579,6 @@ export const GroceryListView: React.FC = React.memo(function GroceryListView() {
                                      </div>
                                 </form>
                             </div>
-                            {showQuickItems && (
-                                <div className="absolute bottom-full left-0 right-0 mb-4 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-2xl shadow-2xl z-50 overflow-hidden max-w-4xl mx-auto animate-in slide-in-from-bottom-2 duration-200">
-                                    <div className="p-4">
-                                        <div className="flex items-center gap-1.5 mb-3">
-                                            <Zap size={13} className="text-amber-500" />
-                                            <span className="text-[11px] font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                                                {t('quickItems.title', 'Snabbval')}
-                                            </span>
-                                        </div>
-                                        <div className="flex gap-2 overflow-x-auto pb-1 custom-scrollbar">
-                                            {getQuickItemsByKeys(quickItemsSettings.enabledItems).map((item: QuickItem) => {
-                                                const activeTexts = new Set(
-                                                    list.items.filter(i => !i.completed).map(i => i.text.toLowerCase())
-                                                );
-                                                const alreadyInList = activeTexts.has(item.label.toLowerCase());
-                                                return (
-                                                    <button
-                                                        key={item.key}
-                                                        onClick={() => {
-                                                            if (!alreadyInList) {
-                                                                handleAddItem(undefined, item.label);
-                                                            }
-                                                            setShowQuickItems(false);
-                                                        }}
-                                                        disabled={alreadyInList}
-                                                        className={`flex-shrink-0 flex flex-col items-center gap-1 px-3 py-2 rounded-xl text-xs font-medium transition-all border ${
-                                                            alreadyInList
-                                                                ? 'bg-gray-50 dark:bg-gray-800/40 border-gray-100 dark:border-gray-800 text-gray-300 dark:text-gray-600 cursor-default'
-                                                                : 'bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-200 hover:border-blue-300 hover:bg-blue-50 dark:hover:bg-blue-900/20 dark:hover:border-blue-700 shadow-sm active:scale-95'
-                                                        }`}
-                                                    >
-                                                        <span className={`text-lg leading-none ${alreadyInList ? 'grayscale opacity-40' : ''}`}>{item.emoji}</span>
-                                                        <span className="leading-none whitespace-nowrap">{item.label}</span>
-                                                        {alreadyInList && <span className="text-[9px] text-green-500 dark:text-green-400 font-bold">✓</span>}
-                                                    </button>
-                                                );
-                                            })}
-                                        </div>
-                                    </div>
-                                </div>
-                            )}
                         </div>
                     </div>,
                 document.body

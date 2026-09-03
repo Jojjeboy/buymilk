@@ -113,9 +113,6 @@ export const BottomNav: React.FC<BottomNavProps> = ({ onMoreOpen, style }) => {
                         >
                             {({ isActive }) => (
                                 <>
-                                    {isActive && (
-                                        <span className="absolute top-0 left-1/2 -translate-x-1/2 w-8 h-0.5 bg-blue-500 rounded-full" />
-                                    )}
                                     <tab.icon
                                         size={22}
                                         className={`transition-transform duration-200 ${isActive ? 'scale-110' : ''}`}
@@ -124,6 +121,9 @@ export const BottomNav: React.FC<BottomNavProps> = ({ onMoreOpen, style }) => {
                                     <span className={`text-[10px] font-medium leading-none ${isActive ? 'font-semibold' : ''}`}>
                                         {tab.label}
                                     </span>
+                                    {isActive && (
+                                        <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-8 h-0.5 bg-blue-500 rounded-full" />
+                                    )}
                                 </>
                             )}
                         </NavLink>
