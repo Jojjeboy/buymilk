@@ -70,8 +70,8 @@ export const IngredientSearchView: React.FC = () => {
         if (meals.length === 0) return [];
         
         // Prioritize user's own meals, then fall back to suggestions
-        const userMeals = meals.filter(m => !m.id.startsWith('sug-'));
-        const suggestionMeals = meals.filter(m => m.id.startsWith('sug-'));
+        const userMeals = meals.filter(m => m?.id && !m.id.startsWith('sug-'));
+        const suggestionMeals = meals.filter(m => m?.id && m.id.startsWith('sug-'));
         
         // If we have user meals, use only those
         if (userMeals.length >= count) {

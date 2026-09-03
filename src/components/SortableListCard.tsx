@@ -89,7 +89,7 @@ export const SortableListCard: React.FC<SortableListCardProps> = ({
                         <MoreVertical size={18} />
                     </button>
                     {dropdownOpen && (
-                        <div className="absolute right-0 top-full mt-1 w-40 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-100 dark:border-gray-700 overflow-hidden z-10 animate-in fade-in zoom-in-95 duration-200">
+                        <div className="absolute right-0 top-full mt-1 w-40 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-100 dark:border-gray-700 overflow-hidden z-[101] animate-in fade-in zoom-in-95 duration-200">
                             <button
                                 onClick={async () => {
                                     await onCopy(list.id);

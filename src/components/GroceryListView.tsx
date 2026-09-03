@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useOutletContext } from 'react-router-dom';
 import { createPortal } from 'react-dom';
 import { useApp } from '../context/AppContext';
 import { useToast } from '../context/ToastContext';
@@ -21,7 +21,13 @@ import { useVoiceInput } from '../hooks/useVoiceInput';
 import { useMealPlan } from '../hooks/useMealPlan';
 import { formatDate } from '../utils/dateUtils';
 
+interface OutletContext {
+    isMoreOpen: boolean;
+}
+
+// eslint-disable-next-line react/prop-types
 export const GroceryListView: React.FC = React.memo(function GroceryListView() {
+    const { isMoreOpen = false } = useOutletContext<OutletContext>();
     const { t } = useTranslation();
     const navigate = useNavigate();
     const { meals, lists, defaultListId, updateListItems, deleteItem, updateListAccess, loading, itemHistory, addToHistory, updateMeal } = useApp();
@@ -324,7 +330,7 @@ export const GroceryListView: React.FC = React.memo(function GroceryListView() {
     };
 
     return (
-        <div className="flex flex-col min-h-[calc(100vh-8rem)] relative pb-40 md:pb-32">
+        <div className="flex flex-col min-h-[calc(100vh-8rem)] relative pb-40 md:pb-32 z-0">
             <ImportItemsModal 
                 isOpen={importModalOpen} 
                 onClose={() => setImportModalOpen(false)} 
@@ -501,8 +507,8 @@ export const GroceryListView: React.FC = React.memo(function GroceryListView() {
 
 
             {/* Floating Persistent Bottom Bar */}
-            {!importModalOpen && document.body && createPortal(
-                <div className="fixed bottom-[50px] left-0 right-0 md:left-72 bg-gradient-to-t from-white via-white/95 to-white/0 dark:from-gray-900 dark:via-gray-900/95 dark:to-gray-900/0 pt-10 pb-6 px-4 z-[100] transition-all duration-300 pointer-events-none">
+            {!importModalOpen && document.body && !isMoreOpen && createPortal(
+                <div className="fixed bottom-[50px] left-0 right-0 md:left-72 bg-gradient-to-t from-white via-white/95 to-white/0 dark:from-gray-900 dark:via-gray-900/95 dark:to-gray-900/0 pt-10 pb-6 px-4 z-[99] transition-all duration-300 pointer-events-none">
                     <div className="max-w-4xl mx-auto pointer-events-auto">
                             <div className="relative group">
                                 <form onSubmit={handleAddItem} className="flex gap-3 items-center bg-white dark:bg-gray-800 p-2 rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.12)] border border-gray-100 dark:border-gray-700 focus-within:ring-2 focus-within:ring-blue-500/50 transition-all">

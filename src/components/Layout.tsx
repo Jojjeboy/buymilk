@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useApp } from '../context/AppContext';
-import { Link } from 'react-router-dom';
+import { Link, Outlet } from 'react-router-dom';
 import { Moon, Sun, Eye } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { Sidebar } from './Sidebar';
@@ -9,8 +9,10 @@ import { SyncIndicator } from './SyncIndicator';
 import { useWakeLock } from '../hooks/useWakeLock';
 import { ShoppingListOverlay } from './ShoppingListOverlay';
 import { BottomNav, MoreDrawer } from './BottomNav';
+import { ToastContainer } from './ToastContainer';
+import { UpdatePrompt } from './UpdatePrompt';
 
-export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+export const Layout: React.FC = () => {
     const { t } = useTranslation();
     const { theme, toggleTheme } = useApp();
     const { isSupported, isLocked, requestWakeLock, releaseWakeLock } = useWakeLock();
@@ -69,7 +71,7 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
 
                 {/* Main Scrollable Content — pb-20 on mobile to clear bottom nav */}
                 <main className="flex-1 p-4 w-full mx-auto md:p-8 md:max-w-7xl pb-20 md:pb-8 min-w-0">
-                    {children}
+                    <Outlet context={{ isMoreOpen }} />
                 </main>
 
                 <ShoppingListOverlay
@@ -85,6 +87,8 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
             {/* Mobile Bottom Nav */}
             <BottomNav onMoreOpen={() => setIsMoreOpen(true)} style={{ zIndex: 110 }} />
             <MoreDrawer isOpen={isMoreOpen} onClose={() => setIsMoreOpen(false)} />
+            <ToastContainer />
+            <UpdatePrompt />
         </div>
     );
 };

@@ -1,6 +1,6 @@
 import React from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
-import { ShoppingCart, CalendarDays, ChefHat, MoreHorizontal, X, SquareCheck, Settings, Activity, BarChart3, History } from 'lucide-react';
+import { ShoppingCart, CalendarDays, ChefHat, MoreHorizontal, X, SquareCheck, Settings, Activity, BarChart3, History, Search } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 
 interface BottomNavProps {
@@ -21,6 +21,7 @@ export const MoreDrawer: React.FC<MoreDrawerProps> = ({ isOpen, onClose }) => {
 
     const secondaryItems = [
         { path: '/todos', icon: SquareCheck, label: t('nav.todos', 'Att göra') },
+        { path: '/ingredients', icon: Search, label: t('ingredientSearch.title', 'Sök på ingrediens') },
         { path: '/activity', icon: Activity, label: t('history.title', 'Aktivitet') },
         { path: '/statistics', icon: BarChart3, label: t('history.statistics', 'Statistik') },
         { path: '/history', icon: History, label: t('history.suggestionHistory', 'Historik') },

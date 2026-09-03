@@ -1,4 +1,4 @@
-import { createHashRouter, RouterProvider, Outlet } from 'react-router-dom'
+import { createHashRouter, RouterProvider } from 'react-router-dom'
 import { AppProvider } from './context/AppContext'
 import { Layout } from './components/Layout'
 import { GroceryListView } from './components/GroceryListView'
@@ -11,8 +11,6 @@ import { HistoryView } from './components/HistoryView'
 import { MealsView } from './components/MealsView'
 import { IngredientSearchView } from './components/IngredientSearchView'
 import { ToastProvider } from './context/ToastContext'
-import { ToastContainer } from './components/ToastContainer'
-import { UpdatePrompt } from './components/UpdatePrompt'
 import { AuthProvider } from './context/AuthContext'
 import { ProtectedRoute } from './components/ProtectedRoute'
 import { ErrorBoundary } from './components/ErrorBoundary'
@@ -22,11 +20,7 @@ const router = createHashRouter([
     {
         element: (
             <ProtectedRoute>
-                <Layout>
-                    <Outlet />
-                    <ToastContainer />
-                    <UpdatePrompt />
-                </Layout>
+                <Layout />
             </ProtectedRoute>
         ),
         children: [
