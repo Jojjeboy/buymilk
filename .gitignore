@@ -12,6 +12,7 @@ dist
 dist-ssr
 *.local
 .env
+.env.test
 build.txt
 coverage
 
@@ -25,3 +26,11 @@ coverage
 *.njsproj
 *.sln
 *.sw?
+
+# Firebase
+firebase-debug.log
+firestore-export/
+
+# Playwright
+playwright-report/
+test-results/

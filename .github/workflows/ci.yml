@@ -49,7 +49,7 @@ jobs:
           npm run lint
           npx tsc -b
 
-      - name: Run Tests
+      - name: Run Unit Tests
         run: npm run test
 
       - name: Build
@@ -59,3 +59,46 @@ jobs:
         uses: actions/upload-pages-artifact@v3
         with:
           path: ./dist
+
+  e2e-tests:
+    runs-on: ubuntu-latest
+    needs: build
+    env:
+      VITE_FIREBASE_API_KEY: test-key
+      VITE_FIREBASE_AUTH_DOMAIN: localhost:9099
+      VITE_FIREBASE_PROJECT_ID: test-project
+      VITE_FIREBASE_STORAGE_BUCKET: test-bucket
+      VITE_FIREBASE_MESSAGING_SENDER_ID: test-sender
+      VITE_FIREBASE_APP_ID: test-app-id
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps
+
+      - name: Start Firebase Emulator
+        run: |
+          npm install -g firebase-tools
+          firebase emulators:start --only auth,firestore &
+          sleep 10
+
+      - name: Run Playwright tests
+        run: npm run test:e2e
+
+      - name: Upload Playwright test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 30
