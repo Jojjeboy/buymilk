@@ -143,3 +143,14 @@ export interface Meal {
     }[];
     instructions?: string[];
 }
+
+export interface QuickItem {
+    key: string;
+    emoji: string;
+    label: string;
+}
+
+export interface QuickItemsSettings {
+    id: string;
+    enabledItems: string[];
+}

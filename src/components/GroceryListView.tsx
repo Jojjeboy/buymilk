@@ -3,7 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import { createPortal } from 'react-dom';
 import { useApp } from '../context/AppContext';
 import { useToast } from '../context/ToastContext';
-import type { Item, List, Meal, PlannedMeal } from '../types';
+import type { Item, List, Meal, PlannedMeal, QuickItem } from '../types';
+import { getQuickItemsByKeys } from '../utils/quickItems';
 import { DndContext, closestCenter, KeyboardSensor, PointerSensor, useSensor, useSensors, type DragEndEvent } from '@dnd-kit/core';
 import { arrayMove, SortableContext, sortableKeyboardCoordinates, verticalListSortingStrategy } from '@dnd-kit/sortable';
 import { SortableItem } from './SortableItem';
@@ -24,7 +25,7 @@ import { formatDate } from '../utils/dateUtils';
 export const GroceryListView: React.FC = React.memo(function GroceryListView() {
     const { t } = useTranslation();
     const navigate = useNavigate();
-    const { meals, lists, defaultListId, updateListItems, deleteItem, updateListAccess, loading, itemHistory, addToHistory, updateMeal } = useApp();
+    const { meals, lists, defaultListId, updateListItems, deleteItem, updateListAccess, loading, itemHistory, addToHistory, updateMeal, quickItemsSettings } = useApp();
     const { showToast } = useToast();
     const { getPlanForDate } = useMealPlan();
     const { isListening, transcript, startListening, stopListening, hasSupport } = useVoiceInput();
@@ -37,6 +38,7 @@ export const GroceryListView: React.FC = React.memo(function GroceryListView() {
     const [importModalOpen, setImportModalOpen] = useState(false);
     const [completedAccordionOpen, setCompletedAccordionOpen] = useState(false);
     const [clearCompletedModalOpen, setClearCompletedModalOpen] = useState(false);
+    const [showQuickItems, setShowQuickItems] = useState(false);
 
     const list: List | undefined = lists.find((l) => l.id === defaultListId);
 
@@ -392,54 +394,6 @@ export const GroceryListView: React.FC = React.memo(function GroceryListView() {
                     </div>
             </div>
 
-            {/* Quick-add items strip */}
-            {(() => {
-                const quickItems = [
-                    { emoji: '🥛', label: t('quickItems.milk', 'Mjölk') },
-                    { emoji: '🧈', label: t('quickItems.butter', 'Smör') },
-                    { emoji: '🥚', label: t('quickItems.eggs', 'Ägg') },
-                    { emoji: '🍌', label: t('quickItems.bananas', 'Bananer') },
-                    { emoji: '🍞', label: t('quickItems.bread', 'Bröd') },
-                    { emoji: '🧻', label: t('quickItems.toiletPaper', 'Toapapper') },
-                    { emoji: '☕', label: t('quickItems.coffee', 'Kaffe') },
-                    { emoji: '🍅', label: t('quickItems.tomatoes', 'Tomater') },
-                ];
-                const activeTexts = new Set(
-                    list.items.filter(i => !i.completed).map(i => i.text.toLowerCase())
-                );
-                return (
-                    <div className="mb-4">
-                        <div className="flex items-center gap-1.5 mb-2">
-                            <Zap size={13} className="text-amber-500" />
-                            <span className="text-[11px] font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                                {t('quickItems.title', 'Snabbval')}
-                            </span>
-                        </div>
-                        <div className="flex gap-2 overflow-x-auto pb-1 custom-scrollbar">
-                            {quickItems.map((item) => {
-                                const alreadyInList = activeTexts.has(item.label.toLowerCase());
-                                return (
-                                    <button
-                                        key={item.label}
-                                        onClick={() => !alreadyInList && handleAddItem(undefined, item.label)}
-                                        disabled={alreadyInList}
-                                        className={`flex-shrink-0 flex flex-col items-center gap-1 px-3 py-2 rounded-xl text-xs font-medium transition-all border ${
-                                            alreadyInList
-                                                ? 'bg-gray-50 dark:bg-gray-800/40 border-gray-100 dark:border-gray-800 text-gray-300 dark:text-gray-600 cursor-default'
-                                                : 'bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-200 hover:border-blue-300 hover:bg-blue-50 dark:hover:bg-blue-900/20 dark:hover:border-blue-700 shadow-sm active:scale-95'
-                                        }`}
-                                    >
-                                        <span className={`text-lg leading-none ${alreadyInList ? 'grayscale opacity-40' : ''}`}>{item.emoji}</span>
-                                        <span className="leading-none whitespace-nowrap">{item.label}</span>
-                                        {alreadyInList && <span className="text-[9px] text-green-500 dark:text-green-400 font-bold">✓</span>}
-                                    </button>
-                                );
-                            })}
-                        </div>
-                    </div>
-                );
-            })()}
-
             <Modal
                 isOpen={clearCompletedModalOpen}
                 onClose={() => setClearCompletedModalOpen(false)}
@@ -601,6 +555,14 @@ export const GroceryListView: React.FC = React.memo(function GroceryListView() {
                                         )}
                                     </div>
                                      <div className="flex gap-2">
+                                         <button
+                                             type="button"
+                                             onClick={() => setShowQuickItems(!showQuickItems)}
+                                             className="p-3 rounded-xl transition-all active:scale-95 bg-gray-100 dark:bg-gray-700 text-gray-500 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600"
+                                             title={t('quickItems.title', 'Snabbval')}
+                                         >
+                                             <Zap size={22} strokeWidth={2.5} />
+                                         </button>
                                          {hasSupport && (
                                              <button
                                                  type="button"
@@ -625,6 +587,47 @@ export const GroceryListView: React.FC = React.memo(function GroceryListView() {
                                      </div>
                                 </form>
                             </div>
+                            {showQuickItems && (
+                                <div className="absolute bottom-full left-0 right-0 mb-4 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-2xl shadow-2xl z-50 overflow-hidden max-w-4xl mx-auto animate-in slide-in-from-bottom-2 duration-200">
+                                    <div className="p-4">
+                                        <div className="flex items-center gap-1.5 mb-3">
+                                            <Zap size={13} className="text-amber-500" />
+                                            <span className="text-[11px] font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                                                {t('quickItems.title', 'Snabbval')}
+                                            </span>
+                                        </div>
+                                        <div className="flex gap-2 overflow-x-auto pb-1 custom-scrollbar">
+                                            {getQuickItemsByKeys(quickItemsSettings.enabledItems).map((item: QuickItem) => {
+                                                const activeTexts = new Set(
+                                                    list.items.filter(i => !i.completed).map(i => i.text.toLowerCase())
+                                                );
+                                                const alreadyInList = activeTexts.has(item.label.toLowerCase());
+                                                return (
+                                                    <button
+                                                        key={item.key}
+                                                        onClick={() => {
+                                                            if (!alreadyInList) {
+                                                                handleAddItem(undefined, item.label);
+                                                            }
+                                                            setShowQuickItems(false);
+                                                        }}
+                                                        disabled={alreadyInList}
+                                                        className={`flex-shrink-0 flex flex-col items-center gap-1 px-3 py-2 rounded-xl text-xs font-medium transition-all border ${
+                                                            alreadyInList
+                                                                ? 'bg-gray-50 dark:bg-gray-800/40 border-gray-100 dark:border-gray-800 text-gray-300 dark:text-gray-600 cursor-default'
+                                                                : 'bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-200 hover:border-blue-300 hover:bg-blue-50 dark:hover:bg-blue-900/20 dark:hover:border-blue-700 shadow-sm active:scale-95'
+                                                        }`}
+                                                    >
+                                                        <span className={`text-lg leading-none ${alreadyInList ? 'grayscale opacity-40' : ''}`}>{item.emoji}</span>
+                                                        <span className="leading-none whitespace-nowrap">{item.label}</span>
+                                                        {alreadyInList && <span className="text-[9px] text-green-500 dark:text-green-400 font-bold">✓</span>}
+                                                    </button>
+                                                );
+                                            })}
+                                        </div>
+                                    </div>
+                                </div>
+                            )}
                         </div>
                     </div>,
                 document.body

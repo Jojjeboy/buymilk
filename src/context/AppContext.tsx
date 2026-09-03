@@ -1,7 +1,8 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 
-import { List, Item, Todo, ListSettings, Section, Category, HistoryItem, MealPlan, Meal } from '../types';
+import { List, Item, Todo, ListSettings, Section, Category, HistoryItem, MealPlan, Meal, QuickItemsSettings } from '../types';
+import { DEFAULT_ENABLED_QUICK_ITEMS } from '../utils/quickItems';
 
 type Priority = 'low' | 'medium' | 'high';
 import { useToast } from './ToastContext';
@@ -17,6 +18,10 @@ interface AppContextType {
     lists: List[]; // Keep lists array for now but we only use one
     defaultListId: string | undefined; // Helper to get the main list
     theme: 'light' | 'dark' | 'system';
+    
+    // Quick Items Settings
+    quickItemsSettings: QuickItemsSettings;
+    updateQuickItemsSettings: (settings: Omit<QuickItemsSettings, 'id'>) => Promise<void>;
     
     // Core List Operations
     updateListName: (id: string, name: string) => Promise<void>;
@@ -95,6 +100,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     const historySync = useFirestoreSync<HistoryItem>('users/{uid}/history', user?.uid);
     const mealPlansSync = useFirestoreSync<MealPlan>('users/{uid}/mealplans', user?.uid);
     const mealsSync = useFirestoreSync<Meal>('users/{uid}/meals', user?.uid);
+    const quickItemsSync = useFirestoreSync<QuickItemsSettings>('users/{uid}/quickItemsSettings', user?.uid);
 
     const [theme, setThemeState] = useState<'light' | 'dark' | 'system'>('system');
     const { showToast } = useToast();
@@ -445,6 +451,24 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         await mealsSync.deleteItem(id);
     };
 
+    const updateQuickItemsSettings = async (settings: Omit<QuickItemsSettings, 'id'>) => {
+        if (quickItemsSync.data.length === 0) {
+            // Create new settings document
+            await quickItemsSync.addItem({
+                id: 'quickItemsSettings',
+                enabledItems: settings.enabledItems
+            });
+        } else {
+            // Update existing settings
+            await quickItemsSync.updateItem('quickItemsSettings', settings);
+        }
+    };
+
+    // Get quick items settings with defaults
+    const quickItemsSettings: QuickItemsSettings = quickItemsSync.data.length > 0 
+        ? quickItemsSync.data[0]
+        : { id: 'quickItemsSettings', enabledItems: DEFAULT_ENABLED_QUICK_ITEMS };
+
     const defaultListId = listsSync.data.length > 0 ? listsSync.data[0].id : undefined;
 
     const isSyncing = 
@@ -498,6 +522,8 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
                 addMeal,
                 updateMeal,
                 deleteMeal,
+                quickItemsSettings,
+                updateQuickItemsSettings,
             }}
         >
             <ErrorBoundary>

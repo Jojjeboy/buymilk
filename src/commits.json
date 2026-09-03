@@ -1,5 +1,20 @@
 [
   {
+    "hash": "98fe48fb0979a652d59cdb0bdbac302a66353eae",
+    "date": "2026-09-02 16:43:31 +0200",
+    "message": "chore: update browserslist and related dependencies to latest versions"
+  },
+  {
+    "hash": "d712addbac4b1c23d3215bb4f1b75e354d7c5a1c",
+    "date": "2026-09-02 16:41:14 +0200",
+    "message": "feat: add mobile bottom navigation and improve grocery list UX"
+  },
+  {
+    "hash": "bffaf1f3bb434e8337e68d2dee662c01dac45d45",
+    "date": "2026-09-02 16:32:22 +0200",
+    "message": "docs: update guidelines and mark completed tasks in improvement plan"
+  },
+  {
     "hash": "548beb46773dcae4ce5b83646eff9d341c987df9",
     "date": "2026-09-02 16:02:28 +0200",
     "message": "feat: lägg till omfattande dokument för flödesförbättringsplanLägg till FLOWS_IMPROVEMENT_PLAN.md med en strukturerad färdplan för att förbättra BuyMilks användarflöden, inklusive måltidsplanering, matinköp och recepthantering. Dokumentet beskriver fyra faser med specifika uppgifter för att förbättra UX-konsistens och funktionalitet."
@@ -83,20 +98,5 @@
     "hash": "e8e081e5ffd2921da08c2bc05db9d90cd723d87b",
     "date": "2026-08-27 14:48:35 +0200",
     "message": "feat(layout): integrate ShoppingListOverlay with wake lock control"
-  },
-  {
-    "hash": "442c2457c1deb6a657a0d3b63c3023a33caa1e6c",
-    "date": "2026-08-27 14:07:01 +0200",
-    "message": "docs: translate improvements checklist to Swedish and update tasks"
-  },
-  {
-    "hash": "a0daecd349f08839ee61369e12306b2c621eda4c",
-    "date": "2026-08-27 13:59:49 +0200",
-    "message": "refactor: remove unused Upload icon and hide logo on mobile"
-  },
-  {
-    "hash": "d973e0382dd42037ed007a3d3092f221aa927349",
-    "date": "2026-08-27 11:09:47 +0200",
-    "message": "refactor: replace Upload icon with Braces for JSON import actions and update modal/overlay visibility logic"
   }
 ]

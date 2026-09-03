@@ -484,6 +484,21 @@
     "bread": "Bread",
     "toiletPaper": "Toilet paper",
     "coffee": "Coffee",
-    "tomatoes": "Tomatoes"
+    "tomatoes": "Tomatoes",
+    "settings": {
+      "title": "Customize Quick Items",
+      "subtitle": "Select which items should appear as quick add options in the shopping list",
+      "preview": "Preview",
+      "noSelection": "No items selected"
+    },
+    "categories": {
+      "dairy": "Dairy Products",
+      "bread": "Bread & Pastries",
+      "fruitsVegetables": "Fruits & Vegetables",
+      "meatFish": "Meat & Fish",
+      "dryGoods": "Dry Goods",
+      "drinks": "Drinks",
+      "other": "Other"
+    }
   }
 }

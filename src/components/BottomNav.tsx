@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next';
 
 interface BottomNavProps {
     onMoreOpen?: () => void;
+    style?: React.CSSProperties;
 }
 
 interface MoreDrawerProps {
@@ -34,7 +35,7 @@ export const MoreDrawer: React.FC<MoreDrawerProps> = ({ isOpen, onClose }) => {
                 onClick={onClose}
             />
             {/* Drawer */}
-            <div className="fixed bottom-16 left-0 right-0 z-50 md:hidden animate-in slide-in-from-bottom-4 duration-250">
+            <div className="fixed bottom-14 left-0 right-0 z-50 md:hidden animate-in slide-in-from-bottom-4 duration-250">
                 <div className="mx-3 mb-2 bg-white dark:bg-gray-900 rounded-2xl shadow-2xl border border-gray-200/80 dark:border-gray-800 overflow-hidden">
                     <div className="flex items-center justify-between px-4 py-3 border-b border-gray-100 dark:border-gray-800">
                         <span className="text-sm font-semibold text-gray-700 dark:text-gray-200">{t('nav.more', 'Mer')}</span>
@@ -66,7 +67,7 @@ export const MoreDrawer: React.FC<MoreDrawerProps> = ({ isOpen, onClose }) => {
     );
 };
 
-export const BottomNav: React.FC<BottomNavProps> = ({ onMoreOpen }) => {
+export const BottomNav: React.FC<BottomNavProps> = ({ onMoreOpen, style }) => {
     const { t } = useTranslation();
 
     const primaryTabs = [
@@ -93,7 +94,7 @@ export const BottomNav: React.FC<BottomNavProps> = ({ onMoreOpen }) => {
     return (
         <nav
             className="fixed bottom-0 left-0 right-0 z-30 md:hidden"
-            style={{ paddingBottom: 'env(safe-area-inset-bottom)' }}
+            style={{ paddingBottom: 'env(safe-area-inset-bottom)', ...style }}
         >
             <div className="bg-white/80 dark:bg-gray-900/85 backdrop-blur-xl border-t border-gray-200/60 dark:border-gray-800/60 shadow-[0_-4px_24px_rgba(0,0,0,0.08)]">
                 <div className="flex items-stretch h-14">

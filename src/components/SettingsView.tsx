@@ -2,13 +2,14 @@ import React from 'react';
 import {
     LogOut, SortAsc, Calendar, ChevronDown, Settings, Eye, EyeOff,
     Globe, Sliders, Database, Trash2, Edit3, X, History, User,
-    Download, Copy, Check
+    Download, Copy, Check, Zap
 } from 'lucide-react';
 import { useWakeLock } from '../hooks/useWakeLock';
 import { useAuth } from '../context/AuthContext';
 import { useApp } from '../context/AppContext';
 import { useToast } from '../context/ToastContext';
 import type { Item, HistoryItem } from '../types';
+import { QuickItemsSettingsModal } from './QuickItemsSettingsModal';
 import { useTranslation } from 'react-i18next';
 import { parseJsonItems, convertToItems } from '../utils/importUtils';
 import { Modal } from './Modal';
@@ -61,7 +62,9 @@ export const SettingsView: React.FC = () => {
         itemHistory,
         updateHistoryItem,
         deleteFromHistory,
-        clearAllHistory
+        clearAllHistory,
+        quickItemsSettings,
+        updateQuickItemsSettings
     } = useApp();
     const { showToast } = useToast();
 
@@ -73,6 +76,7 @@ export const SettingsView: React.FC = () => {
     const [jsonText, setJsonText] = React.useState('');
     const [importError, setImportError] = React.useState('');
     const [clearAllItemsModalOpen, setClearAllItemsModalOpen] = React.useState(false);
+    const [quickItemsSettingsModalOpen, setQuickItemsSettingsModalOpen] = React.useState(false);
     const list = lists.find(l => l.id === defaultListId);
     const sortBy = list?.settings?.defaultSort || 'manual';
 
@@ -551,6 +555,25 @@ export const SettingsView: React.FC = () => {
                             </div>
                         </div>
                     </div>
+
+                    {/* Quick Items Settings */}
+                    <div className="space-y-3 pt-2">
+                        <button
+                            onClick={() => setQuickItemsSettingsModalOpen(true)}
+                            className="flex items-center justify-between w-full p-4 rounded-2xl bg-gray-50 dark:bg-gray-900/40 hover:bg-gray-100/80 dark:hover:bg-gray-900 transition-all border border-gray-100 dark:border-gray-700/60 group"
+                        >
+                            <div className="flex items-center gap-4">
+                                <div className="p-2.5 bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 rounded-xl group-hover:scale-110 transition-transform">
+                                    <Zap size={20} />
+                                </div>
+                                <div className="text-left">
+                                    <div className="font-bold text-sm text-gray-900 dark:text-white">{t('quickItems.settings.title')}</div>
+                                    <div className="text-xs font-medium text-gray-500 dark:text-gray-400">{t('quickItems.settings.subtitle')}</div>
+                                </div>
+                            </div>
+                            <ChevronDown className="text-gray-400" size={20} />
+                        </button>
+                    </div>
                 </div>
             </div>
 
@@ -772,6 +795,14 @@ export const SettingsView: React.FC = () => {
                     </button>
                 </div>
             </div>
+
+            {/* Quick Items Settings Modal */}
+            <QuickItemsSettingsModal
+                isOpen={quickItemsSettingsModalOpen}
+                onClose={() => setQuickItemsSettingsModalOpen(false)}
+                currentSettings={quickItemsSettings}
+                onSave={updateQuickItemsSettings}
+            />
 
         </div>
     );

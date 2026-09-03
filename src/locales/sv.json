@@ -484,6 +484,21 @@
     "bread": "Bröd",
     "toiletPaper": "Toapapper",
     "coffee": "Kaffe",
-    "tomatoes": "Tomater"
+    "tomatoes": "Tomater",
+    "settings": {
+      "title": "Anpassa Snabbval",
+      "subtitle": "Välj vilka varor som ska visas som snabbval i inköpslistan",
+      "preview": "Förhandsgranskning",
+      "noSelection": "Inga varor valda"
+    },
+    "categories": {
+      "dairy": "Mejeriprodukter",
+      "bread": "Bröd & Bakverk",
+      "fruitsVegetables": "Frukt & Grönt",
+      "meatFish": "Kött & Fisk",
+      "dryGoods": "Torra varor",
+      "drinks": "Drycker",
+      "other": "Övrigt"
+    }
   }
 }
