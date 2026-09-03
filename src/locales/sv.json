@@ -275,7 +275,20 @@
     "planInMealPlan": "Planera in i matsedel",
     "addToShoppingList": "Lägg till i inköpslista",
     "deleteMeal": "Ta bort måltid",
-    "deleteMealConfirm": "Är du säker på att du vill ta bort detta recept? Denna åtgärd kan inte ångras."
+    "deleteMealConfirm": "Är du säker på att du vill ta bort detta recept? Denna åtgärd kan inte ångras.",
+    "exportAsJson": "Exportera som JSON",
+    "importFromJson": "Importera från JSON",
+    "jsonExportTitle": "Exportera recept som JSON",
+    "jsonExportDescription": "Kopiera denna JSON för att spara eller dela ditt recept.",
+    "jsonImportTitle": "Importera recept från JSON",
+    "jsonImportDescription": "Klistra in JSON-data för att importera ett recept. Befintlig data kommer att ersättas.",
+    "jsonImportPlaceholder": "Klistra in JSON här...",
+    "jsonImportError": "Ogiltig JSON eller felaktigt format.",
+    "jsonImportEmpty": "Vänligen klistra in JSON-data.",
+    "jsonImportNoName": "JSON måste innehålla ett \"name\" fält.",
+    "jsonCopied": "Kopierad!",
+    "pasteFromClipboard": "Klistra in från urklipp",
+    "pasteJsonPrompt": "Klistra in din JSON här:"
   },
   "mealplan": {
     "title": "Måltidsschema",

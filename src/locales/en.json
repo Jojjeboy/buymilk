@@ -271,7 +271,20 @@
     "planInMealPlan": "Plan in Meal Plan",
     "addToShoppingList": "Add to Shopping List",
     "deleteMeal": "Delete Meal",
-    "deleteMealConfirm": "Are you sure you want to delete this recipe? This action cannot be undone."
+    "deleteMealConfirm": "Are you sure you want to delete this recipe? This action cannot be undone.",
+    "exportAsJson": "Export as JSON",
+    "importFromJson": "Import from JSON",
+    "jsonExportTitle": "Export Recipe as JSON",
+    "jsonExportDescription": "Copy this JSON to save or share your recipe.",
+    "jsonImportTitle": "Import Recipe from JSON",
+    "jsonImportDescription": "Paste JSON data to import a recipe. Existing data will be replaced.",
+    "jsonImportPlaceholder": "Paste JSON here...",
+    "jsonImportError": "Invalid JSON or incorrect format.",
+    "jsonImportEmpty": "Please paste JSON data.",
+    "jsonImportNoName": "JSON must contain a \"name\" field.",
+    "jsonCopied": "Copied!",
+    "pasteFromClipboard": "Paste from clipboard",
+    "pasteJsonPrompt": "Paste your JSON here:"
   },
   "mealplan": {
     "title": "Meal Plan",

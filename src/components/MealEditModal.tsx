@@ -11,9 +11,13 @@ import {
     Sparkles,
     ChefHat,
     Image,
-    Users
+    Users,
+    Download,
+    Upload
 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
+import { JsonExportModal } from './JsonExportModal';
+import { JsonImportModal } from './JsonImportModal';
 
 interface MealEditModalProps {
     isOpen: boolean;
@@ -69,6 +73,10 @@ export const MealEditModal: React.FC<MealEditModalProps> = ({
     
     const [instructions, setInstructions] = useState<string[]>([]);
     const [isSaving, setIsSaving] = useState(false);
+    
+    // JSON Import/Export state
+    const [showJsonExport, setShowJsonExport] = useState(false);
+    const [showJsonImport, setShowJsonImport] = useState(false);
 
     useEffect(() => {
         if (isOpen) {
@@ -157,6 +165,26 @@ export const MealEditModal: React.FC<MealEditModalProps> = ({
 
     const handleRemoveInstruction = (index: number) => {
         setInstructions(prev => prev.filter((_, i) => i !== index));
+    };
+
+    // JSON Import/Export handlers
+    const handleJsonImport = (importedData: Partial<Meal>) => {
+        // Uppdatera alla fält med importerad data
+        if (importedData.name) setName(importedData.name);
+        if (importedData.description) setDescription(importedData.description);
+        if (importedData.imageUrl) setImageUrl(importedData.imageUrl);
+        if (importedData.servings) setServings(importedData.servings.toString());
+        if (importedData.tags) setTagList(importedData.tags);
+        if (importedData.ingredients) setIngredients(importedData.ingredients);
+        if (importedData.instructions) setInstructions(importedData.instructions);
+    };
+
+    const handleExportJson = () => {
+        setShowJsonExport(true);
+    };
+
+    const handleImportJson = () => {
+        setShowJsonImport(true);
     };
 
     const handleSave = async (e: React.FormEvent) => {
@@ -553,13 +581,31 @@ export const MealEditModal: React.FC<MealEditModalProps> = ({
 
                     {/* Footer Actions */}
                     <div className="p-4 bg-gray-50 dark:bg-gray-900/60 border-t border-gray-100 dark:border-gray-700/80 -mx-5 -mb-5 flex items-center justify-between">
-                        <button
-                            type="button"
-                            onClick={onClose}
-                            className="px-4 py-2 text-xs font-semibold text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-xl transition-colors cursor-pointer"
-                        >
-                            {t('common.cancel', 'Avbryt')}
-                        </button>
+                        <div className="flex items-center gap-2">
+                            <button
+                                type="button"
+                                onClick={handleImportJson}
+                                className="flex items-center gap-1.5 px-3 py-2 text-xs font-semibold text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-xl transition-colors cursor-pointer"
+                            >
+                                <Upload className="w-4 h-4" />
+                                {t('meals.importFromJson', 'Importera från JSON')}
+                            </button>
+                            <button
+                                type="button"
+                                onClick={handleExportJson}
+                                className="flex items-center gap-1.5 px-3 py-2 text-xs font-semibold text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-xl transition-colors cursor-pointer"
+                            >
+                                <Download className="w-4 h-4" />
+                                {t('meals.exportAsJson', 'Exportera som JSON')}
+                            </button>
+                            <button
+                                type="button"
+                                onClick={onClose}
+                                className="px-4 py-2 text-xs font-semibold text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-xl transition-colors cursor-pointer"
+                            >
+                                {t('common.cancel', 'Avbryt')}
+                            </button>
+                        </div>
 
                         <button
                             type="submit"
@@ -572,6 +618,20 @@ export const MealEditModal: React.FC<MealEditModalProps> = ({
                     </div>
                 </form>
             </div>
+
+            {/* JSON Export Modal */}
+            <JsonExportModal
+                isOpen={showJsonExport}
+                onClose={() => setShowJsonExport(false)}
+                meal={meal}
+            />
+
+            {/* JSON Import Modal */}
+            <JsonImportModal
+                isOpen={showJsonImport}
+                onClose={() => setShowJsonImport(false)}
+                onImport={handleJsonImport}
+            />
         </div>
     );
 };
