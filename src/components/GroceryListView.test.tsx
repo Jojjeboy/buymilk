@@ -8,11 +8,17 @@ import { useToast } from '../context/ToastContext';
 import { useVoiceInput } from '../hooks/useVoiceInput';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 
-// Mock react-router-dom navigate
+// Mock react-router-dom navigate and outlet context
 const mockNavigate = vi.fn();
+const mockOutletContext = { isMoreOpen: false };
+
 vi.mock('react-router-dom', async () => {
     const actual = await vi.importActual('react-router-dom');
-    return { ...actual, useNavigate: () => mockNavigate };
+    return {
+        ...actual,
+        useNavigate: () => mockNavigate,
+        useOutletContext: () => mockOutletContext
+    };
 });
 
 // Mock the hooks

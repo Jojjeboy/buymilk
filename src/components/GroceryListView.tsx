@@ -25,7 +25,6 @@ interface OutletContext {
     isMoreOpen: boolean;
 }
 
-// eslint-disable-next-line react/prop-types
 export const GroceryListView: React.FC = React.memo(function GroceryListView() {
     const { isMoreOpen = false } = useOutletContext<OutletContext>();
     const { t } = useTranslation();
