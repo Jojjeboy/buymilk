@@ -1,5 +1,10 @@
 [
   {
+    "hash": "6aaa694429a5bebb74ca45389463f2899114e17c",
+    "date": "2026-09-03 13:24:30 +0200",
+    "message": "docs: update ingredient search view progress and commits history"
+  },
+  {
     "hash": "5c9597576e534c472eb9b524717a61476dd5ee44",
     "date": "2026-09-03 12:48:16 +0200",
     "message": "feat: lägg till förbättrad ingredienssökning med snabbåtgärder och matchningsindikatorer"
@@ -93,10 +98,5 @@
     "hash": "dc2c1733ea67ed9ab22aaa3703db350ab6447ec9",
     "date": "2026-08-27 16:18:08 +0200",
     "message": "mc"
-  },
-  {
-    "hash": "8cd01e4e5f2441c6d9cdc9dc33e279a1b6393b0a",
-    "date": "2026-08-27 15:58:51 +0200",
-    "message": "fix: translate hardcoded strings in MealDetailModal"
   }
 ]

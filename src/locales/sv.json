@@ -161,7 +161,11 @@
     "guest": "Gäst",
     "logout": "Logga ut",
     "used": "Använd {{count}} gånger",
-    "syncing": "Synkar ändringar..."
+    "syncing": "Synkar ändringar...",
+    "back": "Tillbaka",
+    "select": "Välj",
+    "clear": "Rensa"
+
   },
   "settings": {
     "title": "Inställningar",
@@ -483,13 +487,6 @@
     "lunch": "Lunch",
     "dinner": "Middag",
     "snack": "Mellis"
-  },
-  "common": {
-    "back": "Tillbaka",
-    "next": "Nästa",
-    "select": "Välj",
-    "save": "Spara",
-    "cancel": "Avbryt"
   },
   "quickItems": {
     "title": "Snabbval",

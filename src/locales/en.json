@@ -489,7 +489,8 @@
     "next": "Next",
     "select": "Select",
     "save": "Save",
-    "cancel": "Cancel"
+    "cancel": "Cancel",
+    "clear": "Clear"
   },
   "quickItems": {
     "title": "Quick add",

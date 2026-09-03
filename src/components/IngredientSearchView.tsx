@@ -8,6 +8,7 @@ import { useMealPlan } from '../hooks/useMealPlan';
 import { MealDetailModal } from './MealDetailModal';
 import { PlanMealModal } from './PlanMealModal';
 import { v4 as uuidv4 } from 'uuid';
+import mealSuggestions from '../data/mealSuggestions.json';
 
 
 export const IngredientSearchView: React.FC = () => {
@@ -25,7 +26,6 @@ export const IngredientSearchView: React.FC = () => {
     
     // Accessibility refs
     const searchInputRef = useRef<HTMLInputElement>(null);
-    const firstResultRef = useRef<HTMLDivElement>(null);
 
     // Debounce search input
     useEffect(() => {
@@ -35,13 +35,25 @@ export const IngredientSearchView: React.FC = () => {
         return () => clearTimeout(timer);
     }, [searchQuery]);
 
+    // Combine meals and mealSuggestions, deduplicated by name
+    const allMeals = useMemo(() => {
+        const combined: Meal[] = [...meals];
+        const existingNames = new Set(meals.map(m => m.name.trim().toLowerCase()));
+        mealSuggestions.forEach(s => {
+            if (!existingNames.has(s.name.trim().toLowerCase())) {
+                combined.push(s);
+            }
+        });
+        return combined;
+    }, [meals]);
+
     // Filter meals by ingredient search and calculate match info
     const filteredMealsWithMatches = useMemo(() => {
         const query = debouncedQuery.trim().toLowerCase();
 
         if (!query) return [];
 
-        return meals.map(meal => {
+        return allMeals.map(meal => {
             // Count matching ingredients
             const matchingIngredients = meal.ingredients?.filter(ingredient =>
                 ingredient.text.toLowerCase().includes(query)
@@ -60,7 +72,7 @@ export const IngredientSearchView: React.FC = () => {
                 matchCount: matchingIngredients.length
             };
         }).filter(item => item.matchesSearch);
-    }, [meals, debouncedQuery]);
+    }, [allMeals, debouncedQuery]);
 
     const handleClearSearch = () => {
         setSearchQuery('');
@@ -69,32 +81,83 @@ export const IngredientSearchView: React.FC = () => {
         }
     };
 
+    // Keyboard navigation state
+    const [focusedResultIndex, setFocusedResultIndex] = useState<number | null>(null);
+    const resultRefs = useRef<(HTMLDivElement | null)[]>([]);
+
     // Keyboard navigation handlers
     const handleKeyDown = useCallback((e: React.KeyboardEvent) => {
         // Escape key clears search and refocuses input
-        if (e.key === 'Escape' && searchQuery) {
-            handleClearSearch();
+        if (e.key === 'Escape') {
+            if (focusedResultIndex !== null) {
+                setFocusedResultIndex(null);
+                if (searchInputRef.current) {
+                    searchInputRef.current.focus();
+                }
+            } else if (searchQuery) {
+                handleClearSearch();
+            }
             e.preventDefault();
         }
         
-        // Down arrow moves focus to first result when results exist
-        if (e.key === 'ArrowDown' && filteredMealsWithMatches.length > 0 && searchQuery) {
-            if (firstResultRef.current) {
-                firstResultRef.current.focus();
-                e.preventDefault();
+        // Down arrow moves focus to next result or first result
+        if (e.key === 'ArrowDown' && filteredMealsWithMatches.length > 0) {
+            if (focusedResultIndex === null) {
+                setFocusedResultIndex(0);
+                if (resultRefs.current[0]) {
+                    resultRefs.current[0].focus();
+                }
+            } else if (focusedResultIndex < filteredMealsWithMatches.length - 1) {
+                const nextIndex = focusedResultIndex + 1;
+                setFocusedResultIndex(nextIndex);
+                if (resultRefs.current[nextIndex]) {
+                    resultRefs.current[nextIndex].focus();
+                }
             }
+            e.preventDefault();
         }
-    }, [searchQuery, filteredMealsWithMatches.length]);
+        
+        // Up arrow moves focus to previous result or input
+        if (e.key === 'ArrowUp') {
+            if (focusedResultIndex === null && filteredMealsWithMatches.length > 0) {
+                setFocusedResultIndex(filteredMealsWithMatches.length - 1);
+                if (resultRefs.current[filteredMealsWithMatches.length - 1]) {
+                    resultRefs.current[filteredMealsWithMatches.length - 1]?.focus();
+                }
+            } else if (focusedResultIndex !== null && focusedResultIndex > 0) {
+                const prevIndex = focusedResultIndex - 1;
+                setFocusedResultIndex(prevIndex);
+                if (resultRefs.current[prevIndex]) {
+                    resultRefs.current[prevIndex]?.focus();
+                }
+            } else if (focusedResultIndex === 0) {
+                setFocusedResultIndex(null);
+                if (searchInputRef.current) {
+                    searchInputRef.current.focus();
+                }
+            }
+            e.preventDefault();
+        }
+        
+        // Enter key on input: focus first result if available
+        if (e.key === 'Enter' && focusedResultIndex === null && filteredMealsWithMatches.length > 0) {
+            setFocusedResultIndex(0);
+            if (resultRefs.current[0]) {
+                resultRefs.current[0].focus();
+            }
+            e.preventDefault();
+        }
+    }, [searchQuery, filteredMealsWithMatches.length, focusedResultIndex]);
 
-    // Focus first result when search has results
+    // Reset focused index when search query changes
     useEffect(() => {
-        if (filteredMealsWithMatches.length > 0 && searchQuery && firstResultRef.current) {
-            // Don't auto-focus on initial render, only when user has typed
-            if (searchQuery.length > 0) {
-                // firstResultRef will be set by the first result card
-            }
-        }
-    }, [filteredMealsWithMatches.length, searchQuery]);
+        setFocusedResultIndex(null);
+    }, [debouncedQuery]);
+
+    // Update refs array when results change
+    useEffect(() => {
+        resultRefs.current = resultRefs.current.slice(0, filteredMealsWithMatches.length);
+    }, [filteredMealsWithMatches.length]);
 
     const handleViewMealDetails = (meal: Meal) => {
         setSelectedMeal(meal);
@@ -132,6 +195,21 @@ export const IngredientSearchView: React.FC = () => {
         }
     };
 
+    // Handle Enter key on result items
+    const handleResultKeyDown = useCallback((
+        e: React.KeyboardEvent<HTMLDivElement>,
+        _index: number,
+        meal: Meal
+    ) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+            handleViewMealDetails(meal);
+            e.preventDefault();
+        }
+    }, []);
+
+    // Add missing translation key for clear action
+    const clearSearchAriaLabel = t('common.clear', 'Clear search');
+
     return (
         <div className="space-y-6" role="main" aria-label={t('ingredientSearch.title', 'Search by Ingredient')}>
             {/* Header */}
@@ -167,6 +245,7 @@ export const IngredientSearchView: React.FC = () => {
                     aria-autocomplete="list"
                     aria-controls="search-results"
                     aria-expanded={filteredMealsWithMatches.length > 0}
+                    aria-describedby="results-summary"
                     className="w-full pl-12 pr-12 py-3.5 text-base rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50/50 dark:bg-gray-800 text-gray-900 dark:text-gray-100 placeholder-gray-400 outline-none focus:ring-2 focus:ring-blue-500 font-medium transition-all"
                 />
                 {searchQuery && (
@@ -174,7 +253,7 @@ export const IngredientSearchView: React.FC = () => {
                         onClick={handleClearSearch}
                         type="button"
                         className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 p-1"
-                        aria-label={t('common.clear', 'Clear search')}
+                        aria-label={clearSearchAriaLabel}
                     >
                         <X className="w-5 h-5" aria-hidden="true" />
                     </button>
@@ -183,7 +262,12 @@ export const IngredientSearchView: React.FC = () => {
 
             {/* Results Summary */}
             {debouncedQuery && (
-                <div className="text-sm text-gray-500 dark:text-gray-400">
+                <div 
+                    id="results-summary" 
+                    className="text-sm text-gray-500 dark:text-gray-400"
+                    aria-live="polite"
+                    aria-atomic="true"
+                >
                     {filteredMealsWithMatches.length > 0 
                         ? t('ingredientSearch.foundResults', { count: filteredMealsWithMatches.length })
                         : t('ingredientSearch.noResults', { query: debouncedQuery })}
@@ -191,13 +275,31 @@ export const IngredientSearchView: React.FC = () => {
             )}
 
             {/* Search Results */}
-            <div className="space-y-4">
+            <div 
+                id="search-results" 
+                role="listbox"
+                aria-label={t('ingredientSearch.title', 'Search by Ingredient')}
+                className="space-y-4"
+            >
                 {filteredMealsWithMatches.length > 0 ? (
                     <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-                        {filteredMealsWithMatches.map(({ meal, matchingIngredients, matchCount }) => (
+                        {filteredMealsWithMatches.map(({ meal, matchingIngredients, matchCount }, index) => (
                             <div 
                                 key={meal.id}
-                                className="bg-white dark:bg-gray-900/70 p-4 rounded-2xl border border-gray-200/80 dark:border-gray-800 shadow-xs hover:shadow-md hover:border-blue-300/20 dark:hover:border-blue-700/20 transition-all "
+                                ref={el => { resultRefs.current[index] = el; }}
+                                role="option"
+                                aria-selected={focusedResultIndex === index}
+                                aria-label={`${meal.name}. ${matchCount > 0 ? t('ingredientSearch.matching') + ' ' + matchCount : ''} ${matchingIngredients.length > 0 ? matchingIngredients.map(i => i.text).join(', ') : ''}`}
+                                tabIndex={focusedResultIndex === index ? 0 : -1}
+                                onKeyDown={(e) => handleResultKeyDown(e, index, meal)}
+                                onClick={() => handleViewMealDetails(meal)}
+                                onFocus={() => setFocusedResultIndex(index)}
+                                onBlur={() => setFocusedResultIndex(null)}
+                                className={`bg-white dark:bg-gray-900/70 p-4 rounded-2xl border border-gray-200/80 dark:border-gray-800 shadow-xs hover:shadow-md hover:border-blue-300/20 dark:hover:border-blue-700/20 transition-all ${
+                                    focusedResultIndex === index 
+                                        ? 'ring-2 ring-blue-500 dark:ring-blue-400 outline-none' 
+                                        : ''
+                                }`}
                             >
                                 <div className="flex items-start gap-4">
                                     {/* Recipe Icon */}
@@ -286,25 +388,37 @@ export const IngredientSearchView: React.FC = () => {
                                     {/* Action Buttons */}
                                     <div className="flex items-center justify-end gap-2 px-4 pb-4">
                                         <button
-                                            onClick={() => handleAddToShoppingList(meal)}
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                handleAddToShoppingList(meal);
+                                            }}
                                             className="p-2 rounded-lg bg-emerald-50 dark:bg-emerald-900/20 text-emerald-600 dark:text-emerald-400 hover:bg-emerald-100 dark:hover:bg-emerald-900/30 transition-colors"
                                             title={t('ingredientSearch.addToShoppingList')}
+                                            aria-label={t('ingredientSearch.addToShoppingList')}
                                         >
-                                            <ShoppingCart className="w-4 h-4" />
+                                            <ShoppingCart className="w-4 h-4" aria-hidden="true" />
                                         </button>
                                         <button
-                                            onClick={() => handlePlanMeal(meal)}
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                handlePlanMeal(meal);
+                                            }}
                                             className="p-2 rounded-lg bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 hover:bg-blue-100 dark:hover:bg-blue-900/30 transition-colors"
                                             title={t('ingredientSearch.planMeal')}
+                                            aria-label={t('ingredientSearch.planMeal')}
                                         >
-                                            <Calendar className="w-4 h-4" />
+                                            <Calendar className="w-4 h-4" aria-hidden="true" />
                                         </button>
                                         <button
-                                            onClick={() => handleViewMealDetails(meal)}
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                handleViewMealDetails(meal);
+                                            }}
                                             className="p-2 rounded-lg bg-indigo-50 dark:bg-indigo-900/20 text-indigo-600 dark:text-indigo-400 hover:bg-indigo-100 dark:hover:bg-indigo-900/30 transition-colors"
                                             title={t('ingredientSearch.viewDetails')}
+                                            aria-label={t('ingredientSearch.viewDetails')}
                                         >
-                                            <Eye className="w-4 h-4" />
+                                            <Eye className="w-4 h-4" aria-hidden="true" />
                                         </button>
                                     </div>
                                 </div>
@@ -328,7 +442,7 @@ export const IngredientSearchView: React.FC = () => {
                 )}
 
                 {/* Empty State - No Search */}
-                {!debouncedQuery && meals.length === 0 && (
+                {!debouncedQuery && allMeals.length === 0 && (
                     <div className="text-center py-12 px-6">
                         <div className="w-16 h-16 rounded-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center mx-auto mb-4">
                             <Utensils className="w-8 h-8 text-gray-400" />
@@ -343,7 +457,7 @@ export const IngredientSearchView: React.FC = () => {
                 )}
 
                 {/* Empty State - No Search but Has Meals */}
-                {!debouncedQuery && meals.length > 0 && (
+                {!debouncedQuery && allMeals.length > 0 && (
                     <div className="text-center py-12 px-6">
                         <div className="w-16 h-16 rounded-full bg-blue-50 dark:bg-blue-900/20 flex items-center justify-center mx-auto mb-4">
                             <Search className="w-8 h-8 text-blue-600 dark:text-blue-400" />
