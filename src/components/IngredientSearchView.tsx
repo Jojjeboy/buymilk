@@ -6,14 +6,17 @@ import { Search, X, Utensils, Eye, Calendar, ShoppingCart, Tag, Users, Dices } f
 import { Meal, MealType } from '../types';
 import { useMealPlan } from '../hooks/useMealPlan';
 import { MealDetailModal } from './MealDetailModal';
+import { MealEditModal } from './MealEditModal';
 import { PlanMealModal } from './PlanMealModal';
 import { RandomMealCard } from './RandomMealCard';
+import { useToast } from '../context/ToastContext';
 import { v4 as uuidv4 } from 'uuid';
 
 
 export const IngredientSearchView: React.FC = () => {
-    const { meals, addItemsToList, defaultListId } = useApp();
+    const { meals, addItemsToList, defaultListId, updateMeal } = useApp();
     const { t } = useTranslation();
+    const { showToast } = useToast();
 
     const { handleMealChange } = useMealPlan();
 
@@ -23,6 +26,8 @@ export const IngredientSearchView: React.FC = () => {
     const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
     const [isPlanModalOpen, setIsPlanModalOpen] = useState(false);
     const [planningMeal, setPlanningMeal] = useState<Meal | null>(null);
+    const [editingMeal, setEditingMeal] = useState<Meal | null>(null);
+    const [isEditModalOpen, setIsEditModalOpen] = useState(false);
     const [mealSuggestions, setMealSuggestions] = useState<Meal[]>([]);
     const [isLoadingSuggestions, setIsLoadingSuggestions] = useState(true);
     const [randomMeals, setRandomMeals] = useState<Meal[]>([]);
@@ -64,6 +69,27 @@ export const IngredientSearchView: React.FC = () => {
         });
         return combined;
     }, [meals, mealSuggestions]);
+
+    // Handle saving edited meal
+    const handleSaveMeal = async (mealData: Partial<Meal> & { name: string }, mealId?: string) => {
+        try {
+            if (mealId) {
+                await updateMeal(mealId, mealData);
+                showToast(t('toasts.itemUpdated', 'Måltid uppdaterad'), 'success');
+            }
+            setIsEditModalOpen(false);
+            setEditingMeal(null);
+        } catch {
+            showToast(t('toasts.error', 'Ett fel uppstod'), 'error');
+        }
+    };
+
+    // Handle starting edit from detail modal
+    const handleStartEdit = (meal: Meal) => {
+        setEditingMeal(meal);
+        setIsEditModalOpen(true);
+        setIsDetailModalOpen(false);
+    };
 
     // Get random meals for display when search is empty
     const getRandomMeals = useCallback((meals: Meal[], count: number = 6): Meal[] => {
@@ -548,6 +574,19 @@ export const IngredientSearchView: React.FC = () => {
                     meal={selectedMeal}
                     isOpen={isDetailModalOpen}
                     onClose={() => setIsDetailModalOpen(false)}
+                    onEdit={handleStartEdit}
+                />
+            )}
+
+            {editingMeal && (
+                <MealEditModal
+                    isOpen={isEditModalOpen}
+                    onClose={() => {
+                        setIsEditModalOpen(false);
+                        setEditingMeal(null);
+                    }}
+                    onSave={handleSaveMeal}
+                    meal={editingMeal}
                 />
             )}
 
