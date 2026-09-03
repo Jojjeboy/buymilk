@@ -53,7 +53,7 @@ export default defineConfig({
       provider: 'v8',
       reporter: ['text', 'json', 'html', 'lcov'],
     },
-    exclude: ['**/e2e-tests/**'],
+    exclude: ['**/node_modules/**', '**/e2e-tests/**'],
   },
 })
 
