@@ -8,10 +8,12 @@ import {
     Calendar, 
     Dices, 
     ShoppingCart, 
-    Users
+    Users,
+    Trash2
 } from 'lucide-react';
 import { Meal } from '../types';
 import { useTranslation } from 'react-i18next';
+import { ConfirmModal } from './ConfirmModal';
 
 interface MealDetailModalProps {
     isOpen: boolean;
@@ -21,6 +23,7 @@ interface MealDetailModalProps {
     onPlanMeal?: (meal: Meal) => void;
     onAddToShoppingList?: (meal: Meal) => void;
     onRandomMeal?: () => void;
+    onDelete?: (meal: Meal) => void;
 }
 
 export const MealDetailModal: React.FC<MealDetailModalProps> = ({ 
@@ -30,10 +33,25 @@ export const MealDetailModal: React.FC<MealDetailModalProps> = ({
     onEdit, 
     onPlanMeal, 
     onAddToShoppingList,
-    onRandomMeal 
+    onRandomMeal,
+    onDelete
 }) => {
     const { t } = useTranslation();
     const [activeTab, setActiveTab] = useState<'ingredients' | 'instructions'>('ingredients');
+    const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+
+    const handleDelete = () => {
+        if (meal && onDelete) {
+            setShowDeleteConfirm(true);
+        }
+    };
+
+    const confirmDelete = () => {
+        if (meal && onDelete) {
+            onDelete(meal);
+        }
+        setShowDeleteConfirm(false);
+    };
 
     if (!isOpen || !meal) return null;
 
@@ -215,6 +233,16 @@ export const MealDetailModal: React.FC<MealDetailModalProps> = ({
                                 <span>{t('common.edit', 'Redigera')}</span>
                             </button>
                         )}
+                        {onDelete && (
+                            <button
+                                type="button"
+                                onClick={handleDelete}
+                                className="flex items-center gap-1.5 px-3 py-2 text-xs font-semibold text-red-600 dark:text-red-400 bg-white dark:bg-gray-800 border border-red-200/60 dark:border-red-800/40 rounded-xl hover:bg-red-50 dark:hover:bg-red-950/40 transition-colors"
+                            >
+                                <Trash2 size={13} />
+                                <span>{t('common.delete', 'Ta bort')}</span>
+                            </button>
+                        )}
                     </div>
 
                     <div className="flex items-center gap-2">
@@ -242,6 +270,17 @@ export const MealDetailModal: React.FC<MealDetailModalProps> = ({
                     </div>
                 </div>
             </div>
+            
+            <ConfirmModal
+                isOpen={showDeleteConfirm}
+                onClose={() => setShowDeleteConfirm(false)}
+                onConfirm={confirmDelete}
+                title={t('meals.deleteMeal', 'Ta bort måltid')}
+                message={t('meals.deleteMealConfirm', 'Är du säker på att du vill ta bort detta recept? Denna åtgärd kan inte ångras.')}
+                confirmText={t('common.delete', 'Ta bort')}
+                cancelText={t('common.cancel', 'Avbryt')}
+                isDestructive={true}
+            />
         </div>
     );
 };

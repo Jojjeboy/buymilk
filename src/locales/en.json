@@ -269,7 +269,9 @@
     "popularTags": "Popular tags:",
     "checkAtHome": "Pantry staple / usually at home",
     "planInMealPlan": "Plan in Meal Plan",
-    "addToShoppingList": "Add to Shopping List"
+    "addToShoppingList": "Add to Shopping List",
+    "deleteMeal": "Delete Meal",
+    "deleteMealConfirm": "Are you sure you want to delete this recipe? This action cannot be undone."
   },
   "mealplan": {
     "title": "Meal Plan",
@@ -293,6 +295,7 @@
     "viewRecipe": "View Recipe",
     "editMeal": "Edit Meal",
     "deleteMeal": "Delete Meal",
+    "deleteMealConfirm": "Are you sure you want to delete this recipe? This action cannot be undone.",
     "saveToFavorites": "Save to Favorites",
     "savedToFavorites": "Meal saved to favorites",
     "duplicateWarning": "This meal appears multiple times this week",
@@ -494,7 +497,8 @@
     "select": "Select",
     "save": "Save",
     "cancel": "Cancel",
-    "clear": "Clear"
+    "clear": "Clear",
+    "delete": "Delete"
   },
   "quickItems": {
     "title": "Quick add",

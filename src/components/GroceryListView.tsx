@@ -15,6 +15,7 @@ import { ImportItemsModal } from './ImportItemsModal';
 import { Modal } from './Modal';
 import { MealDetailModal } from './MealDetailModal';
 import { MealEditModal } from './MealEditModal';
+import { ConfirmModal } from './ConfirmModal';
 import { useTranslation } from 'react-i18next';
 import { InlineAutocompleteInput } from './InlineAutocompleteInput';
 import { useVoiceInput } from '../hooks/useVoiceInput';
@@ -29,12 +30,13 @@ export const GroceryListView: React.FC = React.memo(function GroceryListView() {
     const { isMoreOpen = false } = useOutletContext<OutletContext>();
     const { t } = useTranslation();
     const navigate = useNavigate();
-    const { meals, lists, defaultListId, updateListItems, deleteItem, updateListAccess, loading, itemHistory, addToHistory, updateMeal } = useApp();
+    const { meals, lists, defaultListId, updateListItems, deleteItem, updateListAccess, loading, itemHistory, addToHistory, updateMeal, deleteMeal } = useApp();
     const { showToast } = useToast();
     const { getPlanForDate } = useMealPlan();
     const { isListening, transcript, startListening, stopListening, hasSupport } = useVoiceInput();
     const [viewingMeal, setViewingMeal] = useState<Meal | null>(null);
     const [editingMeal, setEditingMeal] = useState<Meal | null>(null);
+    const [deleteConfirmMeal, setDeleteConfirmMeal] = useState<Meal | null>(null);
     const [newItemText, setNewItemText] = useState('');
     const [showConfetti, setShowConfetti] = useState(false);
     const [suggestions, setSuggestions] = useState<(typeof itemHistory)>([]);
@@ -298,6 +300,24 @@ export const GroceryListView: React.FC = React.memo(function GroceryListView() {
         }
     };
 
+    const handleDeleteMeal = (meal: Meal) => {
+        setDeleteConfirmMeal(meal);
+    };
+
+    const confirmDeleteMeal = async () => {
+        if (!deleteConfirmMeal) return;
+        
+        try {
+            await deleteMeal(deleteConfirmMeal.id);
+            if (viewingMeal?.id === deleteConfirmMeal.id) setViewingMeal(null);
+            showToast(t('toasts.itemDeleted', 'Måltid borttagen'), 'info');
+        } catch {
+            showToast(t('toasts.error', 'Ett fel uppstod'), 'error');
+        } finally {
+            setDeleteConfirmMeal(null);
+        }
+    };
+
     const handleImportItems = async (items: (string | { text: string; note?: string; checkIfExistAtHome?: boolean })[]) => {
         if (!list) return;
         
@@ -417,8 +437,21 @@ export const GroceryListView: React.FC = React.memo(function GroceryListView() {
                 }}
                 onPlanMeal={() => {}}
                 onRandomMeal={() => {}}
+                onDelete={handleDeleteMeal}
                 meal={viewingMeal}
             />
+
+            <ConfirmModal
+                isOpen={!!deleteConfirmMeal}
+                onClose={() => setDeleteConfirmMeal(null)}
+                onConfirm={confirmDeleteMeal}
+                title={t('meals.deleteMeal', 'Ta bort måltid')}
+                message={t('meals.deleteMealConfirm', 'Är du säker på att du vill ta bort detta recept? Denna åtgärd kan inte ångras.')}
+                confirmText={t('common.delete', 'Ta bort')}
+                cancelText={t('common.cancel', 'Avbryt')}
+                isDestructive={true}
+            />
+
             <MealEditModal 
                 isOpen={!!editingMeal}
                 onClose={() => setEditingMeal(null)}

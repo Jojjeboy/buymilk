@@ -273,7 +273,9 @@
     "popularTags": "Vanliga taggar:",
     "checkAtHome": "Basvara / Finns oftast hemma",
     "planInMealPlan": "Planera in i matsedel",
-    "addToShoppingList": "Lägg till i inköpslista"
+    "addToShoppingList": "Lägg till i inköpslista",
+    "deleteMeal": "Ta bort måltid",
+    "deleteMealConfirm": "Är du säker på att du vill ta bort detta recept? Denna åtgärd kan inte ångras."
   },
   "mealplan": {
     "title": "Måltidsschema",
@@ -297,6 +299,7 @@
     "viewRecipe": "Visa recept",
     "editMeal": "Redigera måltid",
     "deleteMeal": "Ta bort måltid",
+    "deleteMealConfirm": "Är du säker på att du vill ta bort detta recept? Denna åtgärd kan inte ångras.",
     "saveToFavorites": "Spara till favoriter",
     "savedToFavorites": "Måltid sparad till favoriter",
     "duplicateWarning": "Måltiden förekommer flera gånger denna vecka",

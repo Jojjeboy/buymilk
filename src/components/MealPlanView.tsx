@@ -25,6 +25,7 @@ import {
 } from 'lucide-react';
 import { useMealPlan } from '../hooks/useMealPlan';
 import { RecipeDetailModal } from './RecipeDetailModal';
+import { ConfirmModal } from './ConfirmModal';
 import { exportMealPlanToICS } from '../utils/calendarUtils';
 import { v4 as uuidv4 } from 'uuid';
 import { getISOWeek, formatDate, getDayName } from '../utils/dateUtils';
@@ -41,7 +42,7 @@ export const MealPlanView: React.FC = () => {
     
     const { showToast } = useToast();
     const { t } = useTranslation();
-    const { addItemsToList, defaultListId } = useApp();
+    const { addItemsToList, defaultListId, deleteMeal } = useApp();
     const navigate = useNavigate();
     const [isExportOpen, setIsExportOpen] = useState(false);
     const [ingredientModalConfig, setIngredientModalConfig] = useState<{
@@ -55,6 +56,7 @@ export const MealPlanView: React.FC = () => {
     });
     const [recipeViewMeal, setRecipeViewMeal] = useState<Meal | null>(null);
     const [modalSlot, setModalSlot] = useState<{ date: Date; type: MealType } | null>(null);
+    const [deleteConfirmMeal, setDeleteConfirmMeal] = useState<Meal | null>(null);
     const [promptSaveMealName, setPromptSaveMealName] = useState<string | null>(null);
     const [randomMealModal, setRandomMealModal] = useState<{ isOpen: boolean; date: Date | null; type: MealType | null }>({
         isOpen: false,
@@ -125,6 +127,24 @@ export const MealPlanView: React.FC = () => {
     const handleClearMeal = async (date: Date, type: MealType) => {
         await handleMealChange(date, type, '');
         showToast(t('toasts.mealDeleted', 'Måltid borttagen'), 'info');
+    };
+
+    const handleDeleteMeal = (meal: Meal) => {
+        setDeleteConfirmMeal(meal);
+    };
+
+    const confirmDeleteMeal = async () => {
+        if (!deleteConfirmMeal) return;
+        
+        try {
+            await deleteMeal(deleteConfirmMeal.id);
+            if (recipeViewMeal?.id === deleteConfirmMeal.id) setRecipeViewMeal(null);
+            showToast(t('toasts.itemDeleted', 'Måltid borttagen'), 'info');
+        } catch {
+            showToast(t('toasts.error', 'Ett fel uppstod'), 'error');
+        } finally {
+            setDeleteConfirmMeal(null);
+        }
     };
 
     const handleViewRecipe = (mealText: string) => {
@@ -624,7 +644,19 @@ export const MealPlanView: React.FC = () => {
             <RecipeDetailModal 
                 isOpen={!!recipeViewMeal} 
                 onClose={() => setRecipeViewMeal(null)} 
+                onDelete={handleDeleteMeal}
                 meal={recipeViewMeal} 
+            />
+
+            <ConfirmModal
+                isOpen={!!deleteConfirmMeal}
+                onClose={() => setDeleteConfirmMeal(null)}
+                onConfirm={confirmDeleteMeal}
+                title={t('meals.deleteMeal', 'Ta bort måltid')}
+                message={t('meals.deleteMealConfirm', 'Är du säker på att du vill ta bort detta recept? Denna åtgärd kan inte ångras.')}
+                confirmText={t('common.delete', 'Ta bort')}
+                cancelText={t('common.cancel', 'Avbryt')}
+                isDestructive={true}
             />
 
             <RandomMealModal

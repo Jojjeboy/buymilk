@@ -9,6 +9,7 @@ interface RecipeDetailModalProps {
     onEdit?: (meal: Meal) => void;
     onPlanMeal?: (meal: Meal) => void;
     onAddToShoppingList?: (meal: Meal) => void;
+    onDelete?: (meal: Meal) => void;
 }
 
 export const RecipeDetailModal: React.FC<RecipeDetailModalProps> = (props) => {

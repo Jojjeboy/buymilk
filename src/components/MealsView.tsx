@@ -20,6 +20,7 @@ import { MealEditModal } from './MealEditModal';
 import { MealDetailModal } from './MealDetailModal';
 import { PlanMealModal } from './PlanMealModal';
 import { IngredientSelectionModal } from './IngredientSelectionModal';
+import { ConfirmModal } from './ConfirmModal';
 import { v4 as uuidv4 } from 'uuid';
 import { Item, Meal, MealType } from '../types';
 import { useMealPlan } from '../hooks/useMealPlan';
@@ -40,6 +41,9 @@ export const MealsView: React.FC = () => {
     const [viewingMeal, setViewingMeal] = useState<Meal | null>(null);
     const [isPlanningOpen, setIsPlanningOpen] = useState(false);
     const [planningMeal, setPlanningMeal] = useState<Meal | null>(null);
+    
+    // Delete confirmation modal state
+    const [deleteConfirmMeal, setDeleteConfirmMeal] = useState<Meal | null>(null);
 
     const [ingredientModalConfig, setIngredientModalConfig] = useState<{
         isOpen: boolean;
@@ -119,14 +123,21 @@ export const MealsView: React.FC = () => {
         }
     };
 
-    const handleDeleteMeal = async (id: string, name: string) => {
-        if (!window.confirm(`Vill du ta bort "${name}"?`)) return;
+    const handleDeleteMeal = (meal: Meal) => {
+        setDeleteConfirmMeal(meal);
+    };
+
+    const confirmDeleteMeal = async () => {
+        if (!deleteConfirmMeal) return;
+        
         try {
-            await deleteMeal(id);
-            if (viewingMeal?.id === id) setViewingMeal(null);
+            await deleteMeal(deleteConfirmMeal.id);
+            if (viewingMeal?.id === deleteConfirmMeal.id) setViewingMeal(null);
             showToast(t('toasts.itemDeleted', 'Måltid borttagen'), 'info');
         } catch {
             showToast(t('toasts.error', 'Ett fel uppstod'), 'error');
+        } finally {
+            setDeleteConfirmMeal(null);
         }
     };
 
@@ -332,7 +343,7 @@ export const MealsView: React.FC = () => {
                                     <button 
                                         onClick={(e) => {
                                             e.stopPropagation();
-                                            handleDeleteMeal(meal.id, meal.name);
+                                            handleDeleteMeal(meal);
                                         }}
                                         className="p-2 bg-white/90 dark:bg-gray-800/90 text-gray-700 dark:text-gray-200 hover:text-red-600 rounded-full shadow-sm transition-colors backdrop-blur-xs"
                                         title={t('common.delete', 'Ta bort')}
@@ -400,6 +411,17 @@ export const MealsView: React.FC = () => {
                                                 <ShoppingCart className="w-4 h-4" />
                                             </button>
                                         )}
+                                        
+                                        <button 
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                handleDeleteMeal(meal);
+                                            }}
+                                            className="p-1.5 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/40 rounded-xl transition-colors border border-red-200/60 dark:border-red-800/40"
+                                            title={t('common.delete', 'Ta bort')}
+                                        >
+                                            <Trash2 className="w-4 h-4" />
+                                        </button>
                                     </div>
                                 </div>
                             </div>
@@ -429,7 +451,19 @@ export const MealsView: React.FC = () => {
                 onPlanMeal={handlePlanMeal}
                 onAddToShoppingList={handleOpenIngredientTransfer}
                 onRandomMeal={handleRandomMeal}
+                onDelete={handleDeleteMeal}
                 meal={viewingMeal}
+            />
+
+            <ConfirmModal
+                isOpen={!!deleteConfirmMeal}
+                onClose={() => setDeleteConfirmMeal(null)}
+                onConfirm={confirmDeleteMeal}
+                title={t('meals.deleteMeal', 'Ta bort måltid')}
+                message={t('meals.deleteMealConfirm', 'Är du säker på att du vill ta bort detta recept? Denna åtgärd kan inte ångras.')}
+                confirmText={t('common.delete', 'Ta bort')}
+                cancelText={t('common.cancel', 'Avbryt')}
+                isDestructive={true}
             />
 
             <PlanMealModal

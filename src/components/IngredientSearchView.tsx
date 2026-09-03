@@ -9,12 +9,13 @@ import { MealDetailModal } from './MealDetailModal';
 import { MealEditModal } from './MealEditModal';
 import { PlanMealModal } from './PlanMealModal';
 import { RandomMealCard } from './RandomMealCard';
+import { ConfirmModal } from './ConfirmModal';
 import { useToast } from '../context/ToastContext';
 import { v4 as uuidv4 } from 'uuid';
 
 
 export const IngredientSearchView: React.FC = () => {
-    const { meals, addItemsToList, defaultListId, updateMeal } = useApp();
+    const { meals, addItemsToList, defaultListId, updateMeal, deleteMeal } = useApp();
     const { t } = useTranslation();
     const { showToast } = useToast();
 
@@ -29,6 +30,7 @@ export const IngredientSearchView: React.FC = () => {
     const [editingMeal, setEditingMeal] = useState<Meal | null>(null);
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
     const [mealSuggestions, setMealSuggestions] = useState<Meal[]>([]);
+    const [deleteConfirmMeal, setDeleteConfirmMeal] = useState<Meal | null>(null);
     const [isLoadingSuggestions, setIsLoadingSuggestions] = useState(true);
     const [randomMeals, setRandomMeals] = useState<Meal[]>([]);
     
@@ -81,6 +83,24 @@ export const IngredientSearchView: React.FC = () => {
             setEditingMeal(null);
         } catch {
             showToast(t('toasts.error', 'Ett fel uppstod'), 'error');
+        }
+    };
+
+    const handleDeleteMeal = (meal: Meal) => {
+        setDeleteConfirmMeal(meal);
+    };
+
+    const confirmDeleteMeal = async () => {
+        if (!deleteConfirmMeal) return;
+        
+        try {
+            await deleteMeal(deleteConfirmMeal.id);
+            if (selectedMeal?.id === deleteConfirmMeal.id) setSelectedMeal(null);
+            showToast(t('toasts.itemDeleted', 'Måltid borttagen'), 'info');
+        } catch {
+            showToast(t('toasts.error', 'Ett fel uppstod'), 'error');
+        } finally {
+            setDeleteConfirmMeal(null);
         }
     };
 
@@ -581,8 +601,20 @@ export const IngredientSearchView: React.FC = () => {
                     onEdit={handleStartEdit}
                     onPlanMeal={handlePlanMeal}
                     onAddToShoppingList={handleAddToShoppingList}
+                    onDelete={handleDeleteMeal}
                 />
             )}
+
+            <ConfirmModal
+                isOpen={!!deleteConfirmMeal}
+                onClose={() => setDeleteConfirmMeal(null)}
+                onConfirm={confirmDeleteMeal}
+                title={t('meals.deleteMeal', 'Ta bort måltid')}
+                message={t('meals.deleteMealConfirm', 'Är du säker på att du vill ta bort detta recept? Denna åtgärd kan inte ångras.')}
+                confirmText={t('common.delete', 'Ta bort')}
+                cancelText={t('common.cancel', 'Avbryt')}
+                isDestructive={true}
+            />
 
             {editingMeal && (
                 <MealEditModal
