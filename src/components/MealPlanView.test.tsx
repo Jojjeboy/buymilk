@@ -8,6 +8,9 @@ import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 
 vi.mock('../context/AppContext');
 vi.mock('../context/ToastContext');
+vi.mock('react-router-dom', () => ({
+    useNavigate: () => vi.fn(),
+}));
 
 describe('MealPlanView', () => {
     const mockShowToast = vi.fn();

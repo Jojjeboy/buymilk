@@ -1,8 +1,10 @@
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import { IngredientSearchView } from './IngredientSearchView';
-import { AppProvider } from '../context/AppContext';
 import { MemoryRouter } from 'react-router-dom';
-import { describe, it, expect, vi } from 'vitest';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { useApp } from '../context/AppContext';
+
+vi.mock('../context/AppContext');
 
 describe('IngredientSearchView', () => {
     const mockMeals = [
@@ -30,12 +32,58 @@ describe('IngredientSearchView', () => {
         }
     ];
 
+    beforeEach(() => {
+        vi.clearAllMocks();
+        
+        vi.mocked(useApp).mockReturnValue({
+            meals: [],
+            lists: [],
+            currentListId: null,
+            defaultListId: null,
+            addItem: vi.fn(),
+            updateItem: vi.fn(),
+            deleteItem: vi.fn(),
+            toggleItem: vi.fn(),
+            clearCompleted: vi.fn(),
+            reorderItems: vi.fn(),
+            addMeal: vi.fn(),
+            updateMeal: vi.fn(),
+            deleteMeal: vi.fn(),
+            addItemsToList: vi.fn(),
+            setCurrentList: vi.fn(),
+            createList: vi.fn(),
+            deleteList: vi.fn(),
+            updateList: vi.fn(),
+            setDefaultList: vi.fn()
+        } as unknown as ReturnType<typeof useApp>);
+    });
+
     const renderWithProviders = (meals = []) => {
+        vi.mocked(useApp).mockReturnValue({
+            meals: meals,
+            lists: [],
+            currentListId: null,
+            defaultListId: null,
+            addItem: vi.fn(),
+            updateItem: vi.fn(),
+            deleteItem: vi.fn(),
+            toggleItem: vi.fn(),
+            clearCompleted: vi.fn(),
+            reorderItems: vi.fn(),
+            addMeal: vi.fn(),
+            updateMeal: vi.fn(),
+            deleteMeal: vi.fn(),
+            addItemsToList: vi.fn(),
+            setCurrentList: vi.fn(),
+            createList: vi.fn(),
+            deleteList: vi.fn(),
+            updateList: vi.fn(),
+            setDefaultList: vi.fn()
+        } as unknown as ReturnType<typeof useApp>);
+
         return render(
             <MemoryRouter>
-                <AppProvider>
-                    <IngredientSearchView />
-                </AppProvider>
+                <IngredientSearchView />
             </MemoryRouter>
         );
     };
@@ -62,32 +110,6 @@ describe('IngredientSearchView', () => {
     });
 
     it('shows start searching message when no search query but has meals', () => {
-        // Mock the useApp hook to return meals
-        vi.mock('../context/AppContext', () => ({
-            useApp: () => ({
-                meals: mockMeals,
-                // other required properties
-                lists: [],
-                currentListId: null,
-                defaultListId: null,
-                addItem: vi.fn(),
-                updateItem: vi.fn(),
-                deleteItem: vi.fn(),
-                toggleItem: vi.fn(),
-                clearCompleted: vi.fn(),
-                reorderItems: vi.fn(),
-                addMeal: vi.fn(),
-                updateMeal: vi.fn(),
-                deleteMeal: vi.fn(),
-                addItemsToList: vi.fn(),
-                setCurrentList: vi.fn(),
-                createList: vi.fn(),
-                deleteList: vi.fn(),
-                updateList: vi.fn(),
-                setDefaultList: vi.fn()
-            })
-        }));
-
         renderWithProviders(mockMeals);
         
         const startMessage = screen.getByText(/Start searching by ingredient/);

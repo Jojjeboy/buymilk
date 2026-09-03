@@ -6,8 +6,12 @@ import { useToast } from '../context/ToastContext';
 import { Meal } from '../types';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 
+
 vi.mock('../context/AppContext');
 vi.mock('../context/ToastContext');
+vi.mock('react-router-dom', () => ({
+    useNavigate: () => vi.fn(),
+}));
 
 const mockMeals: Meal[] = [
     {

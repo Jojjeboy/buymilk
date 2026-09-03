@@ -22,8 +22,9 @@ This directory contains planning documents for upcoming features and improvement
 - **Description**: A view to search for recipes by ingredient (e.g., "falukorv", "lax")
 - **Priority**: High  
 - **Functionality**: Simple single-word filtering of recipes containing that ingredient
-- **Access**: Behind a button in the main navigation or settings
+- **Access**: Behind a button in the /meals page or /mealplan
 - **File**: [ingredient-search-view.md](./ingredient-search-view.md)
+- **Status**: Implementation plan created ✅
 
 ## Implementation Order
 1. What's New Modal (higher user visibility)
